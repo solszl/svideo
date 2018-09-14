@@ -1,0 +1,19 @@
+{
+  "name": "svideo",
+  "version": "1.0.0",
+  "description": "mix flv.js video.js muxing for vhall",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solszl/svideo.git"
+  },
+  "author": "zhenliang.sun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/solszl/svideo/issues"
+  },
+  "homepage": "https://github.com/solszl/svideo#readme"
+}
