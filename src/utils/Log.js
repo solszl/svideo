@@ -10,7 +10,7 @@ import IllegalStateException from "../error/IllegalStateException";
 export default class Log {
     constructor() {
         if (this._OBJ) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException("Log should be a singlton Class");
         }
 
         this._OBJ = this;
