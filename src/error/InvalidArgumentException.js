@@ -9,8 +9,8 @@ import Exception from "./Exception";
  * @author zhenliang.sun
  */
 export default class InvalidArgumentException extends Exception {
-    constructor(msg) {
-        super(msg)
-        this._type = 'InvalidArgumentException'
-    }
+  constructor(msg) {
+    super(msg);
+    this._type = "InvalidArgumentException";
+  }
 }

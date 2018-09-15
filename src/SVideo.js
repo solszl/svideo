@@ -6,7 +6,7 @@
  * @author zhenliang.sun
  */
 export default class SVideo {
-    constructor() {
+  constructor() {
 
-    }
+  }
 }

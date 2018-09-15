@@ -9,8 +9,8 @@ import Exception from "./Exception";
  * @author zhenliang.sun
  */
 export default class IllegalStateException extends Exception {
-    constructor(msg) {
-        super(msg)
-        this._type = 'IllegalStateException'
-    }
+  constructor(msg) {
+    super(msg);
+    this._type = "IllegalStateException";
+  }
 }

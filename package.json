@@ -4,7 +4,8 @@
   "description": "mix flv.js video.js muxing for vhall",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint-fix": "eslint --fix --ext .js,.jsx src/"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/solszl/svideo/issues"
   },
-  "homepage": "https://github.com/solszl/svideo#readme"
+  "homepage": "https://github.com/solszl/svideo#readme",
+  "devDependencies": {
+    "eslint": "^5.6.0"
+  }
 }
