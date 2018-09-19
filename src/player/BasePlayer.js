@@ -1,3 +1,5 @@
+import Component from "../core/Component";
+
 /**
  * 播放器基类
  *
@@ -5,9 +7,10 @@
  * @class BasePlayer
  * @author zhenliang.sun
  */
-export default class BasePlayer {
+export default class BasePlayer extends Component {
 
   constructor() {
+    super();
     this._type = "base";
     this[create_default_config]();
   }

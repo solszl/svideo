@@ -23,6 +23,7 @@ module.exports = {
       "error",
       "always"
     ],
-    "no-useless-constructor": 'off'
+    "no-useless-constructor": 0,
+    // "sort-imports": 1,
   }
 };
