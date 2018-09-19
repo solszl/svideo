@@ -23,7 +23,12 @@ module.exports = {
       "error",
       "always"
     ],
+<<<<<<< HEAD
     "no-useless-constructor": 0,
     // "sort-imports": 1,
+=======
+    "no-useless-constructor": 'off',
+    "no-console": 'off'
+>>>>>>> *
   }
 };
