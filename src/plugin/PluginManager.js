@@ -2,6 +2,14 @@ import Exception from "../error/Exception";
 import IllegalStateException from "../error/IllegalStateException";
 import Log from "../utils/Log";
 
+
+/**
+ * 
+ *
+ * @export
+ * @class PluginManager
+ * @author zhenliang.sun
+ */
 export default class PluginManager {
   constructor() {
     if (this._instance) {
