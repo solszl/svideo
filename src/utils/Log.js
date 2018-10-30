@@ -1,4 +1,7 @@
-import IllegalStateException from "../error/IllegalStateException";
+import IllegalStateException from '../error/IllegalStateException';
+
+const private_log = Symbol('private_log');
+const private_instance = Symbol('private_instance');
 
 /**
  * 日志
@@ -9,46 +12,48 @@ import IllegalStateException from "../error/IllegalStateException";
  */
 export default class Log {
   constructor() {
-    if (this._OBJ) {
-      throw new IllegalStateException("Log should be a singlton Class");
+    if (this[private_instance]) {
+      throw new IllegalStateException('Log should be a singlton Class');
     }
 
-    this._OBJ = this;
+    this[private_instance] = this;
     this.logLevels = {
-      all: "debug|log|warn|error",
-      off: "",
-      debug: "debug|log|warn|error",
-      info: "info|warn|error",
-      warn: "warn|error",
-      error: "error",
-      DEFAULT: "level"
+      all: 'debug|info|log|warn|error',
+      off: '',
+      debug: 'debug|info|log|warn|error',
+      info: 'info|warn|error',
+      warn: 'warn|error',
+      error: 'error'
     };
+
+    this.level = 'all'; // 默认是all
   }
 
   static get OBJ() {
-    if (!this._OBJ) {
-      this._OBJ = new Log();
+    if (!this[private_instance]) {
+      this[private_instance] = new Log();
     }
 
-    return this._OBJ;
+    return this[private_instance];
   }
 
 
   /**
    *
-   * 设置日志错误输出等级，开发环境通常设置为 'all', 生产环境通常设置为 'error' 或 'off'
+   * 设置日志错误输出等级，开发环境通常设置为 'all', 生产环境通常设置为 'warn', 'error' 或 'off'
    * @memberof Log
+   * @default 'all'
    */
   set level(val) {
-    if (typeof val !== "string") {
+    if (typeof val !== 'string') {
       return this.level;
     }
 
-    if (this.logLevels.hasOwnProperty(val)) {
+    if (!this.logLevels.hasOwnProperty(val)) {
       throw new IllegalStateException(`${val} is not a valid log level, should be in [all, off, debug, info, warn, error]`);
     }
 
-    this._level = val;
+    this._level = this.logLevels[val];
   }
 
   get level() {
@@ -56,19 +61,19 @@ export default class Log {
   }
 
   info(...args) {
-    this[private_log]("info", args);
+    this[private_log]('info', args);
   }
 
   debug(...args) {
-    this[private_log]("debug", args);
+    this[private_log]('debug', args);
   }
 
   warn(...args) {
-    this[private_log]("warn", args);
+    this[private_log]('warn', args);
   }
 
   error(...args) {
-    this[private_log]("error", args);
+    this[private_log]('error', args);
   }
 
   [private_log](type, args) {
@@ -77,16 +82,14 @@ export default class Log {
     }
 
     let fn = window.console[type];
-    if (!fn && type === "debug") {
+    if (!fn && type === 'debug') {
       fn = window.console.info || window.console.log;
     }
 
-    if (!fn || !this.level) {
+    if (!fn || this.level.split('|').indexOf(type) < 0) {
       return;
     }
 
-    fn[Array.isArray(args) ? "apply" : "call"](window.console, args);
+    fn[Array.isArray(args) ? 'apply' : 'call'](window.console, args);
   }
 }
-
-const private_log = Symbol("private_log");
