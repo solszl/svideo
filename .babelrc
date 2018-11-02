@@ -1,0 +1,12 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["> 5%", "last 5 versions", "not ie <= 8", "safari >= 7"]
+      },
+      "modules": false
+    }],
+    "stage-2"
+  ],
+  "plugins": ["transform-runtime", "syntax-dynamic-import", "transform-es2015-typeof-symbol"]
+}
