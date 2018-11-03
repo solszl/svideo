@@ -1,4 +1,4 @@
-import BasePlayer from "./BasePlayer";
+import BasePlayer from './BasePlayer';
 
 /**
  *
@@ -11,6 +11,6 @@ import BasePlayer from "./BasePlayer";
 export default class HlsPlayer extends BasePlayer {
   constructor() {
     super();
-    this._type = "hls";
+    this._type = 'hls';
   }
 }

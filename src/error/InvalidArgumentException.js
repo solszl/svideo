@@ -1,4 +1,4 @@
-import Exception from "./Exception";
+import Exception from './Exception';
 
 /**
  * 无效参数异常
@@ -11,6 +11,6 @@ import Exception from "./Exception";
 export default class InvalidArgumentException extends Exception {
   constructor(msg) {
     super(msg);
-    this._type = "InvalidArgumentException";
+    this._type = 'InvalidArgumentException';
   }
 }

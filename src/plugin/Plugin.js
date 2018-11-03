@@ -1,4 +1,4 @@
-import Component from "../core/Component";
+import Component from '../core/Component';
 
 /**
  *
@@ -12,7 +12,7 @@ export default class Plugin extends Component {
   constructor(player) {
     super();
     this._player = player;
-    this._type = "BASE_PLUGIN";
+    this._type = 'BASE_PLUGIN';
   }
 
   get player() {

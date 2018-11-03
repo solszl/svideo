@@ -1,4 +1,4 @@
-import Exception from "./Exception";
+import Exception from './Exception';
 
 /**
  * 参数非法异常
@@ -11,6 +11,6 @@ import Exception from "./Exception";
 export default class IllegalStateException extends Exception {
   constructor(msg) {
     super(msg);
-    this._type = "IllegalStateException";
+    this._type = 'IllegalStateException';
   }
 }

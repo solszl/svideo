@@ -1,1 +1,1 @@
-module.exports = require("./SVideo.js").default;
+module.exports = require('./SVideo.js').default;

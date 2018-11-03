@@ -1,6 +1,6 @@
-import Exception from "../error/Exception";
-import IllegalStateException from "../error/IllegalStateException";
-import Log from "../utils/Log";
+import Exception from '../error/Exception';
+import IllegalStateException from '../error/IllegalStateException';
+import Log from '../utils/Log';
 
 
 /**
@@ -13,7 +13,7 @@ import Log from "../utils/Log";
 export default class PluginManager {
   constructor() {
     if (this._instance) {
-      throw new Exception("plugin manager is singlton");
+      throw new Exception('plugin manager is singlton');
     }
 
     this._instance = this;
@@ -78,7 +78,7 @@ export default class PluginManager {
 
     let findIdx = -1;
 
-    for (let i = 0; i < this._plugins.length; i++) {
+    for (let i = 0; i < this._plugins.length; i += 1) {
       const p = this._plugins[i];
       if (p.type === plugin.type) {
         findIdx = i;

@@ -11,8 +11,8 @@ export default class UUID {
   }
 
   static create() {
-    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4());
   }
 }
 
-const S4 = Symbol("S4");
+const S4 = Symbol('S4');
