@@ -1,4 +1,6 @@
 import Exception from './error/Exception';
+import Log from './utils/Log';
+
 
 /**
  * VIDEO播放器 函数类
@@ -16,5 +18,7 @@ class Player {
     // let player =
   }
 }
+
+Player.Log = Log;
 
 export default Player;
