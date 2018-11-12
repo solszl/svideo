@@ -1,6 +1,6 @@
 import EventEmitter from 'event-emitter';
 import Log from "./../utils/Log";
-import MSEEvents from "./../common/constant/mse-events";
+import MSEEvents from "../common/constant/MSEEvents";
 
 /**
  * MSE 封装
