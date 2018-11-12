@@ -11,11 +11,11 @@ import Log from './utils/Log';
  */
 class Player {
   constructor() {
-    throw new Exception('No need to initilized, all method mount on player instance');
+    throw new Exception('No need to initialized, all method mount on player instance');
   }
 
   static createPlayer() {
-    // let player =
+    // let player = 
   }
 }
 
