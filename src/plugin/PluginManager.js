@@ -13,7 +13,7 @@ import Log from '../utils/Log';
 export default class PluginManager {
   constructor() {
     if (this._instance) {
-      throw new Exception('plugin manager is singlton');
+      throw new Exception('plugin manager is singleton');
     }
 
     this._instance = this;
@@ -47,20 +47,20 @@ export default class PluginManager {
    * @memberof PluginManager
    */
   regPlugin(plugin) {
-    let pluginWarpper = {
+    let pluginWrapper = {
       type: plugin.type,
       plugin: plugin
     };
 
     let find = this._plugins.some(p => {
-      return p.type === pluginWarpper.type;
+      return p.type === pluginWrapper.type;
     });
 
     if (find) {
       throw new IllegalStateException(`${plugin.type} had already registed`);
     }
 
-    this._plugins.push(pluginWarpper);
+    this._plugins.push(pluginWrapper);
   }
 
 
