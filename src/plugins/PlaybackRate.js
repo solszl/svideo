@@ -14,6 +14,24 @@ export default class PlaybackRate extends Plugin {
 
   init(opts = {}) {
     super.init(opts);
+
+    let self = this;
+
+    // 给player 添加倍速播放属性
+    Object.defineProperty(this.player, 'playbackRate', {
+      configurable: true,
+      get() {
+        return self.player.video.playbackRate || 1;
+      },
+      set(v) {
+        self.player.video.playbackRate = v;
+      }
+    });
+  }
+
+  destroy() {
+    super.destroy();
+    delete this.player.playbackRate;
   }
 
   static get type() {
