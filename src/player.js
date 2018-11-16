@@ -1,5 +1,10 @@
-import Exception from './error/Exception';
+import PlayerProxy from './PlayerProxy';
+import {
+  createElement
+} from './utils/Dom';
 import Log from './utils/Log';
+
+import PluginMap from './common/constant/PluginMap';
 
 
 /**
@@ -9,16 +14,44 @@ import Log from './utils/Log';
  * @class Player
  * @author zhenliang.sun
  */
-class Player {
-  constructor() {
-    throw new Exception('No need to initialized, all method mount on player instance');
+export default class Player extends PlayerProxy {
+  constructor(opts = {}) {
+    super(opts);
+    Player.plugins = {};
+    // throw new Exception('No need to initialized, all method mount on player instance');
   }
 
-  static createPlayer() {
-    // let player = 
+  init(opts = {}) {
+    if (!opts.hasOwnProperty('id')) {
+      Log.OBJ.error('doesn\'t exist \'id\' option node');
+      return;
+    }
+
+    let root = document.getElementById(opts['id']);
+    root.appendChild(createElement('video', {}, {}));
+
+    this.pluginCall();
+  }
+
+  pluginCall() {
+    if (!Player.plugins) {
+      return;
+    }
+
+    PluginMap.forEach((value, key) => {
+      Log.OBJ.info(value, key);
+    });
+  }
+
+  static install(name, clazz, mountNow = false) {
+    if (!Player.plugins) {
+      Player.plugins = {};
+    }
+
+    Player.plugins[name] = clazz;
+
+    if (mountNow) {
+      new clazz();
+    }
   }
 }
-
-Player.Log = Log;
-
-export default Player;

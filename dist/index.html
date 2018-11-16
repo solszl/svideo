@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Video Demo</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="./index.js"></script>
+  <script>
+    var v;
+
+    window.onload = function () {
+      v = new VHVideoModule();
+      v.init({
+        id: "video-wrapper"
+      })
+    }
+  </script>
+</head>
+
+<body>
+  <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
+  <div id="video-wrapper">
+
+  </div>
+</body>
+
+</html>

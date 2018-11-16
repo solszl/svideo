@@ -1,6 +1,6 @@
 import EventEmitter from 'event-emitter';
-import Log from "./../utils/Log";
-import MSEEvents from "../common/constant/MSEEvents";
+import Log from './../utils/Log';
+import MSEEvents from '../common/constant/MSEEvents';
 
 /**
  * MSE 封装
@@ -11,8 +11,8 @@ import MSEEvents from "../common/constant/MSEEvents";
 class MSE {
   constructor(codecs = 'video/mp4; codecs="avc1.64001E, mp4a.40.5"') {
     // 以防不经过判断支持， 直接使用
-    if (!isSupported(codecs)) {
-      Log.OBJ.error("unsupported MSE");
+    if (!MSE.isSupported(codecs)) {
+      Log.OBJ.error('unsupported MSE');
       return;
     }
 
@@ -22,7 +22,7 @@ class MSE {
     this.ms = new window.MediaSource();
     this.url = window.URL.createObjectURL(this.ms);
     this.ms.addEventListener(MSEEvents.SOURCE_OPEN, this._mediaSourceOpen);
-    this.ms.addEventListener(MSEEvents.SOURCE_CLOSE, this._mediaSourceClose)
+    this.ms.addEventListener(MSEEvents.SOURCE_CLOSE, this._mediaSourceClose);
   }
 
   /**
@@ -104,8 +104,8 @@ class MSE {
    */
   get state() {
     if (!this.ms) {
-      Log.OBJ.warn("uninitialized MSE");
-      return "closed";
+      Log.OBJ.warn('uninitialized MSE');
+      return 'closed';
     }
 
     return this.ms.readyState;

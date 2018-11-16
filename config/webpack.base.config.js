@@ -17,7 +17,7 @@ const webpackConfig = {
   output: {
     path: resolve('dist'),
     // filename: "[name].js",
-    library: 'VHVideoModuler',
+    library: 'VHVideoModule',
     libraryTarget: 'umd'
   },
   module: {
