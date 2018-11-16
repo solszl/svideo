@@ -17,6 +17,18 @@
         id: "video-wrapper"
       })
     }
+
+    function fullscreen() {
+      v.enterFullscreen();
+    }
+
+    function getDisplayState() {
+      console.log(v.displayState);
+    }
+
+    function isFullscreen() {
+      console.log(v.isFullscreen);
+    }
   </script>
 </head>
 
@@ -25,6 +37,9 @@
   <div id="video-wrapper">
 
   </div>
+  <button onclick="fullscreen()">全屏</button>
+  <button onclick="getDisplayState()">状态</button>
+  <button onclick="isFullscreen()">是否是全屏</button>
 </body>
 
 </html>

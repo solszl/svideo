@@ -10,7 +10,6 @@ import Plugin from '../core/Plugin';
 export default class Play extends Plugin {
   constructor() {
     super();
-    this._type = 'plugin_play';
   }
 
   init(opts = {}) {

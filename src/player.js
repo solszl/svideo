@@ -1,11 +1,9 @@
+import PluginMap from './common/constant/PluginMap';
 import PlayerProxy from './PlayerProxy';
 import {
   createElement
 } from './utils/Dom';
 import Log from './utils/Log';
-
-import PluginMap from './common/constant/PluginMap';
-
 
 /**
  * VIDEO播放器 函数类
@@ -39,7 +37,10 @@ export default class Player extends PlayerProxy {
     }
 
     PluginMap.forEach((value, key) => {
-      Log.OBJ.info(value, key);
+      let cl = new value();
+      cl.player = this;
+      cl.init({});
+      Log.OBJ.info(cl, key);
     });
   }
 

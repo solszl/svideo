@@ -10,7 +10,6 @@ import Plugin from '../core/Plugin';
 export default class I18N extends Plugin {
   constructor() {
     super();
-    this._type = 'plugin_i18n';
     this.lang = {};
   }
 
