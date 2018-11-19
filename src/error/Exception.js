@@ -8,7 +8,7 @@
 export default class Exception {
   constructor(msg) {
     this._msg = msg;
-    this._type = "RuntimeException";
+    this._type = 'RuntimeException';
   }
 
   get type() {

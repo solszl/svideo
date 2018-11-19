@@ -1,0 +1,28 @@
+	进入全屏： enterFullscreen() ✅
+	退出全屏： exitFullscreen() ✅
+	当前屏幕状态： displayState  return (fullScreen | normal) ✅
+	是否是全屏： isFullscreen return (true | false) ✅
+	
+	播放源：src
+	播放：play()
+	暂停：pause()
+	播放时间： currentTime return Xs
+	总时长： duration return Xs
+	
+	静音： mute()
+	设置声音：volume (0~1)
+	
+	销毁：destroy()
+	
+	带宽：bandwidth
+	实时网速：netSpeed
+	网络状态： networkState return (0|1|2|3)
+	
+	缓冲大小： buffer
+	缓冲时长： bufferTime
+	
+	设置大小： setSize(w,h)
+	
+	
+	
+	

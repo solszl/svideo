@@ -1,4 +1,4 @@
-import BasePlayer from "./BasePlayer";
+import BasePlayer from './BasePlayer';
 
 /**
  * 基础播放器，用于播放常见的MP4、MP3等
@@ -11,6 +11,6 @@ import BasePlayer from "./BasePlayer";
 export default class NativePlayer extends BasePlayer {
   constructor() {
     super();
-    this._type = "normal";
+    this._type = 'normal';
   }
 }

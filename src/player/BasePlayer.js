@@ -1,4 +1,4 @@
-import Component from "../core/Component";
+import Component from '../core/Component';
 
 /**
  * 播放器基类
@@ -11,7 +11,7 @@ export default class BasePlayer extends Component {
 
   constructor() {
     super();
-    this._type = "base";
+    this._type = 'base';
     this[create_default_config]();
   }
 
@@ -36,4 +36,4 @@ export default class BasePlayer extends Component {
   }
 }
 
-const create_default_config = Symbol("create_default_config");
+const create_default_config = Symbol('create_default_config');

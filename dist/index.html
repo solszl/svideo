@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Video Demo</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="./index.js"></script>
+  <script>
+    var v;
+
+    window.onload = function () {
+      v = new VHVideoModule();
+      v.init({
+        id: "video-wrapper"
+      })
+    }
+
+    function fullscreen() {
+      v.enterFullscreen();
+    }
+
+    function getDisplayState() {
+      console.log(v.displayState);
+    }
+
+    function isFullscreen() {
+      console.log(v.isFullscreen);
+    }
+  </script>
+</head>
+
+<body>
+  <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
+  <div id="video-wrapper">
+
+  </div>
+  <button onclick="fullscreen()">全屏</button>
+  <button onclick="getDisplayState()">状态</button>
+  <button onclick="isFullscreen()">是否是全屏</button>
+</body>
+
+</html>

@@ -1,3 +1,5 @@
+import EventEmitter from 'event-emitter';
+
 /**
  * 万物之源
  *
@@ -6,5 +8,7 @@
  * @author zhenliang.sun
  */
 export default class Component {
-  constructor() {}
+  constructor() {
+    EventEmitter(this);
+  }
 }

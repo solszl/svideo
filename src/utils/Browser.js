@@ -7,10 +7,10 @@
  */
 export default class Browser {
   static get ua() {
-    return window.navigator && window.navigator.userAgent || "";
+    return window.navigator && window.navigator.userAgent || '';
   }
 
-  /*******************  FOR IOS START ************************/
+  /** *****************  FOR IOS START ************************/
 
   static get isIPad() {
     return (/iPad/i).test(this.ua);
@@ -37,9 +37,9 @@ export default class Browser {
     return null;
   }
 
-  /*******************  FOR IOS END ************************/
+  /** *****************  FOR IOS END ************************/
 
-  /*******************  FOR ANDROID START ************************/
+  /** *****************  FOR ANDROID START ************************/
   static get isAndroid() {
     return (/Android/i).test(this.ua);
   }
@@ -55,16 +55,16 @@ export default class Browser {
     const minor = match[2] && parseFloat(match[2]);
 
     if (major && minor) {
-      return parseFloat(match[1] + "." + match[2]);
+      return parseFloat(match[1] + '.' + match[2]);
     } else if (major) {
       return major;
     }
     return null;
   }
 
-  /*******************  FOR ANDROID END ************************/
+  /** *****************  FOR ANDROID END ************************/
 
-  /*******************  FOR PC START ************************/
+  /** *****************  FOR PC START ************************/
   static get isFirefox() {
     return (/Firefox/i).test(this.ua);
   }
@@ -100,5 +100,5 @@ export default class Browser {
 
     return version;
   }
-  /*******************  FOR PC END ************************/
+  /** *****************  FOR PC END ************************/
 }

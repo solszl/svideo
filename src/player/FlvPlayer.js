@@ -1,4 +1,4 @@
-import BasePlayer from "./BasePlayer";
+import BasePlayer from './BasePlayer';
 
 /**
  * 直播低延迟播放器 采用http-flv
@@ -11,6 +11,6 @@ import BasePlayer from "./BasePlayer";
 export default class FlvPlayer extends BasePlayer {
   constructor() {
     super();
-    this._type = "flv";
+    this._type = 'flv';
   }
 }
