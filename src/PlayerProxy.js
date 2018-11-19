@@ -144,11 +144,6 @@ class PlayerProxy extends Component {
     this.video.loop = v;
   }
 
-  /**
-   *
-   *
-   * @memberof PlayerProxy
-   */
   get loop() {
     return this.video.loop;
   }
