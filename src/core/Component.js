@@ -11,4 +11,8 @@ export default class Component {
   constructor() {
     EventEmitter(this);
   }
+
+  destroy() {
+
+  }
 }

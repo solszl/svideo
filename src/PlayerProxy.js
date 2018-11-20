@@ -16,6 +16,7 @@ class PlayerProxy extends Component {
     super();
     this._volume = 0.5;
     this._src = '';
+    this._isLive = false;
     this.video = document.createElement('video');
   }
 
@@ -289,6 +290,17 @@ class PlayerProxy extends Component {
    */
   get seekable() {
     return this.video.seekable;
+  }
+
+  /**
+   * 是否是直播状态
+   *
+   * @readonly
+   * @memberof PlayerProxy
+   * @returns 直播 true, 其他：false
+   */
+  get isLive() {
+    return this._isLive;
   }
 
 
