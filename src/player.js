@@ -1,8 +1,5 @@
 import PluginMap from './common/constant/PluginMap';
 import PlayerProxy from './PlayerProxy';
-import {
-  createElement
-} from './utils/Dom';
 import Log from './utils/Log';
 
 /**
@@ -26,9 +23,14 @@ export default class Player extends PlayerProxy {
     }
 
     let root = document.getElementById(opts['id']);
-    root.appendChild(createElement('video', {}, {}));
+    root.appendChild(this.video);
 
     this.pluginCall();
+
+    var url = opts['url'];
+    this.src = url;
+
+    // this.play();
   }
 
   pluginCall() {

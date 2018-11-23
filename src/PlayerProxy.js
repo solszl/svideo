@@ -1,6 +1,9 @@
 import Component from './core/Component';
+import {
+  createElement
+} from './utils/Dom';
 
-const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || msRequestAnimationFrame;
+const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
 // 私有函数更新
 const updateDisplayList = Symbol('component-display-update');
 
@@ -17,7 +20,14 @@ class PlayerProxy extends Component {
     this._volume = 0.5;
     this._src = '';
     this._isLive = false;
-    this.video = document.createElement('video');
+    this.video = createElement('video', {
+      muted: true,
+      loop: true,
+      controls: true
+    }, {
+      width: '100%',
+      height: '100%'
+    });
   }
 
   /**
@@ -241,6 +251,7 @@ class PlayerProxy extends Component {
     }
     let oldSrc = this._src;
     this._src = url;
+    this.video.src = url;
     this.emit('srcChanged', {
       oldUrl: oldSrc,
       newUrl: this._src

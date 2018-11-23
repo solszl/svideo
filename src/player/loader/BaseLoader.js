@@ -24,6 +24,8 @@ export class BaseLoader extends Component {
   constructor() {
     super();
     this._status = LoaderStatus.IDLE;
+    this._url = '';
+    this._option = null;
     this._onComplete = null;
     this._onProgress = null;
     this._onError = null;
@@ -38,6 +40,8 @@ export class BaseLoader extends Component {
   destroy() {
     super.destroy();
     this._status = LoaderStatus.IDLE;
+    this._url = '';
+    this._option = null;
     this._onComplete = null;
     this._onProgress = null;
     this._onError = null;
@@ -52,10 +56,40 @@ export class BaseLoader extends Component {
 
   }
 
+  /**
+   * 加载器当前是否正处于工作状态
+   *
+   * @returns
+   * @memberof BaseLoader
+   * @returns 加载器是否正在工作
+   */
   isLoading() {
     return this.status === LoaderStatus.CONNECTING || this.status === LoaderStatus.BUFFERING;
   }
 
+  set url(v) {
+    this._url = v;
+  }
+
+  get url() {
+    return this._url;
+  }
+
+  set option(opt) {
+    this._option = opt;
+  }
+
+  get option() {
+    return this._option;
+  }
+
+  /**
+   * 加载器当前状态
+   *
+   * @readonly
+   * @memberof BaseLoader
+   * @returns 返回当前网络状态
+   */
   get status() {
     return this._status;
   }

@@ -19,7 +19,8 @@ export default class Keyboard extends Plugin {
     let self = this;
     let video = self.player;
 
-    ['video', 'controls'].forEach(item => {
+    // , 'controls'
+    ['video'].forEach(item => {
       let keys = [32, 37, 38, 39, 40]; // 空格，左，上，右，下
       video[item].onkeydown = evt => {
         let e = evt || window.event;

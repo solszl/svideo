@@ -14,20 +14,15 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
-        id: "video-wrapper"
+        id: "video-wrapper",
+        url: './videos/1.mp4'
       })
     }
 
-    function fullscreen() {
-      v.enterFullscreen();
-    }
-
-    function getDisplayState() {
-      console.log(v.displayState);
-    }
-
-    function isFullscreen() {
-      console.log(v.isFullscreen);
+    function onPlaybackRateChanged() {
+      let opts = document.getElementById('playbackRate').options;
+      var val = opts[opts.selectedIndex].value;
+      v.playbackRate = val;
     }
   </script>
 </head>
@@ -35,11 +30,23 @@
 <body>
   <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
   <div id="video-wrapper">
-
   </div>
-  <button onclick="fullscreen()">全屏</button>
-  <button onclick="getDisplayState()">状态</button>
-  <button onclick="isFullscreen()">是否是全屏</button>
+  <hr>
+  <button onclick="v.enterFullscreen();">全屏</button>
+  <button onclick="alert(v.displayState);">状态</button>
+  <button onclick="alert(v.isFullscreen);">是否是全屏</button>
+  <hr>
+  <button onclick="v.play();">播放</button>
+  <button onclick="v.pause();">暂停</button>
+  <button onclick="alert(v.isPaused);">播放状态</button>
+
+  <button onclick="alert(v.muted);">是否静音</button>
+  <select id="playbackRate" onchange="onPlaybackRateChanged()">
+    <option value="0.5">x0.5</option>
+    <option value="1">x1</option>
+    <option value="1.5">x1.5</option>
+    <option value="2">x2</option>
+  </select>
 </body>
 
 </html>
