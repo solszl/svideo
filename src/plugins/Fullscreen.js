@@ -46,6 +46,7 @@ export default class Fullscreen extends Plugin {
         // console.log(document.webkitFullscreenElement, e.target);
         this._fullscreenTarget = e.target;
         self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal';
+        self.player.emit('fullscreenChanged', self._displayState);
       });
     });
   }

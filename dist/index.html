@@ -16,7 +16,16 @@
       v.init({
         id: "video-wrapper",
         url: './videos/1.mp4'
+      });
+
+      v.on('volumeChanged',val => {
+        console.log(val);
+      });
+
+      v.on('fullscreenChanged', state => {
+        console.log(state);
       })
+
     }
 
     function onPlaybackRateChanged() {
@@ -32,20 +41,33 @@
   <div id="video-wrapper">
   </div>
   <hr>
+  <span>全屏相关</span>
   <button onclick="v.enterFullscreen();">全屏</button>
   <button onclick="alert(v.displayState);">状态</button>
   <button onclick="alert(v.isFullscreen);">是否是全屏</button>
-  <hr>
+  <br>
+  <span>播放相关</span>
   <button onclick="v.play();">播放</button>
   <button onclick="v.pause();">暂停</button>
-  <button onclick="alert(v.isPaused);">播放状态</button>
-
+  <button onclick="alert(v.isPaused);">是否暂停</button>
+  <br>
+  <span>循环相关</span>
+  <button onclick="v.loop = true">设置循环</button>
+  <button onclick="v.loop = false">取消循环</button>
+  <button onclick="alert(v.loop);">是否循环</button>
+  <br>
+  <span>声音相关</span>
+  <input id="inputVolume" type="range" min="0" max="100" value="0.5" onchange="v.volume = document.getElementById('inputVolume').value / 100">
+  <button onclick="alert(v.volume)">当前音量</button>
   <button onclick="alert(v.muted);">是否静音</button>
+  <br>
+  <span>倍速播放</span>
   <select id="playbackRate" onchange="onPlaybackRateChanged()">
     <option value="0.5">x0.5</option>
     <option value="1">x1</option>
     <option value="1.5">x1.5</option>
     <option value="2">x2</option>
+    <option value="4">x4</option>
   </select>
 </body>
 

@@ -66,7 +66,7 @@ export default class Browser {
 
   /** *****************  FOR PC START ************************/
   static get isFirefox() {
-    return (/Firefox/i).test(this.ua);
+    return (/(?:Firefox)/).test(this.ua);
   }
 
   static get isEdge() {

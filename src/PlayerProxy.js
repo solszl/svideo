@@ -2,6 +2,7 @@ import Component from './core/Component';
 import {
   createElement
 } from './utils/Dom';
+import Log from './utils/Log';
 
 const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
 // 私有函数更新
@@ -20,14 +21,13 @@ class PlayerProxy extends Component {
     this._volume = 0.5;
     this._src = '';
     this._isLive = false;
-    this.video = createElement('video', {
-      muted: true,
-      loop: true,
-      controls: true
-    }, {
+    this._started = false;
+    this.video = createElement('video', {}, {
       width: '100%',
       height: '100%'
     });
+
+    // requestAnimationFrame(() => this[updateDisplayList]());
   }
 
   /**
@@ -36,7 +36,10 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   play() {
+    this.video.focus();
     this.video.play();
+    this._started = true;
+    this.emit('play');
   }
 
   /**
@@ -46,6 +49,8 @@ class PlayerProxy extends Component {
    */
   pause() {
     this.video.pause();
+    this._started = false;
+    this.emit('pause');
   }
 
   /**
@@ -55,7 +60,8 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   get isPaused() {
-    return this.video.paused;
+    // return this.video.paused;
+    return this._started === false;
   }
 
   /**
@@ -111,6 +117,7 @@ class PlayerProxy extends Component {
    */
   set currentTime(t) {
     this.video.currentTime = t;
+    this.emit('currentTimeChanged', t);
   }
 
   /**
@@ -152,7 +159,10 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set loop(v) {
-    this.video.loop = v;
+    if (this.video.loop !== v) {
+      this.video.loop = v;
+      this.emit('loopChanged', v);
+    }
   }
 
   get loop() {
@@ -174,7 +184,10 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set muted(b) {
-    this.video.muted = b;
+    if (this.video.muted !== b) {
+      this.video.muted = b;
+      this.emit('mutedChanged', b);
+    }
   }
 
   /**
@@ -194,7 +207,10 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set playbackRate(v) {
-    this.video.playbackRate = v;
+    if (this.video.playbackRate !== v) {
+      this.video.playbackRate = v;
+      this.emit('playbackRateChanged', v);
+    }
   }
 
   /**
@@ -246,16 +262,15 @@ class PlayerProxy extends Component {
     return this._src;
   }
   set src(url) {
-    if (this._src === url) {
-      return;
+    if (this._src !== url) {
+      let oldSrc = this._src;
+      this._src = url;
+      this.video.src = url;
+      this.emit('srcChanged', {
+        oldUrl: oldSrc,
+        newUrl: this._src
+      });
     }
-    let oldSrc = this._src;
-    this._src = url;
-    this.video.src = url;
-    this.emit('srcChanged', {
-      oldUrl: oldSrc,
-      newUrl: this._src
-    });
   }
 
   /**
@@ -268,16 +283,28 @@ class PlayerProxy extends Component {
   }
 
   set volume(v) {
-    if (this._volume === v) {
-      return;
+    if (typeof v === 'string') {
+      Log.OBJ.warn('volume param should be number');
+      v = parseFloat(v);
     }
-    let oldVolume = this._volume;
-    this._volume = v;
-    this.emit('volumeChanged', {
-      oldVolume: oldVolume,
-      newVolume: this._volume
-    });
-    requestAnimationFrame(() => this[updateDisplayList]());
+
+    if (v > 1 || v < 0) {
+      Log.OBJ.warn('volume value range should be between 0 to 1');
+      v = Math.min(Math.max(0, v), 1);
+    }
+
+    if (this._volume !== v) {
+      let oldVolume = this._volume;
+      this._volume = v;
+      this.video.volume = this._volume;
+
+      this.emit('volumeChanged', {
+        oldVolume: oldVolume,
+        newVolume: this._volume
+      });
+    }
+
+    this.muted = this._volume === 0;
   }
 
   /**

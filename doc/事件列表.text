@@ -1,0 +1,8 @@
+含义  名称  参数  类型  取值范围
+设置当前时间  currentTimeChanged  t number
+循环变化  loopChanged v boolean
+静音变化  mutedChanged b  boolean
+倍速变化  playbackRateChanged v number  (0~4)
+源变化  srcChanged {oldUrl: o, newUrl: n} string
+声音变化  volumeChanged {oldVolume:o, newVolume:n}  number  (0~1)
+全屏变化  fullscreenChanged state string  (fullscreen | normal)
