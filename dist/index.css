@@ -8,3 +8,11 @@ body {
   width: 320px;
   height: 240px;
 }
+
+span {
+  font-size: 14px;
+}
+
+button {
+  border-radius: 4px;
+}
