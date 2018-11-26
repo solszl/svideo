@@ -58,6 +58,7 @@ export default class SpeedSampler {
    * @returns 获取实时速度，单位：KBps
    */
   get currentKBps() {
+    this.addBytes(0);
     let duration = (Date.now() - this._lastCheckpoint) / 1000;
 
     if (duration <= 0) {

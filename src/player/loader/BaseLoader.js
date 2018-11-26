@@ -59,7 +59,7 @@ export class BaseLoader extends Component {
   }
 
   abort() {
-
+    this._status = LoaderStatus.COMPLETE;
   }
 
   /**

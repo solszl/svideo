@@ -67,7 +67,7 @@ export default class LoaderFetch extends BaseLoader {
       };
       this.emit(LoaderEvent.ERROR, msg);
       this.onError && this.onError(msg);
-      Log.OBJ.error(`uninitialized necessary params, url:${this.url}, option:${this.option}`);
+      Log.OBJ.error(`[Fetch] uninitialized necessary params, url:${this.url}, option:${this.option}`);
       return;
     }
     super.open();
