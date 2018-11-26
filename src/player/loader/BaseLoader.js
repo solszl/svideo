@@ -9,7 +9,11 @@ export const LoaderStatus = {
 };
 
 export const LoaderEvent = {
-
+  OPEN: 'open',
+  ERROR: 'error',
+  CONTENT_LENGTH: 'content_length',
+  COMPLETE: 'complete',
+  PROGRESS: 'progress'
 };
 
 /**
@@ -30,6 +34,7 @@ export class BaseLoader extends Component {
     this._onProgress = null;
     this._onError = null;
     this._onTimeout = null;
+    this._onContentLength = null;
   }
 
   /**
@@ -46,6 +51,7 @@ export class BaseLoader extends Component {
     this._onProgress = null;
     this._onError = null;
     this._onTimeout = null;
+    this._onContentLength = null;
   }
 
   open() {
@@ -128,5 +134,13 @@ export class BaseLoader extends Component {
 
   get type() {
     return this._type || 'undefined';
+  }
+
+  set onContentLength(cbk) {
+    this._onContentLength = cbk;
+  }
+
+  get onContentLength() {
+    return this._onContentLength;
   }
 }

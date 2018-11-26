@@ -1,6 +1,7 @@
 import PluginMap from './common/constant/PluginMap';
 import PlayerProxy from './PlayerProxy';
 import Log from './utils/Log';
+import LoaderFetch from './player/loader/LoaderFetch';
 
 /**
  * VIDEO播放器 函数类
@@ -31,6 +32,28 @@ export default class Player extends PlayerProxy {
     this.src = url;
 
     // this.play();
+
+    let loader = new LoaderFetch();
+    // loader.url = 'http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba';
+    loader.url = url;
+    loader.option = {
+      range: {
+        from: 0,
+        to: 100
+      }
+    };
+    loader.on('progress', (a, b, c) => {
+      console.log(a, b, c);
+    });
+
+    // loader.on('complete', () => {
+    //   console.log('complete');
+    // });
+
+    // loader.onComplete = () => {
+    //   console.log('complete2');
+    // };
+    loader.open();
   }
 
   pluginCall() {

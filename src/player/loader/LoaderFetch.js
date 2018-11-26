@@ -1,6 +1,8 @@
 import Log from './../../utils/Log';
 import {
-  BaseLoader
+  BaseLoader,
+  LoaderEvent,
+  LoaderStatus
 } from './BaseLoader';
 
 /**
@@ -14,6 +16,8 @@ import {
 export default class LoaderFetch extends BaseLoader {
   constructor() {
     super();
+    this._contentLength = 0;
+    this._receivedLength = 0;
   }
 
   static isSupported() {
@@ -31,5 +35,110 @@ export default class LoaderFetch extends BaseLoader {
       this.abort();
     }
     super.destroy();
+    this._contentLength = 0;
+    this._receivedLength = 0;
+  }
+
+  set option(opt) {
+    super.option = opt;
+    this._range = opt.range;
+    let headers = new self.Headers();
+    this.params = {
+      method: 'GET',
+      // headers: {
+      //   'Access-Control-Allow-Origin': '*'
+      // },
+      headers: headers,
+      mode: 'cors',
+      cache: 'default',
+      referrerPolicy: 'no-referrer-when-downgrade'
+    };
+  }
+
+  get option() {
+    return super.option;
+  }
+
+  open() {
+    if (this.url === '' || this.option === undefined || this.option === null) {
+      let msg = {
+        code: LoaderEvent.ERROR,
+        msg: 'url or option is null'
+      };
+      this.emit(LoaderEvent.ERROR, msg);
+      this.onError && this.onError(msg);
+      Log.OBJ.error(`uninitialized necessary params, url:${this.url}, option:${this.option}`);
+      return;
+    }
+    super.open();
+    this.emit(LoaderEvent.OPEN);
+    this._status = LoaderStatus.CONNECTING;
+    // 开始加载
+    self.fetch(this.url, this.params).then(res => {
+      if (res.ok && res.status >= 200 && res.status <= 299) {
+        // URL 跳转
+        if (this.url !== res.url) {
+          Log.OBJ.info(`URL had been redirected old: ${this.url}, new: ${res.url}`);
+        }
+
+        // fetch 是否可以获取到数据长度
+        let lengthFromHeader = res.headers.get('Content-Length');
+        if (lengthFromHeader) {
+          this._contentLength = parseInt(lengthFromHeader);
+          if (this._contentLength !== 0) {
+            this.emit(LoaderEvent.CONTENT_LENGTH, this._contentLength);
+            this.onContentLength && this.onContentLength(this._contentLength);
+          }
+        }
+
+        // 开始解析数据流 res.body.getReader()
+        return this._pump.call(this, res.body.getReader());
+
+      } else {
+        this._status = LoaderStatus.ERROR;
+        let msg = {
+          code: res.status,
+          msg: res.statusText
+        };
+        this.emit(LoaderEvent.ERROR, msg);
+        this.onError && this.onError(msg);
+      }
+    }).catch(e => {
+      this._status = LoaderStatus.ERROR;
+      let msg = {
+        code: -1,
+        msg: e.message
+      };
+      this.emit(LoaderEvent.ERROR, msg);
+      this.onError && this.onError(msg);
+    });
+  }
+
+  _pump(reader) {
+
+    return reader.read().then(res => {
+      if (res.done) {
+        this._status = LoaderStatus.COMPLETE;
+        this.emit(LoaderEvent.COMPLETE);
+        this.onComplete && this.onComplete();
+      } else {
+        this._status = LoaderStatus.BUFFERING;
+        let chunk = res.value.buffer;
+        let byteStart = this._range.from + this._receivedLength;
+        this._receivedLength += chunk.byteLength;
+
+        this.emit(LoaderEvent.PROGRESS, chunk, byteStart, this._receivedLength);
+        this.onProgress && this.onProgress(chunk, byteStart, this._receivedLength);
+        this._pump(reader);
+      }
+    }).catch(e => {
+      this._status = LoaderStatus.ERROR;
+      let msg = {
+        code: e.code,
+        msg: e.message
+      };
+      this.emit(LoaderEvent.ERROR, msg);
+      this.onError && this.onError(msg);
+    });
   }
 }
