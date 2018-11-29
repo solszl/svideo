@@ -41,7 +41,7 @@ export default class SeekableHandler {
       url = `${url}${sign}${qs.stringify(range)}`;
 
     } else {
-      Log.OBJ.error('unsupported custom type:${type}');
+      Log.OBJ.error(`unsupported custom type: ${type}`);
     }
 
     return {

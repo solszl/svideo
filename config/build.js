@@ -3,7 +3,11 @@ const ora = require('ora');
 const chalk = require('chalk');
 const webpack = require('webpack');
 // 根据传入的环境变量对不用配置进行打包
-const webpackConfig = process.env.NODE_ENV === 'production' ? require('./webpack.prod.config') : require('./webpack.dev.config');
+let webpackConfig = process.env.NODE_ENV === 'production' ? require('./webpack.prod.config') : require('./webpack.dev.config');
+
+if (process.env.ANALYZER) {
+  webpackConfig = require('./webpack.analyzer.config');
+}
 
 const spinner = ora(`building for ${process.env.NODE_ENV} ${process.env.LOG_LEVEL} ...\n`);
 spinner.start();
