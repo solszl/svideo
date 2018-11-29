@@ -1,3 +1,5 @@
+import Log from '../../utils/Log';
+
 /**
  * 参考B站代码实现
  *
@@ -20,6 +22,8 @@ export default class SpeedSampler {
    * @memberof SpeedSampler
    */
   addBytes(bytes) {
+    Log.OBJ.info(`add ${bytes / 1024}k`);
+
     if (this._firstCheckpoint === 0) {
       // 尚未创建检测点
       this._firstCheckpoint = Date.now();

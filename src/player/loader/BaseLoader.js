@@ -1,4 +1,5 @@
 import Component from '../../core/Component';
+import SpeedSampler from './SpeedSampler';
 
 export const LoaderStatus = {
   IDLE: 0,
@@ -35,6 +36,8 @@ export class BaseLoader extends Component {
     this._onError = null;
     this._onTimeout = null;
     this._onContentLength = null;
+
+    this._sampler = new SpeedSampler();
   }
 
   /**
@@ -52,6 +55,10 @@ export class BaseLoader extends Component {
     this._onError = null;
     this._onTimeout = null;
     this._onContentLength = null;
+
+    if (this._sampler) {
+      this._sampler.reset();
+    }
   }
 
   open() {
@@ -142,5 +149,13 @@ export class BaseLoader extends Component {
 
   get onContentLength() {
     return this._onContentLength;
+  }
+
+  get currentKBps() {
+    return this._sampler && this._sampler.currentKBps || 0;
+  }
+
+  get averageKBps() {
+    return this._sampler && this._sampler.averageKBps || 0;
   }
 }

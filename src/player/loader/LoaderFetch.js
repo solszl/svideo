@@ -4,6 +4,7 @@ import {
   LoaderEvent,
   LoaderStatus
 } from './BaseLoader';
+import SeekableHandler from './SeekableHandler';
 
 /**
  * 默认加载器
@@ -41,13 +42,20 @@ export default class LoaderFetch extends BaseLoader {
 
   set option(opt) {
     super.option = opt;
-    this._range = opt.range;
+    this._range = {
+      from: 0,
+      to: -1
+    };
     let headers = new self.Headers();
+    let cfg = SeekableHandler.getConfig(this.url, this._range, 'range');
+    if (typeof cfg.headers === 'object') {
+      let configHeaders = cfg.headers;
+      for (let key in configHeaders) {
+        headers.append(key, configHeaders[key]);
+      }
+    }
     this.params = {
       method: 'GET',
-      // headers: {
-      //   'Access-Control-Allow-Origin': '*'
-      // },
       headers: headers,
       mode: 'cors',
       cache: 'default',
@@ -115,7 +123,6 @@ export default class LoaderFetch extends BaseLoader {
   }
 
   _pump(reader) {
-
     return reader.read().then(res => {
       if (res.done) {
         this._status = LoaderStatus.COMPLETE;
@@ -127,8 +134,15 @@ export default class LoaderFetch extends BaseLoader {
         let byteStart = this._range.from + this._receivedLength;
         this._receivedLength += chunk.byteLength;
 
-        this.emit(LoaderEvent.PROGRESS, chunk, byteStart, this._receivedLength);
-        this.onProgress && this.onProgress(chunk, byteStart, this._receivedLength);
+        let msg = {
+          chunk: chunk,
+          byteStart: byteStart,
+          receivedLength: this._receivedLength
+        };
+
+        this._sampler.addBytes(chunk.byteLength);
+        this.emit(LoaderEvent.PROGRESS, msg);
+        this.onProgress && this.onProgress(msg);
         this._pump(reader);
       }
     }).catch(e => {

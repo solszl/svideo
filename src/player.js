@@ -2,6 +2,7 @@ import PluginMap from './common/constant/PluginMap';
 import PlayerProxy from './PlayerProxy';
 import Log from './utils/Log';
 import LoaderFetch from './player/loader/LoaderFetch';
+import LoaderXHR from './player/loader/LoaderXHR';
 
 /**
  * VIDEO播放器 函数类
@@ -33,26 +34,28 @@ export default class Player extends PlayerProxy {
 
     // this.play();
 
-    let loader = new LoaderFetch();
-    // loader.url = 'http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba';
-    loader.url = url;
+    var loader = new LoaderXHR();
+    // loader.option = {
+    //   from: 0,
+    //   to: -1
+    // };
+    // loader.url = this.src;
+    // loader.open();
+
+    // var loader = new LoaderFetch();
     loader.option = {
-      range: {
-        from: 0,
-        to: 100
-      }
+      from: 0,
+      to: -1
     };
-    loader.on('progress', (a, b, c) => {
-      console.log(a, b, c);
+
+    loader.url = this.src;
+    loader.on('progress', e => {
+      console.log(loader.currentKBps);
     });
 
-    // loader.on('complete', () => {
-    //   console.log('complete');
-    // });
-
-    // loader.onComplete = () => {
-    //   console.log('complete2');
-    // };
+    loader.on('complete', e => {
+      console.log(loader.averageKBps);
+    });
     loader.open();
   }
 

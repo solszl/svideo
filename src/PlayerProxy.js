@@ -265,7 +265,6 @@ class PlayerProxy extends Component {
     if (this._src !== url) {
       let oldSrc = this._src;
       this._src = url;
-      this.video.src = url;
       this.emit('srcChanged', {
         oldUrl: oldSrc,
         newUrl: this._src
