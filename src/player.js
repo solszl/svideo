@@ -34,21 +34,17 @@ export default class Player extends PlayerProxy {
 
     // this.play();
 
+    // http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba
     var loader = new LoaderXHR();
-    // loader.option = {
-    //   from: 0,
-    //   to: -1
-    // };
-    // loader.url = this.src;
-    // loader.open();
-
     // var loader = new LoaderFetch();
     loader.option = {
       from: 0,
       to: -1
     };
 
-    loader.url = this.src;
+    // loader.url = this.src;
+    // loader.url = 'http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba';
+    loader.url = 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba';
     loader.on('progress', e => {
       console.log(loader.currentKBps);
     });
@@ -70,17 +66,5 @@ export default class Player extends PlayerProxy {
       cl.init({});
       Log.OBJ.info(cl, key);
     });
-  }
-
-  static install(name, clazz, mountNow = false) {
-    if (!Player.plugins) {
-      Player.plugins = {};
-    }
-
-    Player.plugins[name] = clazz;
-
-    if (mountNow) {
-      new clazz();
-    }
   }
 }

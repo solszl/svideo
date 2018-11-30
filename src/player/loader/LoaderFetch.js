@@ -17,6 +17,7 @@ import SeekableHandler from './SeekableHandler';
 export default class LoaderFetch extends BaseLoader {
   constructor() {
     super();
+    this._type = 'fetch';
     this._contentLength = 0;
     this._receivedLength = 0;
   }

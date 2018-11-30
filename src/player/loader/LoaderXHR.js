@@ -18,6 +18,8 @@ const chunkSizeKBList = [128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 
 export default class LoaderXHR extends BaseLoader {
   constructor() {
     super();
+    this._type = 'xhr';
+
     this._xhr = null;
     this._xhr = new XMLHttpRequest();
 

@@ -36,6 +36,7 @@ export class BaseLoader extends Component {
     this._onError = null;
     this._onTimeout = null;
     this._onContentLength = null;
+    this._type = 'undefined';
 
     this._sampler = new SpeedSampler();
   }
