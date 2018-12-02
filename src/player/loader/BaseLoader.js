@@ -37,6 +37,7 @@ export class BaseLoader extends Component {
     this._onTimeout = null;
     this._onContentLength = null;
     this._type = 'undefined';
+    this._content = '';
 
     this._sampler = new SpeedSampler();
   }
@@ -56,6 +57,7 @@ export class BaseLoader extends Component {
     this._onError = null;
     this._onTimeout = null;
     this._onContentLength = null;
+    this._content = '';
 
     if (this._sampler) {
       this._sampler.reset();
@@ -158,5 +160,9 @@ export class BaseLoader extends Component {
 
   get averageKBps() {
     return this._sampler && this._sampler.averageKBps || 0;
+  }
+
+  get content() {
+    return this._content;
   }
 }

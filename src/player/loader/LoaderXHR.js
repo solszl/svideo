@@ -84,7 +84,7 @@ export default class LoaderXHR extends BaseLoader {
     this.emit(LoaderEvent.OPEN);
     this._status = LoaderStatus.CONNECTING;
 
-    this._range = {
+    this._range = this.option.range || {
       from: 0,
       to: -1
     };
@@ -199,8 +199,9 @@ export default class LoaderXHR extends BaseLoader {
 
     if (reportComplete) {
       this._status = LoaderStatus.COMPLETE;
-      this.emit(LoaderEvent.COMPLETE);
-      this.onComplete && this.onComplete();
+      this._content = this._xhr.response;
+      this.emit(LoaderEvent.COMPLETE, this);
+      this.onComplete && this.onComplete(this);
     }
   }
 
@@ -220,7 +221,7 @@ export default class LoaderXHR extends BaseLoader {
     this._xhr = new XMLHttpRequest();
     let xhr = this._xhr;
     xhr.open('GET', this.url, true);
-    xhr.responseType = 'arraybuffer';
+    xhr.responseType = this.option.responseType || 'arraybuffer';
     xhr.onreadystatechange = this._onReadyStateChange.bind(this);
     xhr.onprogress = this._onXHRProgress.bind(this);
     xhr.onload = this._onLoad.bind(this);

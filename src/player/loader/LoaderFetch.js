@@ -43,11 +43,11 @@ export default class LoaderFetch extends BaseLoader {
 
   set option(opt) {
     super.option = opt;
-    this._range = {
+    this._range = opt.range || {
       from: 0,
       to: -1
     };
-    let headers = new self.Headers();
+    let headers = new Headers();
     let cfg = SeekableHandler.getConfig(this.url, this._range, 'range');
     if (typeof cfg.headers === 'object') {
       let configHeaders = cfg.headers;
@@ -82,8 +82,9 @@ export default class LoaderFetch extends BaseLoader {
     super.open();
     this.emit(LoaderEvent.OPEN);
     this._status = LoaderStatus.CONNECTING;
+    this._content = '';
     // 开始加载
-    self.fetch(this.url, this.params).then(res => {
+    fetch(this.url, this.params).then(res => {
       if (res.ok && res.status >= 200 && res.status <= 299) {
         // URL 跳转
         if (this.url !== res.url) {
@@ -127,8 +128,9 @@ export default class LoaderFetch extends BaseLoader {
     return reader.read().then(res => {
       if (res.done) {
         this._status = LoaderStatus.COMPLETE;
-        this.emit(LoaderEvent.COMPLETE);
-        this.onComplete && this.onComplete();
+        this.emit(LoaderEvent.COMPLETE, this);
+        this.onComplete && this.onComplete(this);
+        this._content = '';
       } else {
         this._status = LoaderStatus.BUFFERING;
         let chunk = res.value.buffer;
@@ -140,6 +142,8 @@ export default class LoaderFetch extends BaseLoader {
           byteStart: byteStart,
           receivedLength: this._receivedLength
         };
+
+        this._content += String.fromCharCode.apply(null, new Uint8Array(chunk));
 
         this._sampler.addBytes(chunk.byteLength);
         this.emit(LoaderEvent.PROGRESS, msg);
