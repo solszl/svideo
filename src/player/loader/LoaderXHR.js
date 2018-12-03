@@ -199,7 +199,6 @@ export default class LoaderXHR extends BaseLoader {
 
     if (reportComplete) {
       this._status = LoaderStatus.COMPLETE;
-      this._content = this._xhr.response;
       this.emit(LoaderEvent.COMPLETE, this);
       this.onComplete && this.onComplete(this);
     }

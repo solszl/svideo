@@ -52,7 +52,7 @@ export default class LoaderFetch extends BaseLoader {
     if (typeof cfg.headers === 'object') {
       let configHeaders = cfg.headers;
       for (let key in configHeaders) {
-        headers.append(key, configHeaders[key]);
+        // headers.append(key, configHeaders[key]);
       }
     }
     this.params = {
@@ -82,7 +82,6 @@ export default class LoaderFetch extends BaseLoader {
     super.open();
     this.emit(LoaderEvent.OPEN);
     this._status = LoaderStatus.CONNECTING;
-    this._content = '';
     // 开始加载
     fetch(this.url, this.params).then(res => {
       if (res.ok && res.status >= 200 && res.status <= 299) {
@@ -130,7 +129,6 @@ export default class LoaderFetch extends BaseLoader {
         this._status = LoaderStatus.COMPLETE;
         this.emit(LoaderEvent.COMPLETE, this);
         this.onComplete && this.onComplete(this);
-        this._content = '';
       } else {
         this._status = LoaderStatus.BUFFERING;
         let chunk = res.value.buffer;
@@ -143,7 +141,7 @@ export default class LoaderFetch extends BaseLoader {
           receivedLength: this._receivedLength
         };
 
-        this._content += String.fromCharCode.apply(null, new Uint8Array(chunk));
+        // this._content += String.fromCharCode.apply(null, new Uint8Array(chunk));
 
         this._sampler.addBytes(chunk.byteLength);
         this.emit(LoaderEvent.PROGRESS, msg);
