@@ -48,13 +48,18 @@ export default class LoaderFetch extends BaseLoader {
       to: -1
     };
     let headers = new Headers();
-    let cfg = SeekableHandler.getConfig(this.url, this._range, 'range');
-    if (typeof cfg.headers === 'object') {
-      let configHeaders = cfg.headers;
-      for (let key in configHeaders) {
-        // headers.append(key, configHeaders[key]);
+
+    // 点播才加range
+    if (!opt.live || false) {
+      let cfg = SeekableHandler.getConfig(this.url, this._range, 'range');
+      if (typeof cfg.headers === 'object') {
+        let configHeaders = cfg.headers;
+        for (let key in configHeaders) {
+          headers.append(key, configHeaders[key]);
+        }
       }
     }
+
     this.params = {
       method: 'GET',
       headers: headers,

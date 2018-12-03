@@ -226,12 +226,15 @@ export default class LoaderXHR extends BaseLoader {
     xhr.onload = this._onLoad.bind(this);
     xhr.onerror = this._onXHRError.bind(this);
 
-    let type = this.option.seekType || 'range';
-    let cfg = SeekableHandler.getConfig(this.url, range, type);
-    if (typeof cfg.headers === 'object') {
-      let headers = cfg.headers;
-      for (let key in headers) {
-        xhr.setRequestHeader(key, headers[key]);
+    // 点播才加range
+    if (!this.option.live || false) {
+      let type = this.option.seekType || 'range';
+      let cfg = SeekableHandler.getConfig(this.url, range, type);
+      if (typeof cfg.headers === 'object') {
+        let headers = cfg.headers;
+        for (let key in headers) {
+          xhr.setRequestHeader(key, headers[key]);
+        }
       }
     }
 
