@@ -8,7 +8,7 @@ import MSEEvents from '../../common/constant/MSEEvents';
  * @class MSE
  * @author zhenliang.sun
  */
-class MSE {
+export default class MSE {
   constructor(codecs = 'video/mp4; codecs="avc1.64001E, mp4a.40.5"') {
     // 以防不经过判断支持， 直接使用
     if (!MSE.isSupported(codecs)) {
@@ -123,5 +123,3 @@ class MSE {
     return window.MediaSource && MediaSource.isTypeSupported(codecs);
   }
 }
-
-export default MSE;

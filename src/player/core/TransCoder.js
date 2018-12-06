@@ -1,4 +1,5 @@
 import EventEmitter from 'event-emitter';
+
 /**
  * 转码基类
  *
