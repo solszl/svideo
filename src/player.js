@@ -4,6 +4,7 @@ import Log from './utils/Log';
 import M3U8 from './player/hls/M3U8';
 import LoaderXHR from './player/loader/LoaderXHR';
 import LoaderFetch from './player/loader/LoaderFetch';
+import FlvParser from './player/flv/FlvParser';
 
 /**
  * VIDEO播放器 函数类
@@ -31,12 +32,14 @@ export default class Player extends PlayerProxy {
     this.pluginCall();
 
     var url = opts['url'];
+
+    let parser = new FlvParser();
     // this.src = url;
 
     // this.play();
 
-    let loader = new LoaderXHR();
-    // let loader = new LoaderFetch();
+    // let loader = new LoaderXHR();
+    let loader = new LoaderFetch();
     loader.option = {
       live: true
     };
@@ -46,6 +49,12 @@ export default class Player extends PlayerProxy {
     // loader.url = 'http://59.49.89.64/hdl0901.plures.net/azblive/3142adeb5cc64967aecd7eaaac2be244.flv?wsSecret=d32f31cf39660d22db8f2614dc4169cb&wsTime=5c017bff&wshc_tag=0&wsts_tag=5c017bff&wsid_tag=1ca310b&wsiphost=ipdbm';
     // loader.url = 'http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba';
     loader.url = 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba';
+    loader.on('progress', data => {
+      let {
+        chunk
+      } = data;
+      parser.setData(chunk);
+    });
     // loader.url = url;
     loader.open();
     // let m3u8 = new M3U8();

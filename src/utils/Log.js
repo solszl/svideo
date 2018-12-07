@@ -13,7 +13,7 @@ const private_instance = Symbol('private_instance');
 export default class Log {
   constructor() {
     if (this[private_instance]) {
-      throw new IllegalStateException('Log should be a singlton Class');
+      throw new IllegalStateException('Log should be a singleton Class');
     }
 
     this[private_instance] = this;

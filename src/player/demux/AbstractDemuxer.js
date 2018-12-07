@@ -21,4 +21,14 @@ export default class AbstractDemuxer extends TransCoder {
   destroy() {
 
   }
+
+  /**
+   * 解析tag
+   *
+   * @param {*} tag
+   * @memberof AbstractDemuxer
+   */
+  resolve(tag) {
+
+  }
 }
