@@ -242,7 +242,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
     while (i < length) {
       if (input[i] < 0x80) {
         out.push(String.fromCharCode(input[i]));
-        ++i;
+        i += 1;
         continue;
       } else if (input[i] < 0xc0) {
         // fallthrough
@@ -284,7 +284,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
         }
       }
       out.push(String.fromCharCode(0xfffd));
-      ++i;
+      i += 1;
     }
 
     return out.join('');
@@ -293,8 +293,10 @@ export default class MetaDemuxer extends AbstractDemuxer {
   _checkContinuation(uint8array, start, checkLength) {
     let array = uint8array;
     if (start + checkLength < array.length) {
-      while (checkLength--) {
-        if ((array[++start] & 0xc0) !== 0x80) return false;
+      while (checkLength) {
+        start += 1;
+        if ((array[start] & 0xc0) !== 0x80) return false;
+        checkLength -= 1;
       }
       return true;
     } else {
