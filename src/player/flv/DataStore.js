@@ -118,6 +118,46 @@ export default class DataStore {
     return this._mediaInfo;
   }
 
+  set audioMetaData(val) {
+    this._audioMetaData = val;
+  }
+
+  get audioMetaData() {
+    return this._audioMetaData;
+  }
+
+  set videoMetaData(val) {
+    this._videoMetaData = val;
+  }
+
+  get videoMetaData() {
+    return this._videoMetaData;
+  }
+
+  get timeScale() {
+    return this._timeScale;
+  }
+
+  set timeScale(val) {
+    this._timeScale = val;
+  }
+
+  get duration() {
+    return this._duration;
+  }
+
+  set duration(val) {
+    this._duration = val;
+  }
+
+  get metaEndPosition() {
+    return this._metaEndPosition;
+  }
+
+  set metaEndPosition(val) {
+    this._metaEndPosition = val;
+  }
+
   _initData() {
     this._isLe = (function () {
       const buf = new ArrayBuffer(2);
@@ -134,25 +174,31 @@ export default class DataStore {
 
     this._timestampBase = 0;
 
-    this._tags = [];
+    this._tags = []; // 所有的tags 集合
 
     this._videoTrack = {
+      id: 1,
       type: 'video',
       samples: [],
       length: 0
     };
     this._audioTrack = {
+      id: 2,
       type: 'audio',
       samples: [],
       length: 0
     };
 
-    this._videoMetaData = null;
-    this._audioMetaData = null;
+    this._videoMetaData = null; // 视频源数据
+    this._audioMetaData = null; // 音频源数据
+    this._metaData = null; // 是否有元标签数据 如：onMetaData
+    this._hasMetaData = false;
+
+    this._metaEndPosition = -1;
+
+    this._timeScale = 1000;
+    this._duration = 0;
 
     this._mediaInfo = new MediaInfo();
-
-    this._metaData = null;
-    this._hasMetaData = false;
   }
 }

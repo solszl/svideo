@@ -12,6 +12,7 @@ import DataStore from './../flv/DataStore';
 export default class AbstractDemuxer extends TransCoder {
   constructor() {
     super();
+    this.CLASS_NAME = this.constructor.name;
   }
 
   /**
