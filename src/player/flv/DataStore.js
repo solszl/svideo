@@ -102,6 +102,22 @@ export default class DataStore {
     this._timestampBase = val;
   }
 
+  get metaData() {
+    return this._metaData;
+  }
+
+  set metaData(val) {
+    this._metaData = val;
+  }
+
+  get hasMetaData() {
+    return this._metaData !== null;
+  }
+
+  get mediaInfo() {
+    return this._mediaInfo;
+  }
+
   _initData() {
     this._isLe = (function () {
       const buf = new ArrayBuffer(2);
@@ -135,5 +151,8 @@ export default class DataStore {
     this._audioMetaData = null;
 
     this._mediaInfo = new MediaInfo();
+
+    this._metaData = null;
+    this._hasMetaData = false;
   }
 }

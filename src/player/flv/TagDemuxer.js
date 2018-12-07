@@ -4,6 +4,9 @@ import VideoDemuxer from './VideoDemuxer';
 import AudioDemuxer from './AudioDemuxer';
 import Log from '../../utils/Log';
 import DataStore from './DataStore';
+import fields from './../constants/MetaFields';
+
+const NOOP = () => {};
 /**
  * FLV 数据中的标签解析器
  *
@@ -19,6 +22,10 @@ export default class TagDemuxer extends AbstractDemuxer {
     this._metaDemuxer = new MetaDemuxer();
     this._videoDemuxer = new VideoDemuxer();
     this._audioDemuxer = new AudioDemuxer();
+
+    this.handleMediaInfoReady = NOOP;
+    this.handleDataReady = NOOP;
+    this.handleMetaDataReady = NOOP;
   }
 
   destroy() {
@@ -28,9 +35,8 @@ export default class TagDemuxer extends AbstractDemuxer {
     this._audioDemuxer = null;
   }
 
-  resolveTags() {
-    // 从数据中心中，拿到未解析的所有的tag
-    let tags = DataStore.OBJ.tags;
+  resolveTags(tags) {
+    // 未解析的所有的tag
     tags.forEach(tag => {
       this.resolveTag(tag);
     });
@@ -66,6 +72,48 @@ export default class TagDemuxer extends AbstractDemuxer {
   }
 
   _resolveMetaTag(tag) {
-    this._metaDemuxer.resolve(tag);
+    let {
+      body
+    } = tag;
+    let metaObj = this._metaDemuxer.resolve(body, body.length);
+    this.__initMetaDta(metaObj);
+  }
+
+  __initMetaDta(metaData) {
+    // {onMetaData:null}
+    if (Object.prototype.hasOwnProperty.call(metaData, 'onMetaData')) {
+      if (DataStore.OBJ.hasMetaData) {
+        Log.OBJ.warn('exist another meta tag');
+      }
+
+      DataStore.OBJ.metaData = metaData;
+      // 解析onMetaData 函数
+      const onMetaData = metaData.onMetaData;
+
+      if (onMetaData) {
+        fields.forEach(field => {
+          const {
+            name,
+            type,
+            parser,
+            onTypeErr
+          } = field;
+          if (Object(onMetaData[name]) instanceof type) {
+            parser.call(this, DataStore.OBJ, onMetaData);
+          } else {
+            if (onTypeErr && onTypeErr instanceof Function) {
+              onTypeErr(DataStore.OBJ, onMetaData);
+            }
+          }
+        });
+      }
+
+      let mediaInfo = DataStore.OBJ.mediaInfo;
+      mediaInfo._metaData = metaData;
+
+      if (mediaInfo.isComplete) {
+        this.handleMediaInfoReady(mediaInfo);
+      }
+    }
   }
 }

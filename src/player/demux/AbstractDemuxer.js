@@ -1,4 +1,5 @@
 import TransCoder from '../core/TransCoder';
+import DataStore from './../flv/DataStore';
 
 /**
  * 抽象分流器
@@ -30,5 +31,9 @@ export default class AbstractDemuxer extends TransCoder {
    */
   resolve(tag) {
 
+  }
+
+  get isLE() {
+    return DataStore.OBJ.isLe;
   }
 }
