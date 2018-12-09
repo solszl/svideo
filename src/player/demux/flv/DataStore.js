@@ -1,4 +1,4 @@
-import IllegalStateException from '../../error/IllegalStateException';
+import IllegalStateException from '../../../error/IllegalStateException';
 import MediaInfo from './MediaInfo';
 
 const private_data_store = Symbol('private_data_store');
@@ -158,6 +158,47 @@ export default class DataStore {
     this._metaEndPosition = val;
   }
 
+  get naluLengthSize() {
+    return this._naluLengthSize;
+  }
+
+  set naluLengthSize(val) {
+    this._naluLengthSize = val;
+  }
+
+  get referFrameRate() {
+    return this._referFrameRate;
+  }
+
+  set referFrameRate(val) {
+    this._referFrameRate = val;
+  }
+
+  set audioInitialMetadataDispatched(val) {
+    this._audioInitialMetadataDispatched = val;
+  }
+
+  set videoInitialMetadataDispatched(val) {
+    this._videoInitialMetadataDispatched = val;
+  }
+
+  get hasInitialMetaDispatched() {
+    // const {_hasAudio, _hasVideo, _hasAudioOverrode, _hasVideoOverrode}
+    if (this._hasAudio && this._hasVideo) {
+      return this._audioInitialMetadataDispatched && this._videoInitialMetadataDispatched;
+    }
+
+    if (this._hasAudio && !this._hasVideo) {
+      return this._audioInitialMetadataDispatched;
+    }
+
+    if (!this._hasAudio && this.hasVideo) {
+      return this._videoInitialMetadataDispatched;
+    }
+
+    return false;
+  }
+
   _initData() {
     this._isLe = (function () {
       const buf = new ArrayBuffer(2);
@@ -193,6 +234,12 @@ export default class DataStore {
     this._audioMetaData = null; // 音频源数据
     this._metaData = null; // 是否有元标签数据 如：onMetaData
     this._hasMetaData = false;
+    this._referFrameRate = {
+      fixed: true,
+      fps: 23.976,
+      fpsNum: 23976,
+      fpsDen: 1000
+    },
 
     this._metaEndPosition = -1;
 
@@ -200,5 +247,10 @@ export default class DataStore {
     this._duration = 0;
 
     this._mediaInfo = new MediaInfo();
+
+    this._naluLengthSize = 4;
+
+    this._audioInitialMetadataDispatched = false;
+    this._videoInitialMetadataDispatched = false;
   }
 }

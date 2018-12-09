@@ -1,13 +1,12 @@
-import AbstractDemuxer from '../demux/AbstractDemuxer';
+import AbstractDemuxer from '../AbstractDemuxer';
 import DataStore from './DataStore';
 import DataView4Read from './utils/DataView4Read';
 import {
   soundRateTypes,
   samplingFrequencyTypes
-} from '../constants/Types';
-import Log from '../../utils/Log';
-import Buffer from '../fmp4/Buffer';
-import Browser from './../../utils/Browser';
+} from '../../constants/Types';
+import Browser from '../../../utils/Browser';
+import Buffer from '../../fmp4/Buffer';
 
 const NOOP = () => {};
 /**
@@ -26,6 +25,10 @@ export default class AudioDemuxer extends AbstractDemuxer {
     this.data = new Uint8Array(0);
     this.readOffset = 0;
     DataStore.OBJ.audioMetaData = null;
+
+    this.handleMediaInfoReady = this.NOOP;
+    this.handleDataReady = this.NOOP;
+    this.handleMetaDataReady = this.NOOP;
   }
 
   resetStatus() {
@@ -44,6 +47,7 @@ export default class AudioDemuxer extends AbstractDemuxer {
 
     let {
       audioTrack,
+      videoTrack,
       audioMetaData,
       mediaInfo,
       timestampBase
@@ -74,8 +78,7 @@ export default class AudioDemuxer extends AbstractDemuxer {
     if (10 === soundFormatIndex) {
       const aacInfo = this._parseAACAudio();
       if (!aacInfo) {
-        Log.OBJ.warn(`[${this.CLASS_NAME}] convert aac data failed`);
-        this._info('warn', 'convert aac data failed');
+        this.info('warn', 'convert aac data failed');
         return;
       }
 
@@ -108,7 +111,15 @@ export default class AudioDemuxer extends AbstractDemuxer {
         audioMetaData.config = aacData.config;
         audioMetaData.refSampleDuration = 1024 / sampleFreq * audioMetaData.timeScale;
 
-        // TODO: 基础数据弄完了， 准备派发出去吧
+        if (DataStore.OBJ.hasInitialMetaDispatched) {
+          if (audioTrack || videoTrack) {
+            this.handleDataReady(videoTrack, audioTrack);
+          }
+        } else {
+          DataStore.OBJ.audioInitialMetadataDispatched = true;
+        }
+
+        this.handleMetaDataReady('audio', audioMetaData);
 
         mediaInfo.audioCodec = audioMetaData.codec;
         mediaInfo.audioSampleRate = audioMetaData.sampleRate;
@@ -125,12 +136,11 @@ export default class AudioDemuxer extends AbstractDemuxer {
         }
 
         if (mediaInfo.isComplete) {
-          // TODO: 派发音频信息准备完毕回调
+          this.handleMediaInfoReady(mediaInfo);
         }
       } else {
-        this._info('warn', `unknown packetType: ${aacInfo.packetType}`);
+        this.info('warn', `unknown packetType: ${aacInfo.packetType}`);
       }
-
 
     } else if (10 !== soundFormatIndex && 2 !== soundFormatIndex) {
       this._info('warn', 'only support AAC Audio data format');
@@ -169,7 +179,7 @@ export default class AudioDemuxer extends AbstractDemuxer {
    */
   _parseAACAudio() {
     if (this.unreadLength <= 1) {
-      Log.OBJ.info();
+      this.info('error', `not enough data for parsing AAC Audio, unreadLength:${this.unreadLength}`);
       return;
     }
 
@@ -307,9 +317,5 @@ export default class AudioDemuxer extends AbstractDemuxer {
 
   get unreadLength() {
     return this.dataLen - this.readOffset;
-  }
-
-  _info(type, ...args) {
-    Log.OBJ[type](`[${this.CLASS_NAME}] ${args}`);
   }
 }

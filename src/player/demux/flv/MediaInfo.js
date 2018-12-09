@@ -71,7 +71,7 @@ export default class MediaInfo {
       'level',
       'chromaFormat',
     ];
-    for (let i = 0, len = notNullFields.length; i < len; i++) {
+    for (let i = 0, len = notNullFields.length; i < len; i += 1) {
       if (this[notNullFields[i]] === null) {
         return false;
       }

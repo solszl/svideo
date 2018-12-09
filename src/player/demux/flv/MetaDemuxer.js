@@ -1,8 +1,7 @@
-import AbstractDemuxer from './../demux/AbstractDemuxer';
-import Log from '../../utils/Log';
+import AbstractDemuxer from '../AbstractDemuxer';
 import {
   MetaTypes
-} from './../constants/Types';
+} from '../../constants/Types';
 
 /**
  * 标签数据解析器，用来解析源数据等
@@ -21,7 +20,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
 
   resolve(meta, metaSize) {
     if (metaSize < 3) {
-      Log.OBJ.error(`not enough data for metaInfo, input size: ${metaSize}`);
+      this.info('error', `not enough data for metaInfo, input size: ${metaSize}`);
       return;
     }
     super.resolve(meta);

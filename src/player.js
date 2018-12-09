@@ -1,10 +1,9 @@
 import PluginMap from './common/constant/PluginMap';
 import PlayerProxy from './PlayerProxy';
 import Log from './utils/Log';
-import M3U8 from './player/hls/M3U8';
 import LoaderXHR from './player/loader/LoaderXHR';
 import LoaderFetch from './player/loader/LoaderFetch';
-import FlvParser from './player/flv/FlvParser';
+import FlvParser from './player/demux/flv/FlvParser';
 
 /**
  * VIDEO播放器 函数类

@@ -1,6 +1,8 @@
 import TransCoder from '../core/TransCoder';
-import DataStore from './../flv/DataStore';
+import Log from '../../utils/Log';
+import DataStore from './flv/DataStore';
 
+const NOOP = () => {};
 /**
  * 抽象分流器
  *
@@ -32,6 +34,10 @@ export default class AbstractDemuxer extends TransCoder {
    */
   resolve(tag) {
 
+  }
+
+  info(type, ...args) {
+    Log.OBJ[type](`[${this.CLASS_NAME}] ${args}`);
   }
 
   get isLE() {

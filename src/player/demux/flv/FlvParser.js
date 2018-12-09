@@ -1,8 +1,8 @@
 import TagDemuxer from './TagDemuxer';
-import Buffer from './../fmp4/Buffer';
-import Log from '../../utils/Log';
 import FlvProbe from './FlvProbe';
 import DataStore from './DataStore';
+import Log from '../../../utils/Log';
+import Buffer from '../../fmp4/Buffer';
 
 export default class FlvParser {
   constructor() {
@@ -10,6 +10,7 @@ export default class FlvParser {
     this.flvProbe = new FlvProbe();
     // tag 解析器
     this.tagDemuxer = new TagDemuxer();
+    this.tagDemuxer.bindEvents();
     // MP4 Remixer
     this.mp4Remixer = null;
 

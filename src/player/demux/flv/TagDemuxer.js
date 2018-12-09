@@ -1,10 +1,9 @@
-import AbstractDemuxer from './../demux/AbstractDemuxer';
+import AbstractDemuxer from '../AbstractDemuxer';
 import MetaDemuxer from './MetaDemuxer';
 import VideoDemuxer from './VideoDemuxer';
 import AudioDemuxer from './AudioDemuxer';
-import Log from '../../utils/Log';
 import DataStore from './DataStore';
-import fields from './../constants/MetaFields';
+import fields from '../../constants/MetaFields';
 
 const NOOP = () => {};
 /**
@@ -26,6 +25,20 @@ export default class TagDemuxer extends AbstractDemuxer {
     this.handleMediaInfoReady = NOOP;
     this.handleDataReady = NOOP;
     this.handleMetaDataReady = NOOP;
+  }
+
+  bindEvents() {
+    this._videoDemuxer.handleMediaInfoReady = this.handleMediaInfoReady.bind(this);
+    this._videoDemuxer.handleDataReady = this.handleDataReady.bind(this);
+    this._videoDemuxer.handleMetaDataReady = this.handleMetaDataReady.bind(this);
+
+    this._audioDemuxer.handleMediaInfoReady = this.handleMediaInfoReady.bind(this);
+    this._audioDemuxer.handleDataReady = this.handleDataReady.bind(this);
+    this._audioDemuxer.handleMetaDataReady = this.handleMetaDataReady.bind(this);
+  }
+
+  unbindEvents() {
+
   }
 
   destroy() {
@@ -58,7 +71,7 @@ export default class TagDemuxer extends AbstractDemuxer {
       this._resolveMetaTag(tag);
       break;
     default:
-      Log.OBJ.info(`ignore type:${tagType}`);
+      this.info('info', `ignore type:${tagType}`);
       break;
     }
   }
@@ -83,7 +96,7 @@ export default class TagDemuxer extends AbstractDemuxer {
     // {onMetaData:null}
     if (Object.prototype.hasOwnProperty.call(metaData, 'onMetaData')) {
       if (DataStore.OBJ.hasMetaData) {
-        Log.OBJ.warn('exist another meta tag');
+        this.info('warn', 'exist another meta tag');
       }
 
       DataStore.OBJ.metaData = metaData;

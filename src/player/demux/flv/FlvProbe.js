@@ -1,9 +1,8 @@
 import EventEmitter from 'event-emitter';
+import Log from '../../../utils/Log';
 import DataStore from './DataStore';
 import Tag from './Tag';
-import Log from '../../utils/Log';
-import Buffer from './../fmp4/Buffer';
-
+import Buffer from '../../fmp4/Buffer';
 /**
  * FLV 数据解析器
  *
@@ -56,7 +55,7 @@ export default class FlvProbe {
    * @memberof FlvProbe
    */
   getOffset(buffer) {
-    Log.OBJ.info(`获取buffer 偏移 ${buffer.length}`);
+    // Log.OBJ.info(`获取buffer 偏移 ${buffer.length}`);
     this.stop = false;
     this.index = 0;
     this.offset = 0;

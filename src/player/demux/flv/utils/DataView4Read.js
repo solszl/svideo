@@ -53,9 +53,9 @@ export default class DataView4Read {
           }
         }
         const numToAnd = isHigh ? DataView4Read.getAndNum(0, size - 1, readSize) : DataView4Read.getAndNum(readSize - size, readSize - 1, readSize);
-        return self[`getUint${size}`](offset, !isLE) & numToAnd;
+        return self[`getUint${readSize}`](offset, !isLE) & numToAnd;
       } else {
-        return self[`getUint${size}`](offset, !isLE);
+        return self[`getUint${readSize}`](offset, !isLE);
       }
     };
   }
