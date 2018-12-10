@@ -1,4 +1,5 @@
 import TransCoder from '../core/TransCoder';
+import Log from '../../utils/Log';
 
 /**
  * 抽象混流器
@@ -11,5 +12,10 @@ import TransCoder from '../core/TransCoder';
 export default class AbstractRemixer extends TransCoder {
   constructor() {
     super();
+    this.CLASS_NAME = this.constructor.name;
+  }
+
+  info(type, ...args) {
+    Log.OBJ[type](`[${this.CLASS_NAME}] ${args}`);
   }
 }

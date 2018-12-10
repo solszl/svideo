@@ -1,5 +1,6 @@
 import Component from '../../core/Component';
 import SpeedSampler from './SpeedSampler';
+import Log from '../../utils/Log';
 
 export const LoaderStatus = {
   IDLE: 0,
@@ -28,6 +29,8 @@ export const LoaderEvent = {
 export class BaseLoader extends Component {
   constructor() {
     super();
+    this.CLASS_NAME = this.constructor.name;
+    
     this._status = LoaderStatus.IDLE;
     this._url = '';
     this._option = null;
@@ -63,7 +66,7 @@ export class BaseLoader extends Component {
   }
 
   open() {
-
+    Log.OBJ.info(`[${this.CLASS_NAME}] start loading`);
   }
 
   abort() {

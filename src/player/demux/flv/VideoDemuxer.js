@@ -4,6 +4,7 @@ import DataView4Read from './utils/DataView4Read';
 import SPSParser from './SPSParser';
 import Buffer from '../../fmp4/Buffer';
 
+const NOOP = () => {};
 /**
  * 视频数据解析器
  *
@@ -22,9 +23,9 @@ export default class VideoDemuxer extends AbstractDemuxer {
 
     DataStore.OBJ.videoMetaData = null;
 
-    this.handleMediaInfoReady = this.NOOP;
-    this.handleDataReady = this.NOOP;
-    this.handleMetaDataReady = this.NOOP;
+    this.handleMediaInfoReady = NOOP;
+    this.handleDataReady = NOOP;
+    this.handleMetaDataReady = NOOP;
   }
 
   reset() {
@@ -200,7 +201,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
 
       const spsConfig = SPSParser.parseSPS(sps);
 
-      if (0 === i) {
+      if (0 !== i) {
         continue;
       }
 

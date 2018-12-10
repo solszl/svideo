@@ -4,6 +4,9 @@ import Log from './utils/Log';
 import LoaderXHR from './player/loader/LoaderXHR';
 import LoaderFetch from './player/loader/LoaderFetch';
 import FlvParser from './player/demux/flv/FlvParser';
+import {
+  MediaSegmentList
+} from './player/remix/flv/MediaSegmentInfo';
 
 /**
  * VIDEO播放器 函数类
@@ -20,6 +23,7 @@ export default class Player extends PlayerProxy {
   }
 
   init(opts = {}) {
+
     if (!opts.hasOwnProperty('id')) {
       Log.OBJ.error('doesn\'t exist \'id\' option node');
       return;
@@ -29,6 +33,12 @@ export default class Player extends PlayerProxy {
     root.appendChild(this.video);
 
     this.pluginCall();
+
+    // let list = new MediaSegmentList('audio');
+    // console.log(list.length);
+    // console.log(list.type);
+    // console.log(list.isEmpty());
+    // return;
 
     var url = opts['url'];
 

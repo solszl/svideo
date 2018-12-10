@@ -52,24 +52,19 @@ export default class ExpGolomb {
     this.data = null;
   }
 
-  readBits(count) {
-    if (this.count > 32) {
-      this.info('error', `could not read more than 32 bits once time, bitCount: ${count}`);
-      return;
+  readBits(size) {
+    let bits = Math.min(this.bitsAvailable, size); // :uint
+    let valu = this.codeword >>> (32 - bits); // :uint
+    if (size > 32) {
+      this.info('error', `could not read more than 32 bits once time, bitCount: ${size}`);
     }
-
-    let bits = Math.min(this.bitsAvailable, count);
-    let valu = this.codeword >>> (32 - bits);
-
     this.bitsAvailable -= bits;
-
     if (this.bitsAvailable > 0) {
       this.codeword <<= bits;
     } else if (this.bytesAvailable > 0) {
       this._fillCurrentWord();
     }
-
-    bits = count - bits;
+    bits = size - bits;
     if (bits > 0 && this.bitsAvailable) {
       return valu << bits | this.readBits(bits);
     } else {
@@ -108,7 +103,7 @@ export default class ExpGolomb {
    *
    * @memberof ExpGolomb
    */
-  readSEG() {
+  readEG() {
     var valu = this.readUEG(); // :int
     if (0x01 & valu) {
       // the number is odd if the low order bit is set
@@ -122,7 +117,7 @@ export default class ExpGolomb {
     this._skipBits(1 + this._skipLeadingZero());
   }
 
-  skipSEG() {
+  skipEG() {
     this._skipBits(1 + this._skipLeadingZero());
   }
 
@@ -164,8 +159,11 @@ export default class ExpGolomb {
       frameCropTopOffset = 0,
       frameCropBottomOffset = 0,
       profileIdc,
-      profileCompat,
+      // profileCompat,
       levelIdc,
+      codecWidth,
+      codecHeight,
+      presentWidth,
       numRefFramesInPicOrderCntCycle,
       picWidthInMbsMinus1,
       picHeightInMapUnitsMinus1,
@@ -177,36 +175,40 @@ export default class ExpGolomb {
       readUEG = this.readUEG.bind(this),
       readBoolean = this.readBoolean.bind(this),
       skipBits = this._skipBits.bind(this),
-      skipEG = this.skipSEG.bind(this),
+      skipEG = this.skipEG.bind(this),
       skipUEG = this.skipUEG.bind(this),
       skipScalingList = this.skipScalingList.bind(this);
 
     readUByte();
     profileIdc = readUByte(); // profile_idc
-    profileCompat = readBits(5); // constraint_set[0-4]_flag, u(5)
+    readBits(5); // profileCompat constraint_set[0-4]_flag, u(5)
     skipBits(3); // reserved_zero_3bits u(3),
     levelIdc = readUByte(); // level_idc u(8)
     skipUEG(); // seq_parameter_set_id
+    let chromaFormatIdc = 1;
+    let chromaFormat = 420;
+    let chromaFormats = [0, 420, 422, 444];
+    let bitDepthLuma = 8;
+    const profileIdcs = [100, 110, 122, 244, 44, 83, 86, 118, 128];
     // some profiles have more optional data we don't need
-    if (profileIdc === 100 || profileIdc === 110 || profileIdc === 122 || profileIdc === 244 || profileIdc === 44 || profileIdc === 83 || profileIdc === 86 || profileIdc === 118 || profileIdc === 128) {
-      var chromaFormatIdc = readUEG();
+    if (profileIdcs.includes(profileIdc)) {
+      chromaFormatIdc = readUEG();
       if (chromaFormatIdc === 3) {
         skipBits(1); // separate_colour_plane_flag
       }
-      skipUEG(); // bit_depth_luma_minus8
+      if (chromaFormatIdc <= 3) {
+        chromaFormat = chromaFormats[chromaFormatIdc];
+      }
+      bitDepthLuma = readUEG() + 8; // bit_depth_luma_minus8
       skipUEG(); // bit_depth_chroma_minus8
       skipBits(1); // qpprime_y_zero_transform_bypass_flag
       if (readBoolean()) { // seq_scaling_matrix_present_flag
         scalingListCount = (chromaFormatIdc !== 3) ?
           8 :
           12;
-        for (i = 0; i < scalingListCount; i += 1) {
+        for (i = 0; i < scalingListCount; i++) {
           if (readBoolean()) { // seq_scaling_list_present_flag[ i ]
-            if (i < 6) {
-              skipScalingList(16);
-            } else {
-              skipScalingList(64);
-            }
+            i < 6 ? skipScalingList(16) : skipScalingList(64);
           }
         }
       }
@@ -220,11 +222,11 @@ export default class ExpGolomb {
       skipEG(); // offset_for_non_ref_pic
       skipEG(); // offset_for_top_to_bottom_field
       numRefFramesInPicOrderCntCycle = readUEG();
-      for (i = 0; i < numRefFramesInPicOrderCntCycle; i += 1) {
+      for (i = 0; i < numRefFramesInPicOrderCntCycle; i++) {
         skipEG(); // offset_for_ref_frame[ i ]
       }
     }
-    skipUEG(); // max_num_ref_frames
+    let refFrames = readUEG(); // max_num_ref_frames
     skipBits(1); // gaps_in_frame_num_value_allowed_flag
     picWidthInMbsMinus1 = readUEG();
     picHeightInMapUnitsMinus1 = readUEG();
@@ -239,6 +241,12 @@ export default class ExpGolomb {
       frameCropTopOffset = readUEG();
       frameCropBottomOffset = readUEG();
     }
+    let frameRate = {
+      fps: 0,
+      fpsFixed: true,
+      fpsNum: 0,
+      fpsDen: 0,
+    };
     let pixelRatio = [1, 1];
     if (readBoolean()) {
       // vui_parameters_present_flag
@@ -298,20 +306,78 @@ export default class ExpGolomb {
         {
           pixelRatio = [
             readUByte() << 8 | readUByte(),
-            readUByte() << 8 | readUByte()
+            readUByte() << 8 | readUByte(),
           ];
           break;
         }
         }
       }
+      if (readBoolean()) { // overscan_info_present_flag
+        readBoolean(); // overscan_appropriate_flag
+      }
+      if (readBoolean()) { // video_signal_type_present_flag
+        readBits(4); // video_format & video_full_range_flag
+        if (readBoolean()) { // colour_description_present_flag
+          readBits(24); // colour_primaries & transfer_characteristics & matrix_coefficients
+        }
+      }
+      if (readBoolean()) { // chroma_loc_info_present_flag
+        readUEG(); // chroma_sample_loc_type_top_field
+        readUEG(); // chroma_sample_loc_type_bottom_field
+      }
+
+      if (readBoolean()) { // timing_info_present_flag
+        const numUnitInTick = (readBits(32));
+        frameRate.fpsNum = (readBits(32));
+        frameRate.fixed = this.readBoolean();
+        frameRate.fpsDen = numUnitInTick * 2;
+        frameRate.fps = frameRate.fpsNum / frameRate.fpsDen;
+      }
+      let cropUnitX = 0,
+        cropUnitY = 0;
+      if (chromaFormatIdc === 0) {
+        cropUnitX = 1;
+        cropUnitX = 2 - frameMbsOnlyFlag;
+      } else {
+        let subWc = chromaFormatIdc === 3 ? 1 : 2;
+        let subHc = chromaFormatIdc === 1 ? 2 : 1;
+        cropUnitX = subWc;
+        cropUnitY = subHc * (2 - frameMbsOnlyFlag);
+      }
+
+      codecWidth = (picWidthInMbsMinus1 + 1) * 16;
+      codecHeight = (2 - frameMbsOnlyFlag) * ((picHeightInMapUnitsMinus1 + 1) * 16);
+
+      codecWidth -= (frameCropLeftOffset + frameCropRightOffset) * cropUnitX;
+      codecHeight -= (frameCropTopOffset + frameCropBottomOffset) * cropUnitY;
+
+      const pixelScale = pixelRatio[0] === 1 || pixelRatio[1] === 1 ?
+        1 :
+        pixelRatio[0] / pixelRatio[1];
+
+      presentWidth = pixelScale * codecWidth;
     }
     return {
+      profileIdc,
+      levelIdc,
+      refFrames,
+      chromaFormat,
+      bitDepth: bitDepthLuma,
+      frameRate,
+      codecSize: {
+        width: codecWidth,
+        height: codecHeight,
+      },
+      presentSize: {
+        width: presentWidth,
+        height: codecHeight,
+      },
       width: Math.ceil((((picWidthInMbsMinus1 + 1) * 16) - frameCropLeftOffset * 2 - frameCropRightOffset * 2)),
       height: ((2 - frameMbsOnlyFlag) * (picHeightInMapUnitsMinus1 + 1) * 16) - ((
         frameMbsOnlyFlag ?
           2 :
           4) * (frameCropTopOffset + frameCropBottomOffset)),
-      pixelRatio: pixelRatio
+      pixelRatio: pixelRatio,
     };
   }
 
@@ -322,7 +388,8 @@ export default class ExpGolomb {
 
   _skipLeadingZero() {
     var leadingZeroCount; // uint
-    for (leadingZeroCount = 0; leadingZeroCount < this.bitsAvailable; leadingZeroCount += 1) {
+    for (leadingZeroCount = 0; leadingZeroCount < this.bitsAvailable; ++leadingZeroCount) {
+      // leadingZeroCount += 1;
       if (0 !== (this.codeword & (0x80000000 >>> leadingZeroCount))) {
         this.codeword <<= leadingZeroCount;
         this.bitsAvailable -= leadingZeroCount;
@@ -360,7 +427,7 @@ export default class ExpGolomb {
     } else {
       count -= this.bitsAvailable;
       skipBytes = count >> 3;
-      count -= skipBytes >> 3;
+      count -= (skipBytes >> 3);
       this.bytesAvailable -= skipBytes;
       this._fillCurrentWord();
       this.codeword <<= count;

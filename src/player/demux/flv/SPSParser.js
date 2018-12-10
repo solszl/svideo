@@ -74,8 +74,8 @@ export default class SPSParser {
       if (i > 2 && originArr[i] === 3 && originArr[i - 1] === 0 && originArr[i - 2] === 0) {
         continue;
       }
-      distSize += 1;
       dist[distSize] = originArr[i];
+      distSize += 1;
     }
 
     return new Uint8Array(dist.buffer, 0, distSize);

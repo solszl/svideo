@@ -54,7 +54,18 @@ export default class TagDemuxer extends AbstractDemuxer {
       this.resolveTag(tag);
     });
 
-    // TODO: 解析数据过后，把数据吐回去
+    let {
+      hasInitialMetaDispatched,
+      audioTrack,
+      videoTrack
+    } = DataStore.OBJ;
+
+    if (hasInitialMetaDispatched) {
+      if (audioTrack || videoTrack) {
+        this.handleDataReady(audioTrack, videoTrack);
+      }
+    }
+
     DataStore.OBJ.clearTags();
   }
 
