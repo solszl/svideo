@@ -93,7 +93,7 @@ export default class AudioDemuxer extends AbstractDemuxer {
         // 标准aac 数据格式
         let dts = timestampBase + this.currentTag.getTime();
         let aacSample = {
-          uint: aacInfo.data,
+          unit: aacInfo.data,
           length: aacInfo.data.byteLength,
           dts: dts,
           pts: dts

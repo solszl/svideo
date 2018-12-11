@@ -68,6 +68,9 @@ export default class FlvParser {
     this.tagDemuxer.handleMediaInfoReady = this.handleMediaInfoReady.bind(this);
     this.tagDemuxer.handleMetaDataReady = this.handleMetaDataReady.bind(this);
     this.tagDemuxer.bindEvents();
+
+    this.mp4Remixer.handleMediaFragment = this.handleNewMediaFragment.bind(this);
+    this.mp4Remixer.bindEvents();
   }
 
   unbindEvents() {
@@ -84,6 +87,10 @@ export default class FlvParser {
 
   handleMetaDataReady(type, meta) {
     this.mp4Remixer.onMetaDataReady(type, meta);
+  }
+
+  handleNewMediaFragment(fragment) {
+    console.log(`完成解析${fragment.type}`);
   }
 
 }

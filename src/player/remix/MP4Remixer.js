@@ -4,6 +4,7 @@ import {
 } from './flv/MediaSegmentInfo';
 import FlvVideoRemixer from './flv/FlvVideoRemixer';
 import FlvAudioRemixer from './flv/FlvAudioRemixer';
+import DataStore from '../demux/flv/DataStore';
 /**
  * MP4 混流器
  *
@@ -15,7 +16,6 @@ export default class MP4Remixer extends Remixer {
   constructor() {
     super();
 
-    this._dtsBase = 0;
     this._isDtsBaseInitialed = false;
 
     this._audioRemixer = new FlvAudioRemixer();
@@ -28,11 +28,19 @@ export default class MP4Remixer extends Remixer {
     this._videoNextDts = null;
     this._videoSegmentList = new MediaSegmentList('video');
 
+    this.handleMediaFragment = () => {};
+  }
+
+  bindEvents() {
+    this._audioRemixer.handleMediaFragment = this.handleMediaFragment.bind(this);
+    this._videoRemixer.handleMediaFragment = this.handleMediaFragment.bind(this);
   }
 
   remix(audioTrack, videoTrack) {
     if (!this._isDtsBaseInitialed) {
-      this._calcDtsBase(audioTrack, videoTrack);
+      let dtsBase = this._calcDtsBase(audioTrack, videoTrack);
+      this._audioRemixer.dtsTimeBase = dtsBase;
+      this._videoRemixer.dtsTimeBase = dtsBase;
       this._isDtsBaseInitialed = true;
     }
 
@@ -41,7 +49,9 @@ export default class MP4Remixer extends Remixer {
   }
 
   onMetaDataReady(type, meta) {
-    this[`_${type}Meta`] = meta;
+    // this[`_${type}Meta`] = meta;
+    DataStore.OBJ[`${type}MetaData`] = meta;
+
   }
 
   onMediaInfoReady(mediaInfo) {}
@@ -64,6 +74,7 @@ export default class MP4Remixer extends Remixer {
       videoBase = videoTrack.samples[0].dts;
     }
 
-    this._dtsBase = Math.min(audioBase, videoBase);
+    let dtsBase = Math.min(audioBase, videoBase);
+    return dtsBase;
   }
 }

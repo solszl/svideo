@@ -9,8 +9,8 @@ import Log from '../../utils/Log';
  * @author zhenliang.sun
  */
 export default class Buffer {
-  constructor() {
-    this.buffer = new Uint8Array(0);
+  constructor(buffer = null) {
+    this.buffer = buffer || new Uint8Array(0);
   }
 
   write(...buffer) {

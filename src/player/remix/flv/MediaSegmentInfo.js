@@ -28,10 +28,12 @@ export class MediaSegment {
     this.endPts = -1;
 
     this.originStartDts = -1;
-    this.originStartPts = -1;
+    this.originEndDts = -1;
     this.randomAccessPoints = [];
     this.firstSample = null;
     this.lastSample = null;
+
+    this.gap = 0;
   }
 
   addRAP(sample) {
@@ -95,6 +97,11 @@ export class MediaSegmentList {
 
     this._lastAppendLocation = insertIdx;
     this._list.splice(insertIdx, 0, segment);
+  }
+
+  getLastSegmentBefore(beginDts) {
+    let idx = this._binarySearchNearestSegmentBefore(beginDts);
+    return idx >= 0 ? this._list[idx] : null;
   }
 
   _binarySearchNearestSegmentBefore(beginDts) {

@@ -7,6 +7,7 @@ import FlvParser from './player/demux/flv/FlvParser';
 import {
   MediaSegmentList
 } from './player/remix/flv/MediaSegmentInfo';
+import DataStore from './player/demux/flv/DataStore';
 
 /**
  * VIDEO播放器 函数类
@@ -29,6 +30,7 @@ export default class Player extends PlayerProxy {
       return;
     }
 
+    DataStore.OBJ.isLive = true;
     let root = document.getElementById(opts['id']);
     root.appendChild(this.video);
 

@@ -65,6 +65,18 @@ export default class Browser {
   /** *****************  FOR ANDROID END ************************/
 
   /** *****************  FOR PC START ************************/
+
+  static get browserName() {
+    let reg = {
+      ie: /rv:([\d.]+)\) like gecko/,
+      firefox: /firefox\/([\d.]+)/,
+      chrome: /chrome\/([\d.]+)/,
+      opera: /opera.([\d.]+)/,
+      safari: /version\/([\d.]+).*safari/,
+    };
+    return [].concat(Object.keys(reg).filter(key => reg[key].test(this.ua)))[0];
+  }
+
   static get isFirefox() {
     return (/(?:Firefox)/).test(this.ua);
   }
