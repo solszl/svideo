@@ -14,6 +14,7 @@ import {
  * @export
  * @class FlvAudioRemixer
  * @extends {Remixer}
+ * @author zhenliang.sun
  */
 export default class FlvAudioRemixer extends Remixer {
   constructor() {
@@ -44,7 +45,7 @@ export default class FlvAudioRemixer extends Remixer {
     } = DataStore.OBJ;
 
     if (!audioMetaData) {
-      this.info('error', 'lost necessary meta data!');
+      this.info('error', 'lost necessary audio meta data!');
       return;
     }
 
@@ -87,7 +88,7 @@ export default class FlvAudioRemixer extends Remixer {
             // TODO: 找 segment 计算 dtsCorrection， 卧槽。 这代码干的。真蛋疼
             const lastSegment = this._audioSegmentList.getLastSegmentBefore(dts);
             if (lastSegment) {
-              //
+              // debugger;
             } else {
               needSilentFrame = Browser.browserName === 'ie' && !!(this._videoSegmentList && this._videoSegmentList.isEmpty());
               dtsCorrection = 0;

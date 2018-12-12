@@ -24,6 +24,9 @@ export default class FlvParser {
 
     this.bindEvents();
     this.initialed = true;
+
+    this.videoCount = 0;
+    this.audioCount = 0;
   }
 
   destroy() {
@@ -90,7 +93,14 @@ export default class FlvParser {
   }
 
   handleNewMediaFragment(fragment) {
-    console.log(`完成解析${fragment.type}`);
+    if (fragment.type === 'video') {
+      this.videoCount += 1;
+    } else if (fragment.type === 'audio') {
+      this.audioCount += 1;
+    } else {
+      console.log('shit');
+    }
+    console.log(`完成解析${fragment.type}`, this.videoCount, this.audioCount);
   }
 
 }
