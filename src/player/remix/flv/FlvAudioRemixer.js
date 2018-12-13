@@ -7,6 +7,7 @@ import {
   MediaSegment,
   MediaSample
 } from './MediaSegmentInfo';
+import FLVMp4 from './FLVMp4';
 
 /**
  * 声音混流器 
@@ -180,9 +181,9 @@ export default class FlvAudioRemixer extends Remixer {
     track.samples = mp4Samples;
     const moofMdat = new Buffer();
     track.time = firstDts;
-    // const moof = 
-    // const mdat = 
-    // moofMdat.write(moof, mdat);
+    const moof = FLVMp4.moof(track);
+    const mdat = FLVMp4.mdat(mdatBox);
+    moofMdat.write(moof, mdat);
 
     if (!DataStore.OBJ.isLive) {
       this._audioSegmentList.append(audioSegment);
@@ -191,7 +192,6 @@ export default class FlvAudioRemixer extends Remixer {
     track.samples = [];
     track.length = 0;
 
-    // TODO: 解析完此刻的音频文件，回调了开始
     this.handleMediaFragment({
       type: 'audio',
       data: moofMdat.buffer.buffer,

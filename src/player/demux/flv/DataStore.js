@@ -199,6 +199,23 @@ export default class DataStore {
     return false;
   }
 
+  /**
+   * 在FLVMp4中， 需要将N 种盒子的名字转换成为Uint8Array
+   * 将其缓存在这里，避免重复创建对象
+   *
+   * @readonly
+   * @memberof DataStore
+   */
+  getTypeCache(name) {
+    if (this._typeCache[name]) {
+      return this._typeCache[name];
+    }
+
+    let data = new Uint8Array([name.charCodeAt(0), name.charCodeAt(1), name.charCodeAt(2), name.charCodeAt(3)]);
+    this._typeCache[name] = data;
+    return data;
+  }
+
   _initData() {
     this._isLe = (function () {
       const buf = new ArrayBuffer(2);
@@ -252,5 +269,8 @@ export default class DataStore {
 
     this._audioInitialMetadataDispatched = false;
     this._videoInitialMetadataDispatched = false;
+
+
+    this._typeCache = {};
   }
 }
