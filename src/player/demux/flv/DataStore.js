@@ -84,6 +84,7 @@ export default class DataStore {
 
   set hasAudio(val) {
     this._hasAudio = val;
+    this._mediaInfo.hasAudio = val;
   }
 
   get hasVideo() {
@@ -92,6 +93,7 @@ export default class DataStore {
 
   set hasVideo(val) {
     this._hasVideo = val;
+    this._mediaInfo.hasVideo = val;
   }
 
   get timestampBase() {

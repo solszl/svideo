@@ -70,7 +70,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
       break;
     case MetaTypes.BOOLEAN:
       value = !!dv.getUint8(1);
-      this.offset += 1;
+      this.readOffset += 1;
       offset += 1;
       break;
     case MetaTypes.STRING:
@@ -109,7 +109,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
       offset += 4;
       this.readOffset += 4;
       let objEndSize = 0;
-      if (dv.getUint32(size - 4, !isLe) & (0x00ffffff === 9)) {
+      if ((dv.getUint32(size - 4, !isLe) & 0x00ffffff) === 9) {
         objEndSize = 3;
       }
 
@@ -173,7 +173,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
   }
 
   _parseObject(buffer, size) {
-    const name = this.parseString(buffer, size);
+    const name = this._parseString(buffer, size);
     const value = this.parseValue(buffer, size - name.bodySize);
     return {
       data: {
@@ -204,10 +204,10 @@ export default class MetaDemuxer extends AbstractDemuxer {
       strLen > 0 ?
         this._decode(new Uint8Array(buffer, this.readOffset + 2, strLen)) :
         '';
-    this.readOffset += strLen + 4;
+    this.readOffset += strLen + 2;
     return {
       data: str,
-      bodySize: strLen + 4
+      bodySize: strLen + 2
     };
   }
 
@@ -241,13 +241,13 @@ export default class MetaDemuxer extends AbstractDemuxer {
     while (i < length) {
       if (input[i] < 0x80) {
         out.push(String.fromCharCode(input[i]));
-        i += 1;
+        ++i;
         continue;
       } else if (input[i] < 0xc0) {
         // fallthrough
       } else if (input[i] < 0xe0) {
         if (this._checkContinuation(input, i, 1)) {
-          const ucs4 = ((input[i] & 0x1f) << 6) | (input[i + 1] & 0x3f);
+          const ucs4 = (input[i] & 0x1f) << 6 | (input[i + 1] & 0x3f);
           if (ucs4 >= 0x80) {
             out.push(String.fromCharCode(ucs4 & 0xffff));
             i += 2;
@@ -256,10 +256,8 @@ export default class MetaDemuxer extends AbstractDemuxer {
         }
       } else if (input[i] < 0xf0) {
         if (this._checkContinuation(input, i, 2)) {
-          const ucs4 =
-            ((input[i] & 0xf) << 12) |
-            ((input[i + 1] & 0x3f) << 6) |
-            (input[i + 2] & 0x3f);
+          const ucs4 = (input[i] & 0xF) << 12 | (input[i + 1] & 0x3F) << 6 | input[i + 2] & 0x3F;
+
           if (ucs4 >= 0x800 && (ucs4 & 0xf800) !== 0xd800) {
             out.push(String.fromCharCode(ucs4 & 0xffff));
             i += 3;
@@ -268,11 +266,9 @@ export default class MetaDemuxer extends AbstractDemuxer {
         }
       } else if (input[i] < 0xf8) {
         if (this._checkContinuation(input, i, 3)) {
-          let ucs4 =
-            ((input[i] & 0x7) << 18) |
-            ((input[i + 1] & 0x3f) << 12) |
-            ((input[i + 2] & 0x3f) << 6) |
-            (input[i + 3] & 0x3f);
+          let ucs4 = (input[i] & 0x7) << 18 | (input[i + 1] & 0x3F) << 12 |
+            (input[i + 2] & 0x3F) << 6 | (input[i + 3] & 0x3F);
+
           if (ucs4 > 0x10000 && ucs4 < 0x110000) {
             ucs4 -= 0x10000;
             out.push(String.fromCharCode((ucs4 >>> 10) | 0xd800));
@@ -283,7 +279,7 @@ export default class MetaDemuxer extends AbstractDemuxer {
         }
       }
       out.push(String.fromCharCode(0xfffd));
-      i += 1;
+      ++i;
     }
 
     return out.join('');

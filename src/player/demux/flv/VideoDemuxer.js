@@ -218,7 +218,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
       } = spsConfig;
 
       videoMetaData.width = codecSize.width;
-      videoMetaData.heigh = codecSize.height;
+      videoMetaData.height = codecSize.height;
       videoMetaData.presentWidth = presentSize.width;
       videoMetaData.presentHeight = presentSize.height;
 
@@ -251,8 +251,8 @@ export default class VideoDemuxer extends AbstractDemuxer {
       videoMetaData.codec = codecStr;
 
       mediaInfo.width = videoMetaData.width;
-      mediaInfo.heigh = videoMetaData.heigh;
-      mediaInfo.fps = videoMetaData.fps;
+      mediaInfo.height = videoMetaData.height;
+      mediaInfo.fps = videoMetaData.frameRate.fps;
       mediaInfo.profile = videoMetaData.profile;
       mediaInfo.level = videoMetaData.level;
       mediaInfo.refFrames = refFrames;

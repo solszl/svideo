@@ -6,6 +6,7 @@ import {
 } from './MediaSegmentInfo';
 import DataStore from '../../demux/flv/DataStore';
 import Buffer from './../../fmp4/Buffer';
+import FLVMp4 from './FLVMp4';
 
 /**
  * 视频混合器
@@ -187,9 +188,9 @@ export default class FlvVideoRemixer extends Remixer {
     track.samples = mp4Samples;
     track.time = firstDts;
 
-    // const moof = 
-    // const mdat =
-    // moofMdat.write(moof, mdat)
+    const moof = FLVMp4.moof(track);
+    const mdat = FLVMp4.mdat(mdatBox);
+    moofMdat.write(moof, mdat);
 
     if (!DataStore.OBJ.isLive) {
       this._videoSegmentList.append(videoSegment);

@@ -100,10 +100,10 @@ export default class TagDemuxer extends AbstractDemuxer {
       body
     } = tag;
     let metaObj = this._metaDemuxer.resolve(body, body.length);
-    this.__initMetaDta(metaObj);
+    this.__initMetaData(metaObj);
   }
 
-  __initMetaDta(metaData) {
+  __initMetaData(metaData) {
     // {onMetaData:null}
     if (Object.prototype.hasOwnProperty.call(metaData, 'onMetaData')) {
       if (DataStore.OBJ.hasMetaData) {

@@ -1,13 +1,15 @@
-import TagDemuxer from './TagDemuxer';
-import FlvProbe from './FlvProbe';
-import DataStore from './DataStore';
+import EventEmitter from 'event-emitter';
 import Log from '../../../utils/Log';
 import Buffer from '../../fmp4/Buffer';
 import MP4Remixer from '../../remix/MP4Remixer';
+import DataStore from './DataStore';
+import FlvProbe from './FlvProbe';
+import TagDemuxer from './TagDemuxer';
 
 const NOOP = () => {};
 export default class FlvParser {
   constructor() {
+    EventEmitter(this);
     // flv 探针
     this.flvProbe = new FlvProbe();
     // tag 解析器
@@ -27,6 +29,11 @@ export default class FlvParser {
 
     this.videoCount = 0;
     this.audioCount = 0;
+
+    this._tempTimeBase = 0;
+    this.sourceOpen = false;
+
+    this._pendingFragments = [];
   }
 
   destroy() {
@@ -49,9 +56,8 @@ export default class FlvParser {
             throw new Error('flv file without metadata tag');
           }
 
-          let timeBase = DataStore.OBJ.timestampBase;
-          let tagTime = tags[0].getTime();
-          if (0 !== timeBase && tagTime === timeBase) {
+          // let timeBase = DataStore.OBJ.timestampBase;
+          if (0 !== this._tempTimeBase && tags[0].getTime() === this._tempTimeBase) {
             DataStore.OBJ.timestampBase = 0;
           }
 
@@ -85,7 +91,11 @@ export default class FlvParser {
   }
 
   handleMediaInfoReady(mi) {
-
+    const FTYP_MOOV = this.mp4Remixer.onMediaInfoReady(mi);
+    if (!this.ftyp_moov) {
+      this.ftyp_moov = FTYP_MOOV;
+      this.emit('ready', FTYP_MOOV);
+    }
   }
 
   handleMetaDataReady(type, meta) {
@@ -93,14 +103,45 @@ export default class FlvParser {
   }
 
   handleNewMediaFragment(fragment) {
-    if (fragment.type === 'video') {
-      this.videoCount += 1;
-    } else if (fragment.type === 'audio') {
-      this.audioCount += 1;
-    } else {
-      console.log('shit');
+    // if (fragment.type === 'video') {
+    //   this.videoCount += 1;
+    // } else if (fragment.type === 'audio') {
+    //   this.audioCount += 1;
+    // } else {
+    //   console.log('shit');
+    // }
+    // console.log(`完成解析${fragment.type}`, this.videoCount, this.audioCount);
+
+    this.pendingFragments.push(fragment);
+    const {
+      randomAccessPoints
+    } = fragment.fragment;
+
+    if (randomAccessPoints && randomAccessPoints.length) {
+      randomAccessPoints.forEach(rap => {
+        this.bufferKeyframes.add(rap.dts);
+      });
     }
-    console.log(`完成解析${fragment.type}`, this.videoCount, this.audioCount);
+
+    if (!this.sourceOpen) {
+      return;
+    }
+
+    if (this.hasPendingFragments) {
+      const frag = this._pendingFragments.shift();
+      if (!this.handleMediaFragment(frag)) {
+        this.pendingFragments.unshift(frag);
+      } else {
+        console.log('ok');
+      }
+    }
   }
 
+  get pendingFragments() {
+    return this._pendingFragments;
+  }
+
+  get hasPendingFragments() {
+    return this._pendingFragments.length !== 0;
+  }
 }

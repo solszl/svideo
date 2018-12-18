@@ -10,6 +10,7 @@ import MSEEvents from '../../common/constant/MSEEvents';
  */
 export default class MSE {
   constructor(codecs = 'video/mp4; codecs="avc1.64001E, mp4a.40.5"') {
+    this.codecs = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
     // 以防不经过判断支持， 直接使用
     if (!MSE.isSupported(codecs)) {
       Log.OBJ.error('unsupported MSE');
@@ -19,10 +20,14 @@ export default class MSE {
     EventEmitter(this);
     this.codecs = codecs;
     this.queue = [];
-    this.ms = new window.MediaSource();
-    this.url = window.URL.createObjectURL(this.ms);
-    this.ms.addEventListener(MSEEvents.SOURCE_OPEN, this._mediaSourceOpen);
-    this.ms.addEventListener(MSEEvents.SOURCE_CLOSE, this._mediaSourceClose);
+    this.mediaSource = new window.MediaSource();
+    this.url = window.URL.createObjectURL(this.mediaSource);
+
+
+    console.log('调用构造函数');
+
+    this.mediaSource.addEventListener('sourceopen', this._mediaSourceOpen.bind(this));
+    this.mediaSource.addEventListener('sourceclose', this._mediaSourceClose.bind(this));
   }
 
   /**
@@ -61,7 +66,7 @@ export default class MSE {
    */
   endOfStream() {
     if (this.state === 'open') {
-      this.sourceBuffer.endOfStream();
+      this.mediaSource.endOfStream();
     }
   }
 
@@ -78,22 +83,30 @@ export default class MSE {
 
   _mediaSourceOpen() {
     const self = this;
-    self.sourceBuffer = self.ms.addSourceBuffer(self.codecs);
-    self.sourceBuffer.addEventListener(MSEEvents.ERROR, e => {});
 
-    self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, e => {
-      self.emit(MSEEvents.UPDATE_END);
-      let b = self.queue.shift();
-      if (b) {
-        self.sourceBuffer.appendBuffer(b);
-      }
-    });
+    self.sourceBuffer = this.mediaSource.addSourceBuffer(self.codecs);
+    self.sourceBuffer.addEventListener(MSEEvents.ERROR, self.__error.bind(self));
+
+    self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, self.__updateEnd.bind(self));
 
     self.emit(MSEEvents.SOURCE_OPEN);
   }
 
+  __error(e) {
+    console.error(e);
+  }
+
+  __updateEnd(e) {
+    this.emit(MSEEvents.UPDATE_END);
+    // let b = this.queue.shift();
+    // if (b) {
+    //   this.sourceBuffer.appendBuffer(b);
+    // }
+  }
+
   _mediaSourceClose() {
-    self.emit(MSEEvents.SOURCE_CLOSE);
+    console.log('MSE close');
+    this.emit(MSEEvents.SOURCE_CLOSE);
   }
 
   /**
@@ -103,12 +116,12 @@ export default class MSE {
    * @memberof MSE
    */
   get state() {
-    if (!this.ms) {
+    if (!this.mediaSource) {
       Log.OBJ.warn('uninitialized MSE');
       return 'closed';
     }
 
-    return this.ms.readyState;
+    return this.mediaSource.readyState;
   }
 
   /**
@@ -121,5 +134,6 @@ export default class MSE {
    */
   static isSupported(codecs) {
     return window.MediaSource && MediaSource.isTypeSupported(codecs);
+    // return window.MediaSource;
   }
 }

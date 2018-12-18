@@ -5,6 +5,8 @@ import {
 import FlvVideoRemixer from './flv/FlvVideoRemixer';
 import FlvAudioRemixer from './flv/FlvAudioRemixer';
 import DataStore from '../demux/flv/DataStore';
+import Buffer from './../fmp4/Buffer';
+import FLVMp4 from './flv/FLVMp4';
 /**
  * MP4 混流器
  *
@@ -54,7 +56,13 @@ export default class MP4Remixer extends Remixer {
 
   }
 
-  onMediaInfoReady(mediaInfo) {}
+  onMediaInfoReady(mediaInfo) {
+    let ftypMoov = new Buffer();
+    let ftyp = FLVMp4.ftyp();
+    let moov = FLVMp4.moov(mediaInfo);
+    ftypMoov.write(ftyp, moov);
+    return ftypMoov.buffer;
+  }
   /**
    * 计算基础DTS时间
    *

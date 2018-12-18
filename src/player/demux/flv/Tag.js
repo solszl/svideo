@@ -26,11 +26,12 @@ export default class Tag {
   getTime() {
     this.arr = [];
     for (let i = 0; i < this.timestamp.length; i += 1) {
-      this.arr.push(this.timestamp[i].toString(16).padStart(2, 0));
+      // this.arr.push(this.timestamp[i].toString(16).padStart(2, 0));
+      this.arr.push((this.timestamp[i].toString(16).length === 1 ? '0' + this.timestamp[i].toString(16) : this.timestamp[i].toString(16)));
     }
     this.arr.pop();
     const time = this.arr.join('');
     this.time = parseInt(time, 16);
-    return this.time;
+    return parseInt(time, 16);
   }
 }
