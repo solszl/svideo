@@ -61,7 +61,7 @@ export default class TagDemuxer extends AbstractDemuxer {
     } = DataStore.OBJ;
 
     if (hasInitialMetaDispatched) {
-      if (audioTrack || videoTrack) {
+      if (audioTrack.length || videoTrack.length) {
         this.handleDataReady(audioTrack, videoTrack);
       }
     }

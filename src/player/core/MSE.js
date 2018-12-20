@@ -34,7 +34,7 @@ export default class MSE {
    * 给sourceBuffer 中添加新的 buffer
    *
    * @param {*} buffer
-   * @returns
+   * @returns 将buffer 添加到source 中是否成功，true:添加成功
    * @memberof MSE
    */
   appendBuffer(buffer) {
@@ -88,6 +88,18 @@ export default class MSE {
     self.sourceBuffer.addEventListener(MSEEvents.ERROR, self.__error.bind(self));
 
     self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, self.__updateEnd.bind(self));
+
+    self.sourceBuffer.addEventListener('updatestart', e => {
+      console.log('update start: ', e);
+    });
+
+    self.sourceBuffer.addEventListener('update', e => {
+      console.log('update ', e);
+    });
+
+    self.sourceBuffer.addEventListener('abort', e => {
+      console.log('abort', e);
+    });
 
     self.emit(MSEEvents.SOURCE_OPEN);
   }

@@ -112,7 +112,7 @@ export default class AudioDemuxer extends AbstractDemuxer {
         audioMetaData.refSampleDuration = 1024 / sampleFreq * audioMetaData.timeScale;
 
         if (DataStore.OBJ.hasInitialMetaDispatched) {
-          if (audioTrack || videoTrack) {
+          if (audioTrack.length || videoTrack.length) {
             this.handleDataReady(videoTrack, audioTrack);
           }
         } else {

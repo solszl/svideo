@@ -25,7 +25,7 @@ export default class FlvParser {
     // this.handleMetaDataReady = NOOP;
 
     this.bindEvents();
-    this.initialed = true;
+    this.initialed = false;
 
     this.videoCount = 0;
     this.audioCount = 0;
@@ -51,7 +51,7 @@ export default class FlvParser {
       let offset = this.flvProbe.getOffset(this.buffer.buffer);
       let tags = DataStore.OBJ.tags;
       if (tags.length) {
-        if (this.initialed) {
+        if (!this.initialed) {
           if (tags[0].tagType !== 18) {
             throw new Error('flv file without metadata tag');
           }
@@ -61,7 +61,7 @@ export default class FlvParser {
             DataStore.OBJ.timestampBase = 0;
           }
 
-          this.initialed = false;
+          this.initialed = true;
         }
 
         this.tagDemuxer.resolveTags(tags);
@@ -116,12 +116,6 @@ export default class FlvParser {
     const {
       randomAccessPoints
     } = fragment.fragment;
-
-    if (randomAccessPoints && randomAccessPoints.length) {
-      randomAccessPoints.forEach(rap => {
-        this.bufferKeyframes.add(rap.dts);
-      });
-    }
 
     if (!this.sourceOpen) {
       return;

@@ -44,6 +44,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
     const frameType = (firstUI8 & 0xF0) >>> 4;
     const codecId = firstUI8 & 0x0F;
 
+    /** 1: JPEG 2: H263 3: Screen video  5: On2 VP6  6: Screen videoversion 2  7: AVC */
     if (7 !== codecId) {
       this.info('warn', `unsupported codecId ${codecId}`);
       return;
@@ -299,7 +300,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
     }
 
     if (DataStore.OBJ.hasInitialMetaDispatched) {
-      if (videoTrack || audioTrack) {
+      if (videoTrack.length || audioTrack.length) {
         this.handleDataReady(videoTrack, audioTrack);
       }
     } else {
@@ -319,17 +320,16 @@ export default class VideoDemuxer extends AbstractDemuxer {
   __parseAVCVideoData(frameType, cpsTime) {
     let dv = new DataView4Read(this.data.buffer, this);
 
-    let naluList = [];
     let naluLengthSize = DataStore.OBJ.naluLengthSize;
+    let naluList = [];
     let dataLen = 0;
     let ts = DataStore.OBJ.timestampBase + this.currentTag.getTime();
-    let isKeyFrame = 1 === frameType;
+    let isKeyframe = 1 === frameType;
     while (this.unreadLength > 0) {
       if (this.unreadLength < 4) {
         this.info('error', `not enough data for parsing AVC, left data: ${this.unreadLength}`);
         break;
       }
-
       const tempReadOffset = this.readOffset;
       let naluSize = naluLengthSize === 4 ? dv.getUint32() : dv.getUint24();
       if (naluSize > this.unreadLength) {
@@ -337,20 +337,20 @@ export default class VideoDemuxer extends AbstractDemuxer {
         break;
       }
 
-      let uintType = dv.getUint(5, this.readOffset, false);
-      if (5 === uintType) {
-        isKeyFrame = true;
+      let unitType = dv.getUint(5, this.readOffset, false);
+      if (5 === unitType) {
+        isKeyframe = true;
       }
 
       // 不停的往naluList 中塞数据
       let data = new Uint8Array(this.data.buffer, tempReadOffset, naluSize + naluLengthSize);
       this.readOffset = tempReadOffset + naluLengthSize + naluSize;
-      const naluUint = {
-        type: uintType,
-        data: data
+      const naluUnit = {
+        type: unitType,
+        data
       };
 
-      naluList.push(naluUint);
+      naluList.push(naluUnit);
       dataLen += data.byteLength;
     }
 
@@ -364,8 +364,8 @@ export default class VideoDemuxer extends AbstractDemuxer {
         dts: ts,
         cps: cpsTime,
         pts: (ts + cpsTime),
-        isKeyFrame,
-        position: isKeyFrame ? this.currentTag.position : undefined
+        isKeyframe,
+        position: isKeyframe ? this.currentTag.position : undefined
       };
 
       videoTrack.samples.push(videoSample);
