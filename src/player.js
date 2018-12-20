@@ -27,7 +27,7 @@ export default class Player extends PlayerProxy {
       return;
     }
 
-    DataStore.OBJ.isLive = true;
+    DataStore.OBJ.isLive = false;
     let root = document.getElementById(opts['id']);
     root.appendChild(this.video);
 
@@ -56,7 +56,8 @@ export default class Player extends PlayerProxy {
     // loader.url = 'http://flv-live-ws.xingxiu.panda.tv/panda-xingxiu/7c1785a9d66f6d05543e4d2ae4a3dd31.flv?0.601844992954284';
     // loader.url = 'http://59.49.89.64/hdl0901.plures.net/azblive/3142adeb5cc64967aecd7eaaac2be244.flv?wsSecret=d32f31cf39660d22db8f2614dc4169cb&wsTime=5c017bff&wshc_tag=0&wsts_tag=5c017bff&wsid_tag=1ca310b&wsiphost=ipdbm';
     // loader.url = 'http://alrtmplive02.e.vhall.com/vhall/904633281.flv?token=alibaba';
-    loader.url = 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba';
+    // loader.url = 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba';
+    loader.url = url;
 
     let self = this;
     loader.on('progress', data => {

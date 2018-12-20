@@ -140,4 +140,22 @@ export default class TagDemuxer extends AbstractDemuxer {
       }
     }
   }
+
+  __parseKeyframes(keyframes) {
+    let times = [];
+    let filePositions = [];
+    const {
+      timestampBase,
+      timeScale
+    } = DataStore.OBJ;
+    for (let i = 0; i < keyframes.times.length; i += 1) {
+      times[times.length] = timestampBase + Math.floor(keyframes.times[i] * timeScale);
+      filePositions[filePositions.length] = keyframes.filepositions[i];
+    }
+
+    return {
+      times,
+      filePositions
+    };
+  }
 }

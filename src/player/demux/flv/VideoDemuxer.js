@@ -344,7 +344,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
 
       // 不停的往naluList 中塞数据
       let data = new Uint8Array(this.data.buffer, tempReadOffset, naluSize + naluLengthSize);
-      this.readOffset += tempReadOffset + naluLengthSize + naluSize;
+      this.readOffset = tempReadOffset + naluLengthSize + naluSize;
       const naluUint = {
         type: uintType,
         data: data

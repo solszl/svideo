@@ -44,9 +44,10 @@ const fields = [{
   name: 'duration',
   type: Number,
   parser(target, origin) {
-    if (!target.state.duration) {
-      const duration = Math.floor(origin.duration * target.state.timeScale);
-      target.state.duration = target.mediaInfo.duration = duration;
+    if (!target.duration) {
+      const duration = Math.floor(origin.duration * target.timeScale);
+      target.duration = duration;
+      target.mediaInfo.duration = duration;
     }
   },
   onTypeErr(target) {
@@ -79,7 +80,7 @@ const fields = [{
     } = origin;
     target.mediaInfo.hasKeyframes = !!keyframes;
     if (keyframes) {
-      target.mediaInfo.keyframes = this._parseKeyframes(keyframes);
+      target.mediaInfo.keyframes = this.__parseKeyframes(keyframes);
     }
     origin.keyframes = null;
   },
