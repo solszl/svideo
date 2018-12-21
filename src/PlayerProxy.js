@@ -27,6 +27,8 @@ class PlayerProxy extends Component {
       height: '100%'
     });
 
+    this.video.controls = true;
+
     // requestAnimationFrame(() => this[updateDisplayList]());
   }
 

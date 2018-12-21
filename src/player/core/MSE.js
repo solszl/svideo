@@ -90,15 +90,15 @@ export default class MSE {
     self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, self.__updateEnd.bind(self));
 
     self.sourceBuffer.addEventListener('updatestart', e => {
-      console.log('update start: ', e);
+      // console.log('update start: ', e);
     });
 
     self.sourceBuffer.addEventListener('update', e => {
-      console.log('update ', e);
+      // console.log('update ', e);
     });
 
     self.sourceBuffer.addEventListener('abort', e => {
-      console.log('abort', e);
+      // console.log('abort', e);
     });
 
     self.emit(MSEEvents.SOURCE_OPEN);
@@ -110,6 +110,7 @@ export default class MSE {
 
   __updateEnd(e) {
     this.emit(MSEEvents.UPDATE_END);
+    // console.log('updateend', e);
     // let b = this.queue.shift();
     // if (b) {
     //   this.sourceBuffer.appendBuffer(b);

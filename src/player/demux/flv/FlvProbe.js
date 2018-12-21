@@ -60,11 +60,12 @@ export default class FlvProbe {
     this.index = 0;
     this.offset = 0;
     this.temp_buffer = buffer;
+    const tempU8a = buffer;
     this.dataLen = buffer.length;
 
     if (!this.initialHeaderFlag) {
       return this.parseData();
-    } else if (this.temp_buffer.length > 13 && FlvProbe.isFlvHead(this.temp_buffer)) {
+    } else if (tempU8a.length > 13 && FlvProbe.isFlvHead(tempU8a)) {
       this.parseHead();
       this.readData(9); // skip header
       this.readData(4); // skip next head size 
@@ -122,6 +123,8 @@ export default class FlvProbe {
         tag.bodySize = this.readData(3);
         tag.timestamp = this.readData(4);
         tag.streamID = this.readData(3);
+
+        console.log(tag);
       } else {
         this.stop = true;
         continue;

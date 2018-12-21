@@ -14,9 +14,10 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
-        isLive:true,
+        isLive: true,
         id: "video-wrapper",
-        url: './videos/2.flv'
+        url: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        cors:'cors'
       });
 
       v.on('volumeChanged',val => {

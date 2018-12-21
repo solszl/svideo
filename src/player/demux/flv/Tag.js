@@ -32,6 +32,6 @@ export default class Tag {
     this.arr.pop();
     const time = this.arr.join('');
     this.time = parseInt(time, 16);
-    return parseInt(time, 16);
+    return this.time;
   }
 }

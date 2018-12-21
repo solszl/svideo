@@ -115,7 +115,7 @@ export default class Player extends PlayerProxy {
     });
 
     this.parser.handleMediaFragment = fragment => {
-      // this.mse.appendBuffer(fragment.data);
+      this.mse.appendBuffer(fragment.data);
     };
 
   }
@@ -139,14 +139,14 @@ export default class Player extends PlayerProxy {
           hasPendingFragments
         } = this.parser;
 
-        // if (hasPendingFragments) {
-        //   const fragment = pendingFragments.shift();
-        //   if (!this.mse.appendBuffer(fragment.data)) {
-        //     pendingFragments.unshift(fragment);
-        //   } else {
-        //     console.log('add success');
-        //   }
-        // }
+        if (hasPendingFragments) {
+          const fragment = pendingFragments.shift();
+          if (!this.mse.appendBuffer(fragment.data)) {
+            pendingFragments.unshift(fragment);
+          } else {
+            console.log('add success');
+          }
+        }
       });
     });
   }

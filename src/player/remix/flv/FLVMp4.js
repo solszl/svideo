@@ -55,7 +55,7 @@ class FLVMp4 {
   // #region moof
 
   static moof(data) {
-    let size = 9;
+    let size = 8;
     let mfhd = FLVMp4.mfhd();
     let traf = FLVMp4.traf(data);
     [mfhd, traf].forEach(item => {
@@ -116,7 +116,7 @@ class FLVMp4 {
     // data-offset 4
     // samples.length
     let offset = Buffer.writeUint32(8 + 8 + 16 + 8 + 16 + 16 + 12 + 4 + 4 + 16 * track.samples.length + sdtpLen);
-    Buffer.writeUint32(FLVMp4.size(20 + 16 * track.samples.length), FLVMp4.type('trun'), new Uint8Array([0x00, 0x00, 0x0F, 0x01]), sampleCount, offset);
+    buffer.write(FLVMp4.size(20 + 16 * track.samples.length), FLVMp4.type('trun'), new Uint8Array([0x00, 0x00, 0x0F, 0x01]), sampleCount, offset);
     let size = buffer.buffer.byteLength;
     let writeOffset = 0;
     track.samples.forEach(() => {
@@ -154,10 +154,10 @@ class FLVMp4 {
   // #region moov
   static moov(data) {
     let size = 8;
-    let mvhd = FLVMp4.mvhd(data.duration, data.timeScale);
+    let mvhd = FLVMp4.mvhd(data.duration, data.timescale);
     let trak1 = FLVMp4.videoTrak(data);
     let trak2 = FLVMp4.audioTrak(data);
-    let mvex = FLVMp4.mvex(data.duration, data.timeScale);
+    let mvex = FLVMp4.mvex(data.duration, data.timescale);
     [mvhd, trak1, trak2, mvex].forEach(item => {
       size += item.byteLength;
     });
@@ -223,7 +223,7 @@ class FLVMp4 {
     let tkhd = FLVMp4.tkhd({
       id: 1,
       duration: data.duration,
-      timescale: data.timeScale,
+      timescale: data.timescale,
       width: data.width,
       height: data.height,
       type: 'video'
@@ -231,7 +231,7 @@ class FLVMp4 {
 
     let mdia = FLVMp4.mdia({
       type: 'video',
-      timescale: data.timeScale,
+      timescale: data.timescale,
       duration: data.duration,
       sps: data.sps,
       pps: data.pps,
@@ -252,7 +252,7 @@ class FLVMp4 {
     let tkhd = FLVMp4.tkhd({
       id: 2,
       duration: data.duration,
-      timescale: data.timeScale,
+      timescale: data.timescale,
       width: 0,
       height: 0,
       type: 'audio'
@@ -260,7 +260,7 @@ class FLVMp4 {
 
     let mdia = FLVMp4.mdia({
       type: 'audio',
-      timescale: data.timeScale,
+      timescale: data.timescale,
       duration: data.duration,
       channelCount: data.audioChannelCount,
       samplerate: data.audioSampleRate,

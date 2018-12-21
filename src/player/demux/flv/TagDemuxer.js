@@ -1,6 +1,7 @@
 import AbstractDemuxer from '../AbstractDemuxer';
 import MetaDemuxer from './MetaDemuxer';
-import VideoDemuxer from './VideoDemuxer';
+// import VideoDemuxer from './VideoDemuxer';
+import VideoDemuxer from './VideoDemuxer2';
 import AudioDemuxer from './AudioDemuxer';
 import DataStore from './DataStore';
 import fields from '../../constants/MetaFields';
@@ -19,7 +20,9 @@ export default class TagDemuxer extends AbstractDemuxer {
     super();
 
     this._metaDemuxer = new MetaDemuxer();
+    // this._videoDemuxer = new VideoDemuxer();
     this._videoDemuxer = new VideoDemuxer();
+
     this._audioDemuxer = new AudioDemuxer();
 
     this.handleMediaInfoReady = NOOP;
@@ -62,6 +65,12 @@ export default class TagDemuxer extends AbstractDemuxer {
 
     if (hasInitialMetaDispatched) {
       if (audioTrack.length || videoTrack.length) {
+        // let at = audioTrack.time;
+        // let vt = videoTrack.time;
+        // console.log({
+        //   at,
+        //   vt
+        // });
         this.handleDataReady(audioTrack, videoTrack);
       }
     }

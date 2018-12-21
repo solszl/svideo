@@ -324,6 +324,7 @@ export default class VideoDemuxer extends AbstractDemuxer {
     let naluList = [];
     let dataLen = 0;
     let ts = DataStore.OBJ.timestampBase + this.currentTag.getTime();
+    // console.log(ts, DataStore.OBJ.timestampBase, this.currentTag.getTime());
     let isKeyframe = 1 === frameType;
     while (this.unreadLength > 0) {
       if (this.unreadLength < 4) {
