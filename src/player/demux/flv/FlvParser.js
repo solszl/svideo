@@ -113,9 +113,6 @@ export default class FlvParser {
     // console.log(`完成解析${fragment.type}`, this.videoCount, this.audioCount);
 
     this.pendingFragments.push(fragment);
-    const {
-      randomAccessPoints
-    } = fragment.fragment;
 
     if (!this.sourceOpen) {
       return;

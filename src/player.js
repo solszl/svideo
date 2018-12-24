@@ -133,7 +133,6 @@ export default class Player extends PlayerProxy {
       }
 
       this.mse.on('updateend', () => {
-        console.log('MSE updateend');
         const {
           pendingFragments,
           hasPendingFragments

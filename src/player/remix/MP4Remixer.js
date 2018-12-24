@@ -21,14 +21,8 @@ export default class MP4Remixer extends Remixer {
     this._isDtsBaseInitialed = false;
 
     this._audioRemixer = new FlvAudioRemixer();
-    this._audioMeta = null;
-    this._audioNextDts = null;
-    this._audioSegmentList = new MediaSegmentList('audio');
-
     this._videoRemixer = new FlvVideoRemixer();
-    this._videoMeta = null;
-    this._videoNextDts = null;
-    this._videoSegmentList = new MediaSegmentList('video');
+
 
     this.handleMediaFragment = () => {};
   }

@@ -19,7 +19,6 @@ export default class MSE {
 
     EventEmitter(this);
     this.codecs = codecs;
-    this.queue = [];
     this.mediaSource = new window.MediaSource();
     this.url = window.URL.createObjectURL(this.mediaSource);
 
@@ -43,7 +42,6 @@ export default class MSE {
       sb.appendBuffer(buffer);
       return true;
     } else {
-      this.queue.push(buffer);
       return false;
     }
   }
@@ -77,7 +75,6 @@ export default class MSE {
    */
   destroy() {
     this.endOfStream();
-    this.queue = [];
     this.__ee__ = {};
   }
 
@@ -87,14 +84,18 @@ export default class MSE {
     self.sourceBuffer = this.mediaSource.addSourceBuffer(self.codecs);
     self.sourceBuffer.addEventListener(MSEEvents.ERROR, self.__error.bind(self));
 
-    self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, self.__updateEnd.bind(self));
-
-    self.sourceBuffer.addEventListener('updatestart', e => {
+    self.sourceBuffer.addEventListener(MSEEvents.UPDATE_START, e => {
       // console.log('update start: ', e);
     });
 
-    self.sourceBuffer.addEventListener('update', e => {
+    self.sourceBuffer.addEventListener(MSEEvents.UPDATE, e => {
       // console.log('update ', e);
+    });
+
+    // self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, self.__updateEnd.bind(self));
+    self.sourceBuffer.addEventListener(MSEEvents.UPDATE_END, e => {
+      // console.log('MSE updateend', e);
+      this.emit(MSEEvents.UPDATE_END);
     });
 
     self.sourceBuffer.addEventListener('abort', e => {
@@ -109,12 +110,8 @@ export default class MSE {
   }
 
   __updateEnd(e) {
-    this.emit(MSEEvents.UPDATE_END);
+
     // console.log('updateend', e);
-    // let b = this.queue.shift();
-    // if (b) {
-    //   this.sourceBuffer.appendBuffer(b);
-    // }
   }
 
   _mediaSourceClose() {

@@ -22,12 +22,13 @@ class PlayerProxy extends Component {
     this._src = '';
     this._isLive = false;
     this._started = false;
-    this.video = createElement('video', {}, {
+    this.video = createElement('video', {
+      id: 'vh-video',
+      controls: true
+    }, {
       width: '100%',
       height: '100%'
     });
-
-    this.video.controls = true;
 
     // requestAnimationFrame(() => this[updateDisplayList]());
   }

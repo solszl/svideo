@@ -1,8 +1,9 @@
 import AbstractDemuxer from '../AbstractDemuxer';
 import MetaDemuxer from './MetaDemuxer';
 // import VideoDemuxer from './VideoDemuxer';
-import VideoDemuxer from './VideoDemuxer2';
 import AudioDemuxer from './AudioDemuxer';
+import VideoDemuxer from './VideoDemuxer2';
+// import AudioDemuxer from './AudioDemuxer2';
 import DataStore from './DataStore';
 import fields from '../../constants/MetaFields';
 

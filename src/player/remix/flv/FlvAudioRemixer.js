@@ -1,13 +1,13 @@
 import Remixer from '../Remixer';
-import DataStore from './../../demux/flv/DataStore';
 import Browser from './../../../utils/Browser';
+import DataStore from './../../demux/flv/DataStore';
 import Buffer from './../../fmp4/Buffer';
-import {
-  MediaSegmentList,
-  MediaSegment,
-  MediaSample
-} from './MediaSegmentInfo';
 import FLVMp4 from './FLVMp4';
+import {
+  MediaSample,
+  MediaSegment,
+  MediaSegmentList
+} from './MediaSegmentInfo';
 
 /**
  * 声音混流器 
@@ -183,6 +183,8 @@ export default class FlvAudioRemixer extends Remixer {
     track.time = firstDts;
     const moof = FLVMp4.moof(track);
     const mdat = FLVMp4.mdat(mdatBox);
+    // const moof = FMP4.moof(track);
+    // const mdat = FMP4.mdat(mdatBox);
     moofMdat.write(moof, mdat);
 
     if (!DataStore.OBJ.isLive) {
