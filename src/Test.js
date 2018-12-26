@@ -1,5 +1,5 @@
-import IOController from './flv/io/IOController';
 import PlayerProxy from './PlayerProxy';
+import FlvPlayer from './flv/FlvPlayer';
 
 export default class Player extends PlayerProxy {
   constructor(opts = {}) {
@@ -7,8 +7,10 @@ export default class Player extends PlayerProxy {
   }
 
   init(opts = {}) {
-    this.config = opts;
-    var ioctrl = new IOController(null, this.config);
-    ioctrl.open();
+    var flvplayer = new FlvPlayer(opts, opts);
+    flvplayer.attachMediaElement(flvplayer.video);
+    flvplayer.load();
   }
+
+
 }

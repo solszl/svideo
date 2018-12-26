@@ -14,10 +14,13 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
+        type:'flv',
         isLive: true,
         id: "video-wrapper",
         url: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        cors:'cors'
+        cors:'cors',
+        lazyLoadMaxDuration: 3 * 60,
+        seekType: 'range',
       });
 
       v.on('volumeChanged',val => {
