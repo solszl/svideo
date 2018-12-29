@@ -14,6 +14,11 @@ import {
 } from './config';
 import PlayerEvents from './core/player-events';
 import Log from './utils/logger';
+import Features from './core/features';
+import {
+  ErrorTypes,
+  ErrorDetails
+} from './core/player-errors';
 /**
  *
  *
@@ -25,9 +30,6 @@ import Log from './utils/logger';
 export default class FlvPlayer extends PlayerProxy {
   constructor(mediaDataSource, config) {
     super(config);
-    // document.getElementById(config['id']).appendChild(this.video);
-    let parent = document.getElementById(config['id']);
-    parent.appendChild(this.video);
     this.TAG = 'FlvPlayer';
     this._type = 'FlvPlayer';
     this._emitter = new EventEmitter();
@@ -605,4 +607,7 @@ export default class FlvPlayer extends PlayerProxy {
     this._checkAndResumeStuckPlayback();
   }
 
+  static isSupported() {
+    return Features.supportMSEH264Playback();
+  }
 }

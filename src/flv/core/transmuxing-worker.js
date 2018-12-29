@@ -41,7 +41,7 @@ let TransmuxingWorker = function (self) {
   let controller = null;
   let logcatListener = onLogcatCallback.bind(this);
 
-  // Polyfill.install();
+  Polyfill.install();
 
   self.addEventListener('message', function (e) {
     switch (e.data.cmd) {

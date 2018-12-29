@@ -46,9 +46,9 @@ class Polyfill {
     };
 
     // ES6 Promise (missing support in IE11)
-    // if (typeof self.Promise !== 'function') {
-    //   require('es6-promise').polyfill();
-    // }
+    if (typeof self.Promise !== 'function') {
+      require('es6-promise').polyfill();
+    }
   }
 
 }

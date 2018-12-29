@@ -14,14 +14,19 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
-        type:'flv',
+        type:'hls',
         isLive: true,
         id: "video-wrapper",
-        url: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         cors:'cors',
         lazyLoadMaxDuration: 3 * 60,
         seekType: 'range',
       });
+
+      // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+      //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+      //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
 
       v.on('volumeChanged',val => {
         console.log(val);

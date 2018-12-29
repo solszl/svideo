@@ -16,23 +16,25 @@
  * limitations under the License.
  */
 
-import {NotImplementedException} from '../utils/exception.js';
+import {
+  NotImplementedException
+} from '../utils/exception.js';
 
 export const LoaderStatus = {
-    kIdle: 0,
-    kConnecting: 1,
-    kBuffering: 2,
-    kError: 3,
-    kComplete: 4
+  kIdle: 0,
+  kConnecting: 1,
+  kBuffering: 2,
+  kError: 3,
+  kComplete: 4
 };
 
 export const LoaderErrors = {
-    OK: 'OK',
-    EXCEPTION: 'Exception',
-    HTTP_STATUS_CODE_INVALID: 'HttpStatusCodeInvalid',
-    CONNECTING_TIMEOUT: 'ConnectingTimeout',
-    EARLY_EOF: 'EarlyEof',
-    UNRECOVERABLE_EARLY_EOF: 'UnrecoverableEarlyEof'
+  OK: 'OK',
+  EXCEPTION: 'Exception',
+  HTTP_STATUS_CODE_INVALID: 'HttpStatusCodeInvalid',
+  CONNECTING_TIMEOUT: 'ConnectingTimeout',
+  EARLY_EOF: 'EarlyEof',
+  UNRECOVERABLE_EARLY_EOF: 'UnrecoverableEarlyEof'
 };
 
 /* Loader has callbacks which have following prototypes:
@@ -44,91 +46,91 @@ export const LoaderErrors = {
  */
 export class BaseLoader {
 
-    constructor(typeName) {
-        this._type = typeName || 'undefined';
-        this._status = LoaderStatus.kIdle;
-        this._needStash = false;
-        // callbacks
-        this._onContentLengthKnown = null;
-        this._onURLRedirect = null;
-        this._onDataArrival = null;
-        this._onError = null;
-        this._onComplete = null;
-    }
+  constructor(typeName) {
+    this._type = typeName || 'undefined';
+    this._status = LoaderStatus.kIdle;
+    this._needStash = false;
+    // callbacks
+    this._onContentLengthKnown = null;
+    this._onURLRedirect = null;
+    this._onDataArrival = null;
+    this._onError = null;
+    this._onComplete = null;
+  }
 
-    destroy() {
-        this._status = LoaderStatus.kIdle;
-        this._onContentLengthKnown = null;
-        this._onURLRedirect = null;
-        this._onDataArrival = null;
-        this._onError = null;
-        this._onComplete = null;
-    }
+  destroy() {
+    this._status = LoaderStatus.kIdle;
+    this._onContentLengthKnown = null;
+    this._onURLRedirect = null;
+    this._onDataArrival = null;
+    this._onError = null;
+    this._onComplete = null;
+  }
 
-    isWorking() {
-        return this._status === LoaderStatus.kConnecting || this._status === LoaderStatus.kBuffering;
-    }
+  isWorking() {
+    return this._status === LoaderStatus.kConnecting || this._status === LoaderStatus.kBuffering;
+  }
 
-    get type() {
-        return this._type;
-    }
+  get type() {
+    return this._type;
+  }
 
-    get status() {
-        return this._status;
-    }
+  get status() {
+    return this._status;
+  }
 
-    get needStashBuffer() {
-        return this._needStash;
-    }
+  get needStashBuffer() {
+    return this._needStash;
+  }
 
-    get onContentLengthKnown() {
-        return this._onContentLengthKnown;
-    }
+  get onContentLengthKnown() {
+    return this._onContentLengthKnown;
+  }
 
-    set onContentLengthKnown(callback) {
-        this._onContentLengthKnown = callback;
-    }
+  set onContentLengthKnown(callback) {
+    this._onContentLengthKnown = callback;
+  }
 
-    get onURLRedirect() {
-        return this._onURLRedirect;
-    }
+  get onURLRedirect() {
+    return this._onURLRedirect;
+  }
 
-    set onURLRedirect(callback) {
-        this._onURLRedirect = callback;
-    }
+  set onURLRedirect(callback) {
+    this._onURLRedirect = callback;
+  }
 
-    get onDataArrival() {
-        return this._onDataArrival;
-    }
+  get onDataArrival() {
+    return this._onDataArrival;
+  }
 
-    set onDataArrival(callback) {
-        this._onDataArrival = callback;
-    }
+  set onDataArrival(callback) {
+    this._onDataArrival = callback;
+  }
 
-    get onError() {
-        return this._onError;
-    }
+  get onError() {
+    return this._onError;
+  }
 
-    set onError(callback) {
-        this._onError = callback;
-    }
+  set onError(callback) {
+    this._onError = callback;
+  }
 
-    get onComplete() {
-        return this._onComplete;
-    }
+  get onComplete() {
+    return this._onComplete;
+  }
 
-    set onComplete(callback) {
-        this._onComplete = callback;
-    }
+  set onComplete(callback) {
+    this._onComplete = callback;
+  }
 
-    // pure virtual
-    open(dataSource, range) {
-        throw new NotImplementedException('Unimplemented abstract function!');
-    }
+  // pure virtual
+  open(dataSource, range) {
+    throw new NotImplementedException('Unimplemented abstract function!');
+  }
 
-    abort() {
-        throw new NotImplementedException('Unimplemented abstract function!');
-    }
+  abort() {
+    throw new NotImplementedException('Unimplemented abstract function!');
+  }
 
 
 }

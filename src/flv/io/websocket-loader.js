@@ -23,128 +23,128 @@ import {RuntimeException} from '../utils/exception.js';
 // For FLV over WebSocket live stream
 class WebSocketLoader extends BaseLoader {
 
-    static isSupported() {
-        try {
-            return (typeof self.WebSocket !== 'undefined');
-        } catch (e) {
-            return false;
-        }
+  static isSupported() {
+    try {
+      return (typeof self.WebSocket !== 'undefined');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  constructor() {
+    super('websocket-loader');
+    this.TAG = 'WebSocketLoader';
+
+    this._needStash = true;
+
+    this._ws = null;
+    this._requestAbort = false;
+    this._receivedLength = 0;
+  }
+
+  destroy() {
+    if (this._ws) {
+      this.abort();
+    }
+    super.destroy();
+  }
+
+  open(dataSource) {
+    try {
+      let ws = this._ws = new self.WebSocket(dataSource.url);
+      ws.binaryType = 'arraybuffer';
+      ws.onopen = this._onWebSocketOpen.bind(this);
+      ws.onclose = this._onWebSocketClose.bind(this);
+      ws.onmessage = this._onWebSocketMessage.bind(this);
+      ws.onerror = this._onWebSocketError.bind(this);
+
+      this._status = LoaderStatus.kConnecting;
+    } catch (e) {
+      this._status = LoaderStatus.kError;
+
+      let info = {code: e.code, msg: e.message};
+
+      if (this._onError) {
+        this._onError(LoaderErrors.EXCEPTION, info);
+      } else {
+        throw new RuntimeException(info.msg);
+      }
+    }
+  }
+
+  abort() {
+    let ws = this._ws;
+    if (ws && (ws.readyState === 0 || ws.readyState === 1)) {  // CONNECTING || OPEN
+      this._requestAbort = true;
+      ws.close();
     }
 
-    constructor() {
-        super('websocket-loader');
-        this.TAG = 'WebSocketLoader';
+    this._ws = null;
+    this._status = LoaderStatus.kComplete;
+  }
 
-        this._needStash = true;
+  _onWebSocketOpen(e) {
+    this._status = LoaderStatus.kBuffering;
+  }
 
-        this._ws = null;
-        this._requestAbort = false;
-        this._receivedLength = 0;
+  _onWebSocketClose(e) {
+    if (this._requestAbort === true) {
+      this._requestAbort = false;
+      return;
     }
 
-    destroy() {
-        if (this._ws) {
-            this.abort();
-        }
-        super.destroy();
+    this._status = LoaderStatus.kComplete;
+
+    if (this._onComplete) {
+      this._onComplete(0, this._receivedLength - 1);
     }
+  }
 
-    open(dataSource) {
-        try {
-            let ws = this._ws = new self.WebSocket(dataSource.url);
-            ws.binaryType = 'arraybuffer';
-            ws.onopen = this._onWebSocketOpen.bind(this);
-            ws.onclose = this._onWebSocketClose.bind(this);
-            ws.onmessage = this._onWebSocketMessage.bind(this);
-            ws.onerror = this._onWebSocketError.bind(this);
+  _onWebSocketMessage(e) {
+    if (e.data instanceof ArrayBuffer) {
+      this._dispatchArrayBuffer(e.data);
+    } else if (e.data instanceof Blob) {
+      let reader = new FileReader();
+      reader.onload = () => {
+        this._dispatchArrayBuffer(reader.result);
+      };
+      reader.readAsArrayBuffer(e.data);
+    } else {
+      this._status = LoaderStatus.kError;
+      let info = {code: -1, msg: 'Unsupported WebSocket message type: ' + e.data.constructor.name};
 
-            this._status = LoaderStatus.kConnecting;
-        } catch (e) {
-            this._status = LoaderStatus.kError;
-
-            let info = {code: e.code, msg: e.message};
-
-            if (this._onError) {
-                this._onError(LoaderErrors.EXCEPTION, info);
-            } else {
-                throw new RuntimeException(info.msg);
-            }
-        }
+      if (this._onError) {
+        this._onError(LoaderErrors.EXCEPTION, info);
+      } else {
+        throw new RuntimeException(info.msg);
+      }
     }
+  }
 
-    abort() {
-        let ws = this._ws;
-        if (ws && (ws.readyState === 0 || ws.readyState === 1)) {  // CONNECTING || OPEN
-            this._requestAbort = true;
-            ws.close();
-        }
+  _dispatchArrayBuffer(arraybuffer) {
+    let chunk = arraybuffer;
+    let byteStart = this._receivedLength;
+    this._receivedLength += chunk.byteLength;
 
-        this._ws = null;
-        this._status = LoaderStatus.kComplete;
+    if (this._onDataArrival) {
+      this._onDataArrival(chunk, byteStart, this._receivedLength);
     }
+  }
 
-    _onWebSocketOpen(e) {
-        this._status = LoaderStatus.kBuffering;
+  _onWebSocketError(e) {
+    this._status = LoaderStatus.kError;
+
+    let info = {
+      code: e.code,
+      msg: e.message
+    };
+
+    if (this._onError) {
+      this._onError(LoaderErrors.EXCEPTION, info);
+    } else {
+      throw new RuntimeException(info.msg);
     }
-
-    _onWebSocketClose(e) {
-        if (this._requestAbort === true) {
-            this._requestAbort = false;
-            return;
-        }
-
-        this._status = LoaderStatus.kComplete;
-
-        if (this._onComplete) {
-            this._onComplete(0, this._receivedLength - 1);
-        }
-    }
-
-    _onWebSocketMessage(e) {
-        if (e.data instanceof ArrayBuffer) {
-            this._dispatchArrayBuffer(e.data);
-        } else if (e.data instanceof Blob) {
-            let reader = new FileReader();
-            reader.onload = () => {
-                this._dispatchArrayBuffer(reader.result);
-            };
-            reader.readAsArrayBuffer(e.data);
-        } else {
-            this._status = LoaderStatus.kError;
-            let info = {code: -1, msg: 'Unsupported WebSocket message type: ' + e.data.constructor.name};
-
-            if (this._onError) {
-                this._onError(LoaderErrors.EXCEPTION, info);
-            } else {
-                throw new RuntimeException(info.msg);
-            }
-        }
-    }
-
-    _dispatchArrayBuffer(arraybuffer) {
-        let chunk = arraybuffer;
-        let byteStart = this._receivedLength;
-        this._receivedLength += chunk.byteLength;
-
-        if (this._onDataArrival) {
-            this._onDataArrival(chunk, byteStart, this._receivedLength);
-        }
-    }
-
-    _onWebSocketError(e) {
-        this._status = LoaderStatus.kError;
-
-        let info = {
-            code: e.code,
-            msg: e.message
-        };
-
-        if (this._onError) {
-            this._onError(LoaderErrors.EXCEPTION, info);
-        } else {
-            throw new RuntimeException(info.msg);
-        }
-    }
+  }
 
 }
 

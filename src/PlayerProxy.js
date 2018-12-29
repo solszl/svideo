@@ -1,12 +1,8 @@
 import Component from './core/Component';
+import Log from './utils/Log';
 import {
   createElement
 } from './utils/Dom';
-import Log from './utils/Log';
-
-const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
-// 私有函数更新
-const updateDisplayList = Symbol('component-display-update');
 
 /**
  * 播放器的基类
@@ -16,12 +12,17 @@ const updateDisplayList = Symbol('component-display-update');
  * @author zhenliang.sun
  */
 class PlayerProxy extends Component {
-  constructor(opts = {}) {
+  constructor() {
     super();
+
     this._volume = 0.5;
     this._src = '';
     this._isLive = false;
     this._started = false;
+
+  }
+
+  initVideo(config = {}) {
     this.video = createElement('video', {
       id: 'vh-video',
       controls: true
@@ -29,8 +30,7 @@ class PlayerProxy extends Component {
       width: '100%',
       height: '100%'
     });
-
-    // requestAnimationFrame(() => this[updateDisplayList]());
+    document.getElementById(config['id']).appendChild(this.video);
   }
 
   /**
@@ -341,11 +341,6 @@ class PlayerProxy extends Component {
    */
   get isLive() {
     return this._isLive;
-  }
-
-
-  [updateDisplayList]() {
-
   }
 }
 

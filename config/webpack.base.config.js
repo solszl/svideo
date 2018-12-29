@@ -36,7 +36,11 @@ const webpackConfig = {
       'process.env': {
         LOG_LEVEL: JSON.stringify(process.env.LOG_LEVEL),
         VERSION: JSON.stringify(ver)
-      }
+      },
+      __VERSION__: JSON.stringify(false),
+      __USE_SUBTITLES__: JSON.stringify(false),
+      __USE_ALT_AUDIO__: JSON.stringify(false),
+      __USE_EME_DRM__: JSON.stringify(false)
     })
   ]
 };

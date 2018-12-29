@@ -8,5 +8,5 @@
 // const SDK = require('./xg/TPlayer').default;
 // module.exports = SDK;
 
-const SDK = require('./Test').default;
+const SDK = require('./VideoModule').default;
 module.exports = SDK;
