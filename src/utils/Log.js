@@ -1,4 +1,6 @@
-import IllegalStateException from '../error/IllegalStateException';
+import {
+  IllegalStateException
+} from '../player/flv/utils/exception';
 
 const private_log = Symbol('private_log');
 const private_instance = Symbol('private_instance');

@@ -1,39 +1,29 @@
 import * as URLToolkit from 'url-toolkit';
-
-import {
-  ErrorTypes,
-  ErrorDetails
-} from './errors';
-
-import PlaylistLoader from './loader/playlist-loader';
-import FragmentLoader from './loader/fragment-loader';
-import KeyLoader from './loader/key-loader';
-
-import {
-  FragmentTracker
-} from './controller/fragment-tracker';
-import StreamController from './controller/stream-controller';
-import LevelController from './controller/level-controller';
-import ID3TrackController from './controller/id3-track-controller';
-
-import {
-  isSupported
-} from './is-supported';
-import {
-  logger,
-  enableLogs
-} from './utils/logger';
+import PlayerProxy from '../../PlayerProxy';
 import {
   hlsDefaultConfig
 } from './config';
-
-import HlsEvents from './events';
-
 import {
-  Observer
-} from './observer';
-import Component from './../flv/core/Component';
-import PlayerProxy from './../PlayerProxy';
+  FragmentTracker
+} from './controller/fragment-tracker';
+import ID3TrackController from './controller/id3-track-controller';
+import LevelController from './controller/level-controller';
+import StreamController from './controller/stream-controller';
+import {
+  ErrorDetails,
+  ErrorTypes
+} from './errors';
+import HlsEvents from './events';
+import {
+  isSupported
+} from './is-supported';
+import FragmentLoader from './loader/fragment-loader';
+import KeyLoader from './loader/key-loader';
+import PlaylistLoader from './loader/playlist-loader';
+import {
+  enableLogs,
+  logger
+} from './utils/logger';
 
 /**
  * @module Hls
@@ -150,6 +140,8 @@ export default class Hls extends PlayerProxy {
 
     // FIXME: FragmentTracker must be defined before StreamController because the order of event handling is important
     const fragmentTracker = new FragmentTracker(this);
+
+
 
 
     /**

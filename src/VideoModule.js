@@ -1,7 +1,7 @@
-import PlayerProxy from './PlayerProxy';
 import {
   createElement
 } from './utils/Dom';
+import PlayerProxy from './PlayerProxy';
 
 /**
  * 播放器模块
@@ -36,7 +36,7 @@ export default class VideoModule extends PlayerProxy {
     {
 
       this._config.url = this._config.flvurl;
-      const FlvPlayer = require('./flv/FlvPlayer').default;
+      const FlvPlayer = require('./player/flv/FlvPlayer').default;
       if (!FlvPlayer.isSupported()) {
         alert('不支持mse');
         break;
@@ -52,7 +52,7 @@ export default class VideoModule extends PlayerProxy {
     case 'hls':
     {
       this._config.url = this._config.hlsurl;
-      const Hls = require('./hls/hls').default;
+      const Hls = require('./player/hls/hls').default;
       if (!Hls.isSupported()) {
         this._createNativePlayer();
         break;
@@ -63,7 +63,7 @@ export default class VideoModule extends PlayerProxy {
       player.loadSource(this._config.url);
       player.attachMedia(this.video);
       player.on(Hls.Events.MEDIA_ATTACHED, () => {
-        this.video.play();
+        // this.video.play();
       });
       Object.assign(this, player);
       break;

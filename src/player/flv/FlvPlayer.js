@@ -1,24 +1,23 @@
-import PlayerProxy from './../PlayerProxy';
 import EventEmitter from 'events';
-import {
-  InvalidArgumentException
-} from './utils/exception';
-import Transmuxer from './core/transmuxer';
-import TransmuxingEvents from './core/transmuxing-events';
-import Browser from './utils/browser';
-import MSEController from './core/mse-controller';
-import IllegalStateException from './../error/IllegalStateException';
-import MSEEvents from './core/mse-events';
+import PlayerProxy from '../../PlayerProxy';
 import {
   createDefaultConfig
 } from './config';
-import PlayerEvents from './core/player-events';
-import Log from './utils/logger';
 import Features from './core/features';
+import MSEController from './core/mse-controller';
+import MSEEvents from './core/mse-events';
 import {
-  ErrorTypes,
-  ErrorDetails
+  ErrorDetails,
+  ErrorTypes
 } from './core/player-errors';
+import PlayerEvents from './core/player-events';
+import Transmuxer from './core/transmuxer';
+import TransmuxingEvents from './core/transmuxing-events';
+import Browser from './utils/browser';
+import {
+  InvalidArgumentException
+} from './utils/exception';
+import Log from './utils/logger';
 /**
  *
  *

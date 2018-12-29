@@ -1,5 +1,5 @@
 import EventEmitter from 'event-emitter';
-import Log from '../../utils/Log';
+import Log from '../../../utils/Log';
 
 export default class Component {
   constructor() {
