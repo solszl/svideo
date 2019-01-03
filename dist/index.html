@@ -14,11 +14,13 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
-        type:'flv',
-        isLive: true,
+        type:'hls',
+        isLive: false,
         id: "video-wrapper",
         flvurl: './videos/2.flv',
-        hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        hlsurl:'./videos/hls/1.m3u8',
+        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        // hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         nativeurl:'./videos/1.mp4',
         cors:'cors',
         x5:true,
@@ -31,20 +33,16 @@
       //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
       //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
 
-      v.on('volumeChanged',val => {
-        console.log(val);
-      });
-
       v.on('fullscreenChanged', state => {
-        console.log(state);
+        outputInfo(`全屏状态修改为 ${state}`);
       })
 
       v.on('timeupdate',t=>{
         // console.log('接收播放器发来的消息',t);
       })
 
-      v.on('playbackrate_changed',b=>{
-        console.log('接收播放器发来的消息',b);
+      v.on('ratechange',o=>{
+        outputInfo(`倍速播放修改为 ${o.newValue}`);
       });
 
       
@@ -53,7 +51,23 @@
       })
       
       v.on('volume_changed',t=>{
-        console.log('aaa',t);
+        outputInfo(JSON.stringify(t));
+      })
+
+      v.on('progress', e=>{
+        outputInfo(e.type);
+      })
+
+      v.on('play', ()=>{
+        outputInfo('开始播放');
+      })
+
+      v.on('pause',()=>{
+        outputInfo('暂停');
+      })
+
+      v.on('ended', () => {
+        outputInfo('播放完毕');
       })
       
       // v.currentTime = 30;
@@ -75,33 +89,52 @@
       };
       image.src = data;
     }
+
+    // 信息输出
+    function outputInfo (str) {
+      var ta = document.getElementById('taInfo');
+      const now = () => {
+        var str = '';
+        var date = new Date();
+        str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
+        return str
+      };
+      ta.value += `${now()} ${str}` + '\n';
+      ta.scrollTop = ta.scrollHeight;
+    }
   </script>
 </head>
 
 <body>
   <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
-  <div id="video-wrapper">
-  </div>
+  <span>
+    <div id="video-wrapper">
+    </div>
+    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出"></textarea>
+    <div>
+      <button onclick="taInfo.value = ''">清空</button>
+    </div>
+  </span>
   <hr>
   <span>全屏相关</span>
   <button onclick="v.enterFullscreen();">全屏</button>
-  <button onclick="alert(v.displayState);">状态</button>
-  <button onclick="alert(v.isFullscreen);">是否是全屏</button>
+  <button onclick="outputInfo('当前状态为：'+v.displayState);">状态</button>
+  <button onclick="outputInfo('当前是否为全屏：'+v.isFullscreen);">是否是全屏</button>
   <br>
   <span>播放相关</span>
   <button onclick="v.play();">播放</button>
   <button onclick="v.pause();">暂停</button>
-  <button onclick="alert(v.isPaused);">是否暂停</button>
+  <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
   <br>
   <span>循环相关</span>
   <button onclick="v.loop = true">设置循环</button>
   <button onclick="v.loop = false">取消循环</button>
-  <button onclick="alert(v.loop);">是否循环</button>
+  <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
   <br>
   <span>声音相关</span>
   <input id="inputVolume" type="range" min="0" max="100" value="0.5" onchange="v.volume = document.getElementById('inputVolume').value / 100">
-  <button onclick="alert(v.volume)">当前音量</button>
-  <button onclick="alert(v.muted);">是否静音</button>
+  <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
+  <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
   <br>
   <span>倍速播放</span>
   <select id="playbackRate" onchange="onPlaybackRateChanged()">
@@ -112,7 +145,7 @@
     <option value="4">x4</option>
   </select>
   <div>
-    <button onclick="captureVideo()">截图</button>
+    <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
     <canvas id="cvsCapture"></canvas>
   </div>
 </body>

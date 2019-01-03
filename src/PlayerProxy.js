@@ -83,6 +83,33 @@ class PlayerProxy extends Component {
   }
 
   /**
+   * 判断某个时间是否已经缓存了
+   *
+   * @param {*} time 秒为单位
+   * @returns 返回是否已经缓存该时刻
+   * @memberof PlayerProxy
+   */
+  timeInBuffer(time) {
+    let result = false;
+    if (this.buffered.length === 0) {
+      return result;
+    }
+
+    time = +time;
+    let len = this.buffered.length;
+    for (let i = 0; i < len; i += 1) {
+      if (time > this.buffered.end(i)) {
+        continue;
+      }
+
+      if (time > this.buffered.start(i)) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  /**
    * 查看当前视频正在处于暂停状态
    *
    * @readonly
@@ -396,16 +423,13 @@ class PlayerProxy extends Component {
   }
 
   __play() {
-    console.log(PlayerEvent.PLAY);
     this.emit(PlayerEvent.PLAY);
   }
   __pause() {
-    console.log(PlayerEvent.PAUSE);
     this.emit(PlayerEvent.PAUSE);
   }
-  __progress() {
-    console.log('progress');
-    this.emit('progress');
+  __progress(e) {
+    this.emit(PlayerEvent.PROGRESS, e);
   }
   __error(e) {
     this.emit(PlayerEvent.ERROR, e);
@@ -423,18 +447,15 @@ class PlayerProxy extends Component {
   }
 
   __loadedmetadata(e) {
-    console.log('loadedmetadata', e);
-    this.emit('loadedmetadata');
-
+    this.emit(PlayerEvent.LOADEDMETADATA, e);
   }
 
   __seeked(e) {
-    console.log('seek end', e);
-    this.emit(PlayerEvent.SEEKED);
+    this.emit(PlayerEvent.SEEKED, e);
   }
 
   __waiting(e) {
-    this.emit;
+    this.emit(PlayerEvent.WAITING, e);
   }
 
   reset() {

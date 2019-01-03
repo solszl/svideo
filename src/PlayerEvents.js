@@ -23,5 +23,6 @@ export const PlayerEvent = {
   TIMEUPDATE: 'timeupdate',
   WAITING: 'waiting',
   ERROR: 'error',
-  LOADEDMETADATA: 'loadedmetadata'
+  LOADEDMETADATA: 'loadedmetadata',
+  PROGRESS: 'progress'
 };

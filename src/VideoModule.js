@@ -70,7 +70,7 @@ export default class VideoModule extends PlayerProxy {
     let player = new FlvPlayer(this._config, this._config);
     player.initVideo(this._config);
     Object.assign(this, player);
-    player.initEvents();
+    this.initEvents();
     player.attachMediaElement(player.video);
     player.load();
     // this.play();
@@ -80,7 +80,7 @@ export default class VideoModule extends PlayerProxy {
     let player = new Hls(this._config);
     player.initVideo(this._config);
     Object.assign(this, player);
-    player.initEvents();
+    this.initEvents();
     player.loadSource(this._config.url);
     player.attachMedia(player.video);
     player.on(Hls.Events.MEDIA_ATTACHED, () => {
