@@ -1,5 +1,6 @@
+import Component from '../../core/Component';
+
 // import {EventEmitter} from 'eventemitter3';
-import Component from './../flv/core/Component';
 
 /**
  * @class

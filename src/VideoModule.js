@@ -1,7 +1,8 @@
-import {
-  createElement
-} from './utils/Dom';
 import PlayerProxy from './PlayerProxy';
+import FlvPlayer from './player/flv/FlvPlayer';
+import Hls from './player/hls/hls';
+import NativePlayer from './player/native/NativePlayer';
+import PluginMap from './plugins/PluginMap';
 
 /**
  * 播放器模块
@@ -18,56 +19,95 @@ export default class VideoModule extends PlayerProxy {
   init(option = {}) {
     let config = this._configMapping(option);
     this._config = config;
+    this.pluginCall();
     this._createPlayer();
   }
 
   _configMapping(option = {}) {
     let config = {};
-    config.type = option.type.toLowerCase();
-
-    return option;
+    Object.assign(config, option);
+    switch (config.type) {
+    case 'flv':
+      config.url = option.flvurl;
+      break;
+    case 'hls':
+      config.url = option.hlsurl;
+      break;
+    case 'native':
+      config.url = option.nativeurl;
+      break;
+    default:
+      break;
+    }
+    return config;
   }
 
   _createPlayer() {
     let type = this._config.type;
-    let player = null;
     switch (type) {
     case 'flv':
-    {
-
-      this._config.url = this._config.flvurl;
-      const FlvPlayer = require('./player/flv/FlvPlayer').default;
       if (!FlvPlayer.isSupported()) {
         alert('不支持mse');
         break;
       }
-      player = new FlvPlayer(this._config, this._config);
-      player.initVideo(this._config);
-      this.video = player.video;
-      player.attachMediaElement(this.video);
-      player.load();
-      Object.assign(this, player);
+      this._createFLVPlayer();
       break;
-    }
     case 'hls':
-    {
-      this._config.url = this._config.hlsurl;
-      const Hls = require('./player/hls/hls').default;
       if (!Hls.isSupported()) {
+        this._config.url = this._config.hlsurl;
         this._createNativePlayer();
         break;
       }
-      player = new Hls(this._config);
-      player.initVideo(this._config);
-      this.video = player.video;
-      player.loadSource(this._config.url);
-      player.attachMedia(this.video);
-      player.on(Hls.Events.MEDIA_ATTACHED, () => {
-        // this.video.play();
-      });
-      Object.assign(this, player);
+      this._createHLSPlayer();
+      break;
+    case 'native':
+      this._createNativePlayer();
       break;
     }
-    }
+  }
+
+  _createFLVPlayer() {
+    let player = new FlvPlayer(this._config, this._config);
+    player.initVideo(this._config);
+    Object.assign(this, player);
+    player.initEvents();
+    player.attachMediaElement(player.video);
+    player.load();
+    // this.play();
+  }
+
+  _createHLSPlayer() {
+    let player = new Hls(this._config);
+    player.initVideo(this._config);
+    Object.assign(this, player);
+    player.initEvents();
+    player.loadSource(this._config.url);
+    player.attachMedia(player.video);
+    player.on(Hls.Events.MEDIA_ATTACHED, () => {
+      // this.play();
+    });
+
+  }
+
+  _createNativePlayer() {
+    let player = new NativePlayer();
+    Object.assign(this._config, {
+      preload: 'auto'
+    });
+    // this.video = player.video;
+    player.initVideo(this._config);
+    Object.assign(this, player);
+    this.initEvents();
+    this.src = this._config.url;
+    // this.play();
+  }
+
+  pluginCall() {
+
+    PluginMap.forEach((value, key) => {
+      let cl = new value();
+      cl.player = this;
+      cl.init({});
+    });
   }
 }

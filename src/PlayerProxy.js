@@ -1,8 +1,11 @@
-import Component from './core/Component';
-import Log from './utils/Log';
+import {
+  PlayerEvent
+} from './PlayerEvents';
 import {
   createElement
 } from './utils/Dom';
+import Log from './utils/Log';
+import Component from './core/Component';
 
 /**
  * 播放器的基类
@@ -19,18 +22,41 @@ class PlayerProxy extends Component {
     this._src = '';
     this._isLive = false;
     this._started = false;
-
+    this.video = null;
+    this.reset();
   }
 
   initVideo(config = {}) {
+    let x5cfg = {};
+    if (config['x5']) {
+      x5cfg['webkit-playsinline'] = true;
+      x5cfg['playsinline'] = true;
+      x5cfg['x5-video-player-type'] = 'h5';
+      x5cfg['x5-video-player-fullscreen'] = true;
+      x5cfg['x5-video-orientation'] = 'portraint';
+    }
+
+    let poster = config['poster'] ? {
+      poster: config['poster']
+    } : {};
+
     this.video = createElement('video', {
       id: 'vh-video',
       controls: true
-    }, {
+    }, Object.assign({
       width: '100%',
-      height: '100%'
-    });
-    document.getElementById(config['id']).appendChild(this.video);
+      height: '100%',
+      'z-index': 0
+    }, x5cfg, poster));
+
+    let parent = document.getElementById(config['id']);
+    parent.appendChild(this.video);
+
+    this.autoplay = config.autoplay || false;
+  }
+
+  initEvents() {
+    this._initOriginalEvents();
   }
 
   /**
@@ -42,7 +68,7 @@ class PlayerProxy extends Component {
     this.video.focus();
     this.video.play();
     this._started = true;
-    this.emit('play');
+    this.emit(PlayerEvent.PLAY);
   }
 
   /**
@@ -53,7 +79,7 @@ class PlayerProxy extends Component {
   pause() {
     this.video.pause();
     this._started = false;
-    this.emit('pause');
+    this.emit(PlayerEvent.PAUSE);
   }
 
   /**
@@ -120,7 +146,7 @@ class PlayerProxy extends Component {
    */
   set currentTime(t) {
     this.video.currentTime = t;
-    this.emit('currentTimeChanged', t);
+    this.emit(PlayerEvent.CURRENT_TIME_CHANGED, t);
   }
 
   /**
@@ -164,7 +190,7 @@ class PlayerProxy extends Component {
   set loop(v) {
     if (this.video.loop !== v) {
       this.video.loop = v;
-      this.emit('loopChanged', v);
+      this.emit(PlayerEvent.LOOP_CHANGED, v);
     }
   }
 
@@ -189,7 +215,7 @@ class PlayerProxy extends Component {
   set muted(b) {
     if (this.video.muted !== b) {
       this.video.muted = b;
-      this.emit('mutedChanged', b);
+      this.emit(PlayerEvent.MUTED_CHANGED, b);
     }
   }
 
@@ -210,9 +236,14 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set playbackRate(v) {
+    v = +v;
     if (this.video.playbackRate !== v) {
+      let obj = {
+        oldValue: this.video.playbackRate,
+        newValue: v
+      };
       this.video.playbackRate = v;
-      this.emit('playbackRateChanged', v);
+      this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, obj);
     }
   }
 
@@ -265,14 +296,16 @@ class PlayerProxy extends Component {
     return this._src;
   }
   set src(url) {
-    if (this._src !== url) {
+    if (this._src !== url && this._src !== undefined) {
       let oldSrc = this._src;
       this._src = url;
-      this.emit('srcChanged', {
+      this.emit(PlayerEvent.SRC_CHANGED, {
         oldUrl: oldSrc,
         newUrl: this._src
       });
     }
+
+    this.video.src = url;
   }
 
   /**
@@ -300,7 +333,7 @@ class PlayerProxy extends Component {
       this._volume = v;
       this.video.volume = this._volume;
 
-      this.emit('volumeChanged', {
+      this.emit(PlayerEvent.VOLUME_CHANGED, {
         oldVolume: oldVolume,
         newVolume: this._volume
       });
@@ -341,6 +374,75 @@ class PlayerProxy extends Component {
    */
   get isLive() {
     return this._isLive;
+  }
+
+  _initOriginalEvents() {
+    const e = {
+      play: this.__play.bind(this),
+      pause: this.__pause.bind(this),
+      progress: this.__progress.bind(this),
+      error: this.__error.bind(this),
+      timeupdate: this.__timeupdate.bind(this),
+      ended: this.__ended.bind(this),
+      loadedmetadata: this.__loadedmetadata.bind(this),
+      seeked: this.__seeked.bind(this),
+      waiting: this.__waiting.bind(this)
+    };
+
+    // 添加监听
+    Object.keys(e).forEach(item => {
+      this.video.addEventListener(item, e[item]);
+    });
+  }
+
+  __play() {
+    console.log(PlayerEvent.PLAY);
+    this.emit(PlayerEvent.PLAY);
+  }
+  __pause() {
+    console.log(PlayerEvent.PAUSE);
+    this.emit(PlayerEvent.PAUSE);
+  }
+  __progress() {
+    console.log('progress');
+    this.emit('progress');
+  }
+  __error(e) {
+    this.emit(PlayerEvent.ERROR, e);
+  }
+  __timeupdate(e) {
+    // 每大于500ms 派发一次事件
+    let now = Date.now();
+    if (now - this._lastEmitTimeupdate > 500) {
+      this._lastEmitTimeupdate = now;
+      this.emit(PlayerEvent.TIMEUPDATE, e);
+    }
+  }
+  __ended() {
+    this.emit(PlayerEvent.PLAY_END);
+  }
+
+  __loadedmetadata(e) {
+    console.log('loadedmetadata', e);
+    this.emit('loadedmetadata');
+
+  }
+
+  __seeked(e) {
+    console.log('seek end', e);
+    this.emit(PlayerEvent.SEEKED);
+  }
+
+  __waiting(e) {
+    this.emit;
+  }
+
+  reset() {
+    this._lastEmitTimeupdate = 0;
+  }
+
+  destroy() {
+    super.destroy();
   }
 }
 

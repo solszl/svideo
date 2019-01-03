@@ -14,14 +14,17 @@
     window.onload = function () {
       v = new VHVideoModule();
       v.init({
-        type:'hls',
+        type:'flv',
         isLive: true,
         id: "video-wrapper",
-        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        flvurl: './videos/2.flv',
         hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        nativeurl:'./videos/1.mp4',
         cors:'cors',
-        lazyLoadMaxDuration: 3 * 60,
-        seekType: 'range',
+        x5:true,
+        poster:'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
+        maxBuffer:'',
+        autoplay:true,
       });
 
       // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
@@ -36,12 +39,41 @@
         console.log(state);
       })
 
+      v.on('timeupdate',t=>{
+        // console.log('接收播放器发来的消息',t);
+      })
+
+      v.on('playbackrate_changed',b=>{
+        console.log('接收播放器发来的消息',b);
+      });
+
+      
+      v.on('current_time_changed',v=>{
+        console.log('time changed',v)
+      })
+      
+      v.on('volume_changed',t=>{
+        console.log('aaa',t);
+      })
+      
+      // v.currentTime = 30;
     }
 
     function onPlaybackRateChanged() {
       let opts = document.getElementById('playbackRate').options;
       var val = opts[opts.selectedIndex].value;
       v.playbackRate = val;
+    }
+
+    function captureVideo() {
+      let data = v.capture();
+      let ctx = document.getElementById('cvsCapture').getContext('2d');
+      var image = new Image();
+      image.onload = function() {
+        // console.log(data.length);
+        ctx.drawImage(image, 0, 0,300,150);
+      };
+      image.src = data;
     }
   </script>
 </head>
@@ -79,6 +111,10 @@
     <option value="2">x2</option>
     <option value="4">x4</option>
   </select>
+  <div>
+    <button onclick="captureVideo()">截图</button>
+    <canvas id="cvsCapture"></canvas>
+  </div>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-import PlayerProxy from '../PlayerProxy';
+import PlayerProxy from '../../PlayerProxy';
 
 /**
  * 原生播放器封装
