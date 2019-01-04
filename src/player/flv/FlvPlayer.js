@@ -18,6 +18,7 @@ import {
   InvalidArgumentException
 } from './utils/exception';
 import Log from './utils/logger';
+import Model from '../../core/Model';
 /**
  *
  *
@@ -608,5 +609,11 @@ export default class FlvPlayer extends PlayerProxy {
 
   static isSupported() {
     return Features.supportMSEH264Playback();
+  }
+
+  getDownloadSize() {
+    super.getDownloadSize();
+    // console.log(Model.OBJ.filesize);
+    return Model.OBJ.downloadSize;
   }
 }

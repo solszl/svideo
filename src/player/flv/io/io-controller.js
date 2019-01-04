@@ -34,6 +34,7 @@ import {
   IllegalStateException,
   InvalidArgumentException
 } from '../utils/exception.js';
+import Model from '../../../core/Model.js';
 
 /**
  * DataSource: {
@@ -465,10 +466,12 @@ class IOController {
     if (contentLength && this._fullRequestFlag) {
       this._totalLength = contentLength;
       this._fullRequestFlag = false;
+      Model.OBJ.filesize = contentLength;
     }
   }
 
   _onLoaderChunkArrival(chunk, byteStart, receivedLength) {
+
     if (!this._onDataArrival) {
       throw new IllegalStateException('IOController: No existing consumer (onDataArrival) callback!');
     }
@@ -484,7 +487,8 @@ class IOController {
     }
 
     this._speedSampler.addBytes(chunk.byteLength);
-
+    // 统计下载量
+    Model.OBJ.downloadSize += chunk.byteLength;
     // adjust stash buffer size according to network speed dynamically
     let KBps = this._speedSampler.lastSecondKBps;
     if (KBps !== 0) {

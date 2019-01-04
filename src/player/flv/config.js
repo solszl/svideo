@@ -24,7 +24,7 @@ export const defaultConfig = {
   isLive: false,
 
   lazyLoad: true,
-  lazyLoadMaxDuration: 3 * 60,
+  lazyLoadMaxDuration: 1 * 60, // 一次性缓冲多长时间
   lazyLoadRecoverDuration: 30,
   deferLoadAfterSourceOpen: true,
 

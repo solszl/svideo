@@ -9,7 +9,7 @@ export const PlayerEvent = {
   MUTED_CHANGED: 'muted_changed',
   PLAYBACKRATE_CHANGED: 'ratechange',
   SRC_CHANGED: 'src_changed',
-  VOLUME_CHANGED: 'volume_changed',
+  VOLUME_CHANGE: 'volumechange',
   CURRENT_TIME_CHANGED: 'current_time_changed',
   SEEK_START: 'seek_start',
   SEEKED: 'seeked',

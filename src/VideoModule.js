@@ -3,6 +3,12 @@ import FlvPlayer from './player/flv/FlvPlayer';
 import Hls from './player/hls/hls';
 import NativePlayer from './player/native/NativePlayer';
 import PluginMap from './plugins/PluginMap';
+import {
+  VHVideoConfig
+} from './config';
+
+import Mixin from './utils/Mixin';
+import Component from './core/Component';
 
 /**
  * 播放器模块
@@ -11,9 +17,36 @@ import PluginMap from './plugins/PluginMap';
  * @class VideoModule
  * @extends {PlayerProxy}
  */
-export default class VideoModule extends PlayerProxy {
+export default class VideoModule extends Component {
   constructor() {
     super();
+    this.player = {};
+    this._config = {};
+    // super();
+    return new Proxy(this, {
+      get: function (target, prop, receiver) {
+        if (target[prop] !== undefined) {
+          return target[prop];
+        } else if (target.player[prop] !== undefined) {
+          return target.player[prop];
+        } else {
+          target.info('error', `undefined Method or Property: ${prop}`);
+          return undefined;
+        }
+      },
+      set: function (target, prop, value) {
+        if (target[prop] !== undefined) {
+          target[prop] = value;
+          return true;
+        } else if (target.player[prop] !== undefined) {
+          target.player[prop] = value;
+          return true;
+        } else {
+          target.info('error', `undefined Method or Property: ${prop}, value:${value}`);
+          return false;
+        }
+      }
+    });
   }
 
   init(option = {}) {
@@ -25,10 +58,13 @@ export default class VideoModule extends PlayerProxy {
 
   _configMapping(option = {}) {
     let config = {};
-    Object.assign(config, option);
+    console.log(config, VHVideoConfig, option);
+    Object.assign(VHVideoConfig, option);
+    Object.assign(config, VHVideoConfig);
     switch (config.type) {
     case 'flv':
       config.url = option.flvurl;
+      config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime;
       break;
     case 'hls':
       config.url = option.hlsurl;
@@ -67,7 +103,8 @@ export default class VideoModule extends PlayerProxy {
   }
 
   _createFLVPlayer() {
-    let player = new FlvPlayer(this._config, this._config);
+    this.player = new FlvPlayer(this._config, this._config);
+    let player = this.player;
     player.initVideo(this._config);
     Object.assign(this, player);
     this.initEvents();
@@ -77,7 +114,8 @@ export default class VideoModule extends PlayerProxy {
   }
 
   _createHLSPlayer() {
-    let player = new Hls(this._config);
+    this.player = new Hls(this._config);
+    let player = this.player;
     player.initVideo(this._config);
     Object.assign(this, player);
     this.initEvents();
@@ -90,20 +128,16 @@ export default class VideoModule extends PlayerProxy {
   }
 
   _createNativePlayer() {
-    let player = new NativePlayer();
-    Object.assign(this._config, {
-      preload: 'auto'
-    });
-    // this.video = player.video;
+
+    this.player = new NativePlayer();
+    let player = this.player;
     player.initVideo(this._config);
-    Object.assign(this, player);
     this.initEvents();
-    this.src = this._config.url;
+    player.src = this._config.url;
     // this.play();
   }
 
   pluginCall() {
-
     PluginMap.forEach((value, key) => {
       let cl = new value();
       cl.player = this;

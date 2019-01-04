@@ -19,14 +19,14 @@
         id: "video-wrapper",
         flvurl: './videos/2.flv',
         hlsurl:'./videos/hls/1.m3u8',
+        nativeurl:'./videos/1.mp4',
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
         // hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        nativeurl:'./videos/1.mp4',
+        // nativeurl:'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
         cors:'cors',
         x5:true,
         poster:'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
-        maxBuffer:'',
-        autoplay:true,
+        autoplay:false,
       });
 
       // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
@@ -41,8 +41,8 @@
         // console.log('接收播放器发来的消息',t);
       })
 
-      v.on('ratechange',o=>{
-        outputInfo(`倍速播放修改为 ${o.newValue}`);
+      v.on('ratechange',v=>{
+        outputInfo(`倍速播放修改为: ${v}`);
       });
 
       
@@ -50,8 +50,8 @@
         console.log('time changed',v)
       })
       
-      v.on('volume_changed',t=>{
-        outputInfo(JSON.stringify(t));
+      v.on('volumechange',t=>{
+        outputInfo(`设置音量为: ${v.volume}`);
       })
 
       v.on('progress', e=>{
@@ -69,8 +69,16 @@
       v.on('ended', () => {
         outputInfo('播放完毕');
       })
+
+      v.on('seeked', e => {
+        outputInfo(`seek 完成,时间为: ${v.currentTime}`);
+      })
       
       // v.currentTime = 30;
+
+      setTimeout(function(){
+        console.log('开始获取已下载大小 ',v.getDownloadSize());
+      },1000);
     }
 
     function onPlaybackRateChanged() {
@@ -88,6 +96,11 @@
         ctx.drawImage(image, 0, 0,300,150);
       };
       image.src = data;
+    }
+
+    function fetchDownloadSize() {
+      let size = v.getDownloadSize();
+      outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`);
     }
 
     // 信息输出
@@ -113,6 +126,7 @@
     <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出"></textarea>
     <div>
       <button onclick="taInfo.value = ''">清空</button>
+      <button onclick="window.location.reload()">刷新</button>
     </div>
   </span>
   <hr>
@@ -148,6 +162,7 @@
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
     <canvas id="cvsCapture"></canvas>
   </div>
+  <button onclick="fetchDownloadSize()">已下载数据量</button>
 </body>
 
 </html>

@@ -21,8 +21,9 @@ class PlayerProxy extends Component {
     this._volume = 0.5;
     this._src = '';
     this._isLive = false;
-    this._started = false;
+    this._isPlaying = false;
     this.video = null;
+    this._lastEmitTimeupdate = 0;
     this.reset();
   }
 
@@ -31,9 +32,10 @@ class PlayerProxy extends Component {
     if (config['x5']) {
       x5cfg['webkit-playsinline'] = true;
       x5cfg['playsinline'] = true;
-      x5cfg['x5-video-player-type'] = 'h5';
-      x5cfg['x5-video-player-fullscreen'] = true;
-      x5cfg['x5-video-orientation'] = 'portraint';
+      x5cfg['x5-playsinline'] = true;
+      // x5cfg['x5-video-player-type'] = 'h5';
+      // x5cfg['x5-video-player-fullscreen'] = true;
+      // x5cfg['x5-video-orientation'] = 'portraint';
     }
 
     let poster = config['poster'] ? {
@@ -46,6 +48,7 @@ class PlayerProxy extends Component {
     }, Object.assign({
       width: '100%',
       height: '100%',
+      crossOrigin: 'anonymous',
       'z-index': 0
     }, x5cfg, poster));
 
@@ -67,8 +70,7 @@ class PlayerProxy extends Component {
   play() {
     this.video.focus();
     this.video.play();
-    this._started = true;
-    this.emit(PlayerEvent.PLAY);
+    this._isPlaying = true;
   }
 
   /**
@@ -78,8 +80,7 @@ class PlayerProxy extends Component {
    */
   pause() {
     this.video.pause();
-    this._started = false;
-    this.emit(PlayerEvent.PAUSE);
+    this._isPlaying = false;
   }
 
   /**
@@ -110,14 +111,27 @@ class PlayerProxy extends Component {
   }
 
   /**
+   * 获取下载大小，指的是不论seek还是自然下载的总和
+   * 针对于HLS，仅统计了TS大小 
+   * 针对于FLV, 统计flv流文件大小
+   * 针对于原生MP4模拟计算出来的，如：一个MP4文件大小为100M，总时长为100分钟，则认为每分钟大小约为1M。
+   *       通过video 的buffer 计算时间缓冲区间，然后累加获取
+   *
+   * @returns
+   * @memberof PlayerProxy
+   */
+  getDownloadSize() {
+    return -1;
+  }
+
+  /**
    * 查看当前视频正在处于暂停状态
    *
    * @readonly
    * @memberof PlayerProxy
    */
   get isPaused() {
-    // return this.video.paused;
-    return this._started === false;
+    return this.video.paused && this._isPlaying === false;
   }
 
   /**
@@ -265,12 +279,7 @@ class PlayerProxy extends Component {
   set playbackRate(v) {
     v = +v;
     if (this.video.playbackRate !== v) {
-      let obj = {
-        oldValue: this.video.playbackRate,
-        newValue: v
-      };
       this.video.playbackRate = v;
-      this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, obj);
     }
   }
 
@@ -345,10 +354,7 @@ class PlayerProxy extends Component {
   }
 
   set volume(v) {
-    if (typeof v === 'string') {
-      Log.OBJ.warn('volume param should be number');
-      v = parseFloat(v);
-    }
+    v = +v;
 
     if (v > 1 || v < 0) {
       Log.OBJ.warn('volume value range should be between 0 to 1');
@@ -359,11 +365,6 @@ class PlayerProxy extends Component {
       let oldVolume = this._volume;
       this._volume = v;
       this.video.volume = this._volume;
-
-      this.emit(PlayerEvent.VOLUME_CHANGED, {
-        oldVolume: oldVolume,
-        newVolume: this._volume
-      });
     }
 
     this.muted = this._volume === 0;
@@ -413,7 +414,9 @@ class PlayerProxy extends Component {
       ended: this.__ended.bind(this),
       loadedmetadata: this.__loadedmetadata.bind(this),
       seeked: this.__seeked.bind(this),
-      waiting: this.__waiting.bind(this)
+      waiting: this.__waiting.bind(this),
+      ratechange: this.__ratechange.bind(this),
+      volumechange: this.__volumechange.bind(this)
     };
 
     // 添加监听
@@ -447,6 +450,7 @@ class PlayerProxy extends Component {
   }
 
   __loadedmetadata(e) {
+    console.log(e);
     this.emit(PlayerEvent.LOADEDMETADATA, e);
   }
 
@@ -458,6 +462,14 @@ class PlayerProxy extends Component {
     this.emit(PlayerEvent.WAITING, e);
   }
 
+  __ratechange(e) {
+    let rate = this.video.playbackRate;
+    this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, rate);
+  }
+
+  __volumechange(e) {
+    this.emit(PlayerEvent.VOLUME_CHANGE, e);
+  }
   reset() {
     this._lastEmitTimeupdate = 0;
   }
