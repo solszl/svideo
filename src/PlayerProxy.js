@@ -406,16 +406,27 @@ class PlayerProxy extends Component {
 
   _initOriginalEvents() {
     const e = {
+      /** 开始播放*/
       play: this.__play.bind(this),
+      /** 暂停 */
       pause: this.__pause.bind(this),
+      /** 开始加载新的数据，每加载一次，执行一次 */
       progress: this.__progress.bind(this),
+      /** 播放出错 */
       error: this.__error.bind(this),
+      /** 视频时间戳更新触发事件 */
       timeupdate: this.__timeupdate.bind(this),
+      /** 播放完毕执行的事件 */
       ended: this.__ended.bind(this),
+      /** 视频设置src后，加载元数据后，派发的事件 */
       loadedmetadata: this.__loadedmetadata.bind(this),
+      /** seek完成后，触发的事件 */
       seeked: this.__seeked.bind(this),
+      /** 当没有buffer开始播放的时候，派发waiting事件，也就是说，卡顿了 */
       waiting: this.__waiting.bind(this),
+      /** 播放速率发生变更的时候，派发的事件 */
       ratechange: this.__ratechange.bind(this),
+      /** 声音发生改变的时候，派发的事件 */
       volumechange: this.__volumechange.bind(this)
     };
 

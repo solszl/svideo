@@ -68,6 +68,9 @@ export default class VideoModule extends Component {
       break;
     case 'hls':
       config.url = option.hlsurl;
+      if (!Hls.isSupported()) {
+        config.url = this._config.hlsurl;
+      }
       break;
     case 'native':
       config.url = option.nativeurl;
@@ -141,7 +144,7 @@ export default class VideoModule extends Component {
     PluginMap.forEach((value, key) => {
       let cl = new value();
       cl.player = this;
-      cl.init({});
+      cl.init(this._config);
     });
   }
 }

@@ -1,168 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Video Demo</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script src="./index.js"></script>
+    <script>
+      var v
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Video Demo</title>
-  <link rel="stylesheet" href="./index.css">
-  <script src="./index.js"></script>
-  <script>
-    var v;
+      window.onload = function() {
+        let lagConfig = {}
+        let reportConfig = {}
+        let schedulerConfig = {
+          url: '//gslb.e.vhall.com',
+          webinar_id: '439466233',
+          uid: '162647881',
+          bu: 0,
+          quality: ['same', '360p', '480p']
+        }
 
-    window.onload = function () {
-      v = new VHVideoModule();
-      v.init({
-        type:'hls',
-        isLive: false,
-        id: "video-wrapper",
-        flvurl: './videos/2.flv',
-        hlsurl:'./videos/hls/1.m3u8',
-        nativeurl:'./videos/1.mp4',
+        v = new VHVideoModule()
+        v.init({
+          type: 'flv',
+          isLive: true,
+          id: 'video-wrapper',
+          // flvurl: 'http://172.16.11.222:9090/videos/2.flv',
+          // hlsurl: 'http://172.16.11.222:9090/videos/hls/1.m3u8',
+          // nativeurl: 'http://172.16.11.222:9090/videos/1.mp4',
+          flvurl:
+            'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+          hlsurl:
+            'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+          nativeurl:
+            'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+          cors: 'cors',
+          x5: true,
+          poster:
+            'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
+          autoplay: false,
+          plugin_lag: JSON.stringify(lagConfig),
+          plugin_reporter: JSON.stringify(reportConfig),
+          plugin_scheduler: JSON.stringify(schedulerConfig)
+        })
+
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        // hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        // nativeurl:'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
-        cors:'cors',
-        x5:true,
-        poster:'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
-        autoplay:false,
-      });
+        //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
 
-      // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-      //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-      //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
+        v.on('fullscreenChanged', state => {
+          outputInfo(`全屏状态修改为 ${state}`)
+        })
 
-      v.on('fullscreenChanged', state => {
-        outputInfo(`全屏状态修改为 ${state}`);
-      })
+        v.on('timeupdate', t => {
+          // console.log('接收播放器发来的消息',t);
+        })
 
-      v.on('timeupdate',t=>{
-        // console.log('接收播放器发来的消息',t);
-      })
+        v.on('ratechange', v => {
+          outputInfo(`倍速播放修改为: ${v}`)
+        })
 
-      v.on('ratechange',v=>{
-        outputInfo(`倍速播放修改为: ${v}`);
-      });
+        v.on('current_time_changed', v => {
+          console.log('time changed', v)
+        })
 
-      
-      v.on('current_time_changed',v=>{
-        console.log('time changed',v)
-      })
-      
-      v.on('volumechange',t=>{
-        outputInfo(`设置音量为: ${v.volume}`);
-      })
+        v.on('volumechange', t => {
+          outputInfo(`设置音量为: ${v.volume}`)
+        })
 
-      v.on('progress', e=>{
-        outputInfo(e.type);
-      })
+        v.on('progress', e => {
+          outputInfo(e.type)
+        })
 
-      v.on('play', ()=>{
-        outputInfo('开始播放');
-      })
+        v.on('play', () => {
+          outputInfo('开始播放')
+        })
 
-      v.on('pause',()=>{
-        outputInfo('暂停');
-      })
+        v.on('pause', () => {
+          outputInfo('暂停')
+        })
 
-      v.on('ended', () => {
-        outputInfo('播放完毕');
-      })
+        v.on('ended', () => {
+          outputInfo('播放完毕')
+        })
 
-      v.on('seeked', e => {
-        outputInfo(`seek 完成,时间为: ${v.currentTime}`);
-      })
-      
-      // v.currentTime = 30;
+        v.on('seeked', e => {
+          outputInfo(`seek 完成,时间为: ${v.currentTime}`)
+        })
 
-      setTimeout(function(){
-        console.log('开始获取已下载大小 ',v.getDownloadSize());
-      },1000);
-    }
+        // v.currentTime = 30;
 
-    function onPlaybackRateChanged() {
-      let opts = document.getElementById('playbackRate').options;
-      var val = opts[opts.selectedIndex].value;
-      v.playbackRate = val;
-    }
+        setTimeout(function() {
+          console.log('开始获取已下载大小 ', v.getDownloadSize())
+        }, 1000)
+      }
 
-    function captureVideo() {
-      let data = v.capture();
-      let ctx = document.getElementById('cvsCapture').getContext('2d');
-      var image = new Image();
-      image.onload = function() {
-        // console.log(data.length);
-        ctx.drawImage(image, 0, 0,300,150);
-      };
-      image.src = data;
-    }
+      function onPlaybackRateChanged() {
+        let opts = document.getElementById('playbackRate').options
+        var val = opts[opts.selectedIndex].value
+        v.playbackRate = val
+      }
 
-    function fetchDownloadSize() {
-      let size = v.getDownloadSize();
-      outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`);
-    }
+      function captureVideo() {
+        let data = v.capture()
+        let ctx = document.getElementById('cvsCapture').getContext('2d')
+        var image = new Image()
+        image.onload = function() {
+          ctx.drawImage(image, 0, 0, 300, 150)
+        }
+        image.src = data
+      }
 
-    // 信息输出
-    function outputInfo (str) {
-      var ta = document.getElementById('taInfo');
-      const now = () => {
-        var str = '';
-        var date = new Date();
-        str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
-        return str
-      };
-      ta.value += `${now()} ${str}` + '\n';
-      ta.scrollTop = ta.scrollHeight;
-    }
-  </script>
-</head>
+      function fetchDownloadSize() {
+        let size = v.getDownloadSize()
+        outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
+      }
 
-<body>
-  <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
-  <span>
-    <div id="video-wrapper">
-    </div>
-    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出"></textarea>
+      // 信息输出
+      function outputInfo(str) {
+        var ta = document.getElementById('taInfo')
+        const now = () => {
+          var str = ''
+          var date = new Date()
+          str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`
+          return str
+        }
+        ta.value += `${now()} ${str}` + '\n'
+        ta.scrollTop = ta.scrollHeight
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
+    <span>
+      <div id="video-wrapper"></div>
+      <textarea
+        name="a"
+        id="taInfo"
+        cols="60"
+        rows="10"
+        placeholder="信息输出"
+      ></textarea>
+      <div>
+        <button onclick="taInfo.value = ''">清空</button>
+        <button onclick="window.location.reload()">刷新</button>
+      </div>
+    </span>
+    <hr />
+    <span>全屏相关</span> <button onclick="v.enterFullscreen();">全屏</button>
+    <button onclick="outputInfo('当前状态为：'+v.displayState);">状态</button>
+    <button onclick="outputInfo('当前是否为全屏：'+v.isFullscreen);">
+      是否是全屏
+    </button>
+    <br />
+    <span>播放相关</span> <button onclick="v.play();">播放</button>
+    <button onclick="v.pause();">暂停</button>
+    <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
+    <br />
+    <span>循环相关</span> <button onclick="v.loop = true">设置循环</button>
+    <button onclick="v.loop = false">取消循环</button>
+    <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
+    <br />
+    <span>声音相关</span>
+    <input
+      id="inputVolume"
+      type="range"
+      min="0"
+      max="100"
+      value="0.5"
+      onchange="v.volume = document.getElementById('inputVolume').value / 100"
+    />
+    <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
+    <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
+    <br />
+    <span>倍速播放</span>
+    <select id="playbackRate" onchange="onPlaybackRateChanged()">
+      <option value="0.5">x0.5</option>
+      <option value="1">x1</option>
+      <option value="1.5">x1.5</option>
+      <option value="2">x2</option>
+      <option value="4">x4</option>
+    </select>
+    <button onclick="fetchDownloadSize()">已下载数据量</button>
+    <button onclick="outputInfo(JSON.stringify(v.allDefinitions))">
+      全清晰度
+    </button>
     <div>
-      <button onclick="taInfo.value = ''">清空</button>
-      <button onclick="window.location.reload()">刷新</button>
+      <span>Token</span>
+      <button onclick="outputInfo(v.originToken)">原始</button>
+      <button onclick="outputInfo(v.newToken)">计算后</button>
     </div>
-  </span>
-  <hr>
-  <span>全屏相关</span>
-  <button onclick="v.enterFullscreen();">全屏</button>
-  <button onclick="outputInfo('当前状态为：'+v.displayState);">状态</button>
-  <button onclick="outputInfo('当前是否为全屏：'+v.isFullscreen);">是否是全屏</button>
-  <br>
-  <span>播放相关</span>
-  <button onclick="v.play();">播放</button>
-  <button onclick="v.pause();">暂停</button>
-  <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
-  <br>
-  <span>循环相关</span>
-  <button onclick="v.loop = true">设置循环</button>
-  <button onclick="v.loop = false">取消循环</button>
-  <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
-  <br>
-  <span>声音相关</span>
-  <input id="inputVolume" type="range" min="0" max="100" value="0.5" onchange="v.volume = document.getElementById('inputVolume').value / 100">
-  <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
-  <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
-  <br>
-  <span>倍速播放</span>
-  <select id="playbackRate" onchange="onPlaybackRateChanged()">
-    <option value="0.5">x0.5</option>
-    <option value="1">x1</option>
-    <option value="1.5">x1.5</option>
-    <option value="2">x2</option>
-    <option value="4">x4</option>
-  </select>
-  <div>
-    <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
-    <canvas id="cvsCapture"></canvas>
-  </div>
-  <button onclick="fetchDownloadSize()">已下载数据量</button>
-</body>
-
+    <div>
+      <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
+      <canvas id="cvsCapture"></canvas>
+    </div>
+  </body>
 </html>

@@ -1,4 +1,5 @@
 import Component from './Component';
+import Log from '../utils/Log';
 
 /**
  * 插件基类，所有的功能插件均继承自Plugin
