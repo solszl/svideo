@@ -1,7 +1,6 @@
-import Plugin from '../core/Plugin';
-import qs from 'qs';
-import Log from '../utils/Log';
 import crc32 from 'crc-32';
+import qs from 'qs';
+import Plugin from '../core/Plugin';
 
 const LIVE_API = 'api/dispatch_play';
 const VOD_API = 'api/dispatch_replay';
@@ -36,7 +35,7 @@ export default class Scheduler extends Plugin {
     let originURL = document.createElement('a');
     originURL.href = this._allConfig.url;
     this._uri = isLive ? '' : originURL.pathname;
-    this._qualities = schedulerCfg.quality;
+    this._qualities = schedulerCfg.quality || ['same'];
 
     let queryString = '';
     let api = '';
@@ -51,11 +50,11 @@ export default class Scheduler extends Plugin {
     } else {
       let vodQS = {};
       vodQS.webinar_id = this._webinar_id;
-      vodQS.quality = this._qualities;
       vodQS.rand = this._getRandom();
       vodQS.uid = this._uid;
       vodQS.uri = this._uri;
       vodQS.bu = this._bu;
+      vodQS.quality = `["${this._qualities.join('","')}"]`; // 拼接的数据为 &quality=["same",360p",480p"]
       queryString = qs.stringify(vodQS);
       api = VOD_API;
     }
@@ -147,61 +146,32 @@ export default class Scheduler extends Plugin {
       break;
     default:
       this.info('warn', `暂时不支持${type}类型的直播`);
-      break;
+      this._defineProperty([], data['data']['token']);
+      return;
     }
 
-    /**
-     * defs = [
-     *    [
-     *     {idx: 0, line: "线路1", url: "http://sjflvlivepc02.e.vhall.com/vhall/439466233.flv", def: "same"},
-     *     {idx: 0, line: "线路1", url: "http://sjflvlivepc02.e.vhall.com/vhall/439466233_360p.flv", def: "360p"},
-     *     {idx: 0, line: "线路1", url: "http://sjflvlivepc02.e.vhall.com/vhall/439466233_a.flv", def: "a"},
-     *     {idx: 0, line: "线路1", url: "http://sjflvlivepc02.e.vhall.com/vhall/439466233_480p.flv", def: "480p"}
-     *    ],
-     *    [],
-     *    []
-     * ]
-     */
-
-    let defs = [
-      [],
-      [],
-      []
-    ];
+    let lineCount = obj['same'].length;
+    // let defs = new Array(lineCount).fill([], 0);
+    let defs = [];
+    while (lineCount) {
+      defs.push([]);
+      lineCount -= 1;
+    }
     Object.keys(obj).forEach(item => {
-      // console.log(item, index);
-      Object.keys(obj[item]).forEach(subitem => {
-        let m = obj[item][subitem];
+      Object.values(obj[item]).forEach((subItem, index) => {
         let subDef = {
-          idx: +subitem,
-          line: m['line'],
-          url: m[key],
+          idx: index,
+          line: subItem['line'],
+          url: subItem[key],
           def: item
         };
-        defs[+subitem].push(subDef);
+        defs[index].push(subDef);
       });
     });
 
-    this.info('info', '整理直播清晰度完成');
+    this.info('info', `整理直播清晰度完成,共有${defs.length}条线路，每条线路有${defs.length > 0 ? defs[0].length : 0}个清晰度`);
     let oToken = data['data']['token'];
-    let nToken = this._createToken(oToken);
-    Object.defineProperties(this.player, {
-      allDefinitions: {
-        value: defs,
-        writeable: false,
-        enumerable: true
-      },
-      originToken: {
-        value: oToken,
-        writeable: false,
-        enumerable: true
-      },
-      newToken: {
-        value: nToken,
-        writeable: false,
-        enumerable: true
-      }
-    });
+    this._defineProperty(defs, oToken);
   }
 
   _resolveVodData(data) {
@@ -222,9 +192,34 @@ export default class Scheduler extends Plugin {
       key = 'hls_domainname';
       break;
     default:
-      this.info('warn', `暂时不支持${type}类型的直播`);
-      break;
+      this.info('warn', `暂时不支持${type}类型的点播`);
+      this._defineProperty([], data['data']['token']);
+      return;
     }
+    // 先获取有多少个线路, 因为原画肯定是有的， 所以用原画获取
+    let lineCount = obj['same'].length;
+    // let defs = new Array(lineCount).fill([], 0);
+    let defs = [];
+    while (lineCount) {
+      defs.push([]);
+      lineCount -= 1;
+    }
+
+    Object.keys(obj).forEach(item => {
+      Object.values(obj[item]).forEach((subItem, index) => {
+        let def = {
+          idx: index,
+          url: subItem[key],
+          line: subItem['line'],
+          def: item
+        };
+        defs[index].push(def);
+      });
+    });
+
+    this.info('info', `整理点播清晰度完成,有${defs.length}条线路, ${defs.length > 0 ? defs[0].length : 0}个清晰度`);
+    let oToken = data['data']['token'];
+    this._defineProperty(defs, oToken);
   }
 
   _createToken(originToken) {
@@ -233,11 +228,31 @@ export default class Scheduler extends Plugin {
 
     // 短token 翻转
     let reverseToken = pre.split('').reverse().join('');
-    let n = crc32.str(reverseToken).toString(16);
+    let n = (crc32.str(reverseToken) >>> 0).toString(16); // >>>0 的原因是 crc32 库做完的数据可能会有负数的情况
     let newToken = `${n}_${last}`.toLocaleUpperCase();
     this.info('info', `origin token: ${originToken}`);
     this.info('info', `new token: ${newToken}`);
-    this.info('info', 'token 计算完成');
     return newToken;
+  }
+
+  _defineProperty(defs, token) {
+    let nToken = this._createToken(token);
+    Object.defineProperties(this.player, {
+      allDefinitions: {
+        value: defs,
+        writeable: false,
+        enumerable: true
+      },
+      originToken: {
+        value: token,
+        writeable: false,
+        enumerable: true
+      },
+      newToken: {
+        value: nToken,
+        writeable: false,
+        enumerable: true
+      }
+    });
   }
 }

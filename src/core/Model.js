@@ -35,6 +35,15 @@ export default class Model {
     // filesize / 1024 / 1024 = M
     this._fileSize = 0;
     this._downloadSize = 0;
+    this._url = '';
+  }
+
+  get url() {
+    return this._url;
+  }
+
+  set url(val) {
+    this._url = val;
   }
 
   get fileSize() {
