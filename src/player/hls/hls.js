@@ -1,4 +1,5 @@
 import * as URLToolkit from 'url-toolkit';
+import Model from '../../core/Model';
 import PlayerProxy from '../../PlayerProxy';
 import {
   hlsDefaultConfig
@@ -144,6 +145,7 @@ export default class Hls extends PlayerProxy {
 
 
 
+
     /**
      * @member {StreamController} streamController
      */
@@ -276,6 +278,7 @@ export default class Hls extends PlayerProxy {
     });
     logger.log(`loadSource:${url}`);
     this.url = url;
+    Model.OBJ.url = url;
     // when attaching to a source URL, trigger a playlist load
     this.trigger(HlsEvents.MANIFEST_LOADING, {
       url: url

@@ -1,14 +1,13 @@
-import PlayerProxy from './PlayerProxy';
-import FlvPlayer from './player/flv/FlvPlayer';
-import Hls from './player/hls/hls';
-import NativePlayer from './player/native/NativePlayer';
-import PluginMap from './plugins/PluginMap';
 import {
   VHVideoConfig
 } from './config';
-
-import Mixin from './utils/Mixin';
 import Component from './core/Component';
+import FlvPlayer from './player/flv/FlvPlayer';
+import Hls from './player/hls/hls';
+import NativePlayer from './player/native/NativePlayer';
+import PlayerProxy from './PlayerProxy';
+import PluginMap from './plugins/PluginMap';
+
 
 /**
  * 播放器模块
@@ -22,7 +21,10 @@ export default class VideoModule extends Component {
     super();
     this.player = {};
     this._config = {};
+    this.pluginInstance = [];
     // super();
+
+    // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
     return new Proxy(this, {
       get: function (target, prop, receiver) {
         if (target[prop] !== undefined) {
@@ -52,7 +54,7 @@ export default class VideoModule extends Component {
   init(option = {}) {
     let config = this._configMapping(option);
     this._config = config;
-    this.pluginCall();
+    this._pluginCall();
     this._createPlayer();
   }
 
@@ -127,7 +129,6 @@ export default class VideoModule extends Component {
     player.on(Hls.Events.MEDIA_ATTACHED, () => {
       // this.play();
     });
-
   }
 
   _createNativePlayer() {
@@ -140,11 +141,24 @@ export default class VideoModule extends Component {
     // this.play();
   }
 
-  pluginCall() {
-    PluginMap.forEach((value, key) => {
+  _pluginCall() {
+    PluginMap.forEach(value => {
       let cl = new value();
       cl.player = this;
       cl.init(this._config);
+      this.pluginInstance.push(cl);
     });
+  }
+
+  destroy() {
+    super.destroy();
+
+    // 清理插件
+    this.pluginInstance.forEach(plugin => {
+      plugin.destroy();
+    });
+    this.pluginInstance = null;
+    this.player.destroy();
+    this.player = null;
   }
 }

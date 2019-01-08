@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import Model from '../../core/Model';
 import PlayerProxy from '../../PlayerProxy';
 import {
   createDefaultConfig
@@ -18,7 +19,6 @@ import {
   InvalidArgumentException
 } from './utils/exception';
 import Log from './utils/logger';
-import Model from '../../core/Model';
 /**
  *
  *

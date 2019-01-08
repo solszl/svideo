@@ -80,6 +80,13 @@ export default class Reporter extends Plugin {
       this._xhr.onerror = null;
       this._xhr = null;
     }
+
+    this.player.off('play', this.__play);
+    this.player.off('pause', this.__pause);
+    this.player.off('waiting', this.__waiting);
+    this.player.off('ended', this.__ended);
+    this.player.off('lagreport', this.__lag);
+    this.player.off('lagrecover', this.__lagRecover);
   }
 
   static get type() {
@@ -144,6 +151,7 @@ export default class Reporter extends Plugin {
     this.player.on('waiting', this.__waiting.bind(this));
     this.player.on('ended', this.__ended.bind(this));
     this.player.on('lagreport', this.__lag.bind(this));
+    this.player.on('lagrecover', this.__lagRecover.bind(this));
   }
 
   _heartbeat() {
@@ -195,6 +203,12 @@ export default class Reporter extends Plugin {
 
   __lag(e) {
     this._lagCount += 1;
+
+    this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`);
+  }
+
+  __lagRecover(t) {
+    this.info('info', `卡顿恢复了，消耗了${t}ms`);
   }
 
   /**
