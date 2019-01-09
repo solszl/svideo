@@ -153,15 +153,6 @@ export default class Hls extends PlayerProxy {
 
     let networkControllers = [levelController, streamController];
 
-    // optional audio stream controller
-    /**
-     * @var {ICoreComponent | Controller}
-     */
-    let Controller = config.audioStreamController;
-    if (Controller) {
-      networkControllers.push(new Controller(this, fragmentTracker));
-    }
-
     /**
      * @member {INetworkController[]} networkControllers
      */
@@ -181,50 +172,6 @@ export default class Hls extends PlayerProxy {
       id3TrackController,
       fragmentTracker
     ];
-
-    // optional audio track and subtitle controller
-    Controller = config.audioTrackController;
-    if (Controller) {
-      const audioTrackController = new Controller(this);
-
-      /**
-       * @member {AudioTrackController} audioTrackController
-       */
-      this.audioTrackController = audioTrackController;
-      coreComponents.push(audioTrackController);
-    }
-
-    Controller = config.subtitleTrackController;
-    if (Controller) {
-      const subtitleTrackController = new Controller(this);
-
-      /**
-       * @member {SubtitleTrackController} subtitleTrackController
-       */
-      this.subtitleTrackController = subtitleTrackController;
-      coreComponents.push(subtitleTrackController);
-    }
-
-    Controller = config.emeController;
-    if (Controller) {
-      const emeController = new Controller(this);
-
-      /**
-       * @member {EMEController} emeController
-       */
-      this.emeController = emeController;
-      coreComponents.push(emeController);
-    }
-
-    // optional subtitle controllers
-    Controller = config.subtitleStreamController;
-    if (Controller) {
-      coreComponents.push(new Controller(this, fragmentTracker));
-    }
-    Controller = config.timelineController;
-    if (Controller) {
-      coreComponents.push(new Controller(this));
-    }
 
     /**
      * @member {ICoreComponent[]}
@@ -585,54 +532,6 @@ export default class Hls extends PlayerProxy {
    */
   get liveSyncPosition() {
     return this.streamController.liveSyncPosition;
-  }
-
-  /**
-   * get alternate subtitle tracks list from playlist
-   * @type {SubtitleTrack[]}
-   */
-  get subtitleTracks() {
-    const subtitleTrackController = this.subtitleTrackController;
-    return subtitleTrackController ? subtitleTrackController.subtitleTracks : [];
-  }
-
-  /**
-   * index of the selected subtitle track (index in subtitle track lists)
-   * @type {number}
-   */
-  get subtitleTrack() {
-    const subtitleTrackController = this.subtitleTrackController;
-    return subtitleTrackController ? subtitleTrackController.subtitleTrack : -1;
-  }
-
-  /**
-   * select an subtitle track, based on its index in subtitle track lists
-   * @type{number}
-   */
-  set subtitleTrack(subtitleTrackId) {
-    const subtitleTrackController = this.subtitleTrackController;
-    if (subtitleTrackController) {
-      subtitleTrackController.subtitleTrack = subtitleTrackId;
-    }
-  }
-
-  /**
-   * @type {boolean}
-   */
-  get subtitleDisplay() {
-    const subtitleTrackController = this.subtitleTrackController;
-    return subtitleTrackController ? subtitleTrackController.subtitleDisplay : false;
-  }
-
-  /**
-   * Enable/disable subtitle display rendering
-   * @type {boolean}
-   */
-  set subtitleDisplay(value) {
-    const subtitleTrackController = this.subtitleTrackController;
-    if (subtitleTrackController) {
-      subtitleTrackController.subtitleDisplay = value;
-    }
   }
 
   trigger(event, ...data) {

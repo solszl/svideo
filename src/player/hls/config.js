@@ -9,16 +9,8 @@ import FPSController from './controller/fps-controller';
 import XhrLoader from './utils/xhr-loader';
 // import FetchLoader from './utils/fetch-loader';
 
-import AudioTrackController from './controller/audio-track-controller';
-import AudioStreamController from './controller/audio-stream-controller';
-
-import * as Cues from './utils/cues';
-import TimelineController from './controller/timeline-controller';
-import SubtitleTrackController from './controller/subtitle-track-controller';
-import {
-  SubtitleStreamController
-} from './controller/subtitle-stream-controller';
-import EMEController from './controller/eme-controller';
+// import AudioTrackController from './controller/audio-track-controller';
+// import AudioStreamController from './controller/audio-stream-controller';
 
 import {
   requestMediaKeySystemAccess
@@ -96,25 +88,3 @@ export var hlsDefaultConfig = {
   widevineLicenseUrl: undefined, // used by eme-controller
   requestMediaKeySystemAccessFunc: requestMediaKeySystemAccess // used by eme-controller
 };
-
-if (__USE_SUBTITLES__) {
-  hlsDefaultConfig.subtitleStreamController = SubtitleStreamController;
-  hlsDefaultConfig.subtitleTrackController = SubtitleTrackController;
-  hlsDefaultConfig.timelineController = TimelineController;
-  hlsDefaultConfig.cueHandler = Cues; // used by timeline-controller
-  hlsDefaultConfig.enableCEA708Captions = true; // used by timeline-controller
-  hlsDefaultConfig.enableWebVTT = true; // used by timeline-controller
-  hlsDefaultConfig.captionsTextTrack1Label = 'English'; // used by timeline-controller
-  hlsDefaultConfig.captionsTextTrack1LanguageCode = 'en'; // used by timeline-controller
-  hlsDefaultConfig.captionsTextTrack2Label = 'Spanish'; // used by timeline-controller
-  hlsDefaultConfig.captionsTextTrack2LanguageCode = 'es'; // used by timeline-controller
-}
-
-if (__USE_ALT_AUDIO__) {
-  hlsDefaultConfig.audioStreamController = AudioStreamController;
-  hlsDefaultConfig.audioTrackController = AudioTrackController;
-}
-
-if (__USE_EME_DRM__) {
-  hlsDefaultConfig.emeController = EMEController;
-}
