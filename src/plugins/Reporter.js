@@ -34,6 +34,7 @@ export default class Reporter extends Plugin {
     this.el = null; // 用来记录各种url的
     this._tt = Date.now();
     this.basicInfo = {};
+    this.enable = true;
     this._xhr = new XMLHttpRequest();
   }
 
@@ -63,6 +64,8 @@ export default class Reporter extends Plugin {
     this.basicInfo.biz_id = reporterCfg.biz_id;
     this.basicInfo.biz_des01 = reporterCfg.biz_des01;
     this.basicInfo.bu = reporterCfg.bu;
+
+    this.enable = reporterCfg.enable === undefined ? true : reporterCfg.enable;
 
     // 创建xhr 以及绑定超时和错误事件
     this._buildRocket();
@@ -126,7 +129,9 @@ export default class Reporter extends Plugin {
     url = `${p}${this._domain}/${API}?${queryString}`;
     let xhr = this._xhr;
     xhr.open('GET', url);
-    // xhr.send();
+    if (this.enable) {
+      // xhr.send();
+    }
 
     this.info('info', JSON.stringify(param));
     this.info('info', url);
