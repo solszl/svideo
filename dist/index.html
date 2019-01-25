@@ -8,10 +8,21 @@
   <title>Video Demo</title>
   <link rel="stylesheet" href="./index.css" />
   <script src="./index.js"></script>
+  <!-- <div id="player"></div>
+  <script src="//player.polyv.net/script/player.js"></script>
+  <script>
+    var player = polyvPlayer({
+    wrap: '#player',
+    width: 800,
+    height: 533,
+    vid: 'e8888b74d1229efec6b4712e17cb6b7a_e',
+  }); -->
+  </script>
   <script>
     var v
 
       window.onload = function() {
+
         let lagConfig = {}
         let reportConfig = {
           url: '//la.e.vhall.com',
@@ -30,7 +41,7 @@
           biz_id:'-',
           biz_des01:0,
           bu:0,
-          enable:true
+          enable:false
         }
         
         let schedulerConfig = {
@@ -56,7 +67,7 @@
           x5: true,
           poster:
             'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
-          autoplay: false,
+          autoplay: true,
           plugin_lag: JSON.stringify(lagConfig),
           plugin_reporter: JSON.stringify(reportConfig),
           plugin_scheduler: JSON.stringify(schedulerConfig)

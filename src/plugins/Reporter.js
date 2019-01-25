@@ -130,11 +130,10 @@ export default class Reporter extends Plugin {
     let xhr = this._xhr;
     xhr.open('GET', url);
     if (this.enable) {
+      this.info('info', JSON.stringify(param));
+      this.info('info', url);
       // xhr.send();
     }
-
-    this.info('info', JSON.stringify(param));
-    this.info('info', url);
   }
 
   _buildRocket() {

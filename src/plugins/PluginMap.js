@@ -9,9 +9,10 @@ import Fullscreen from './Fullscreen';
 import I18N from './I18n';
 import Keyboard from './Keyboard';
 import Lag from './Lag';
-import Reporter from './Reporter';
 import Play from './Play';
+import Reporter from './Reporter';
 import Scheduler from './Scheduler';
+import Switcher from './Switcher';
 
 let PluginMap = new Map();
 
@@ -26,6 +27,7 @@ if (process.env.PF === 'vhall') {
   PluginMap.set(Lag.type, Lag);
   PluginMap.set(Reporter.type, Reporter);
   PluginMap.set(Scheduler.type, Scheduler);
+  PluginMap.set(Switcher.type, Switcher);
 }
 
 export default PluginMap;

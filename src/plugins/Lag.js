@@ -1,7 +1,7 @@
 import Plugin from '../core/Plugin';
 
 /**
- * 卡顿上报插件
+ * 卡顿插件
  *
  * @export
  * @class Lag
