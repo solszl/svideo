@@ -4,13 +4,13 @@
 	是否是全屏： isFullscreen return (true | false) ✅
 	
 	播放源：src
-	播放：play()
-	暂停：pause()
-	播放时间： currentTime return Xs
-	总时长： duration return Xs
+	播放：play() ✅
+	暂停：pause() ✅
+	播放时间： currentTime return 单位秒 ✅
+	总时长： duration return 单位秒 ✅
 	
-	静音： mute()
-	设置声音：volume (0~1)
+	静音： mute boolean (true | false) ✅
+	设置声音：volume (0~1) ✅
 	
 	销毁：destroy()
 	
