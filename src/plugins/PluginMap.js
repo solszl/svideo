@@ -9,7 +9,6 @@ import Fullscreen from './Fullscreen';
 import I18N from './I18n';
 import Keyboard from './Keyboard';
 import Lag from './Lag';
-import Play from './Play';
 import PlaybackRate from './PlaybackRate';
 import Reporter from './Reporter';
 import Scheduler from './Scheduler';
@@ -19,7 +18,6 @@ let PluginMap = new Map();
 
 PluginMap.set(I18N.type, I18N);
 PluginMap.set(Keyboard.type, Keyboard);
-PluginMap.set(Play.type, Play);
 PluginMap.set(Fullscreen.type, Fullscreen);
 PluginMap.set(Capture.type, Capture);
 PluginMap.set(PlaybackRate.type, PlaybackRate);

@@ -70,7 +70,7 @@ export default class Reporter extends Plugin {
     // 创建xhr 以及绑定超时和错误事件
     this._buildRocket();
     this._handleCareEvent();
-    this.start();
+    // this.start();
   }
 
   destroy() {

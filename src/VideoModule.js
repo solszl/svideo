@@ -60,7 +60,9 @@ export default class VideoModule extends Component {
 
   _configMapping(option = {}) {
     let config = {};
-    console.log(config, VHVideoConfig, option);
+    // this.info('info', `config: ${JSON.stringify(config)}`);
+    // this.info('info', `config: ${JSON.stringify(VHVideoConfig)}`);
+    // this.info('info', `config: ${JSON.stringify(option)}`);
     Object.assign(VHVideoConfig, option);
     Object.assign(config, VHVideoConfig);
     switch (config.type) {

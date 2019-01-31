@@ -12,6 +12,7 @@ import {
  * @export
  * @class Switcher
  * @extends {Plugin}
+ * @author zhenliang.sun
  */
 export default class Switcher extends Plugin {
   constructor() {

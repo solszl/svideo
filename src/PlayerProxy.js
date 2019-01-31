@@ -462,7 +462,6 @@ class PlayerProxy extends Component {
   }
 
   __loadedmetadata(e) {
-    console.log(e);
     this.emit(PlayerEvent.LOADEDMETADATA, e);
   }
 
