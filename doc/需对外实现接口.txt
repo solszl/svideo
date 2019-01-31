@@ -22,6 +22,15 @@
 	缓冲时长： bufferTime
 	
 	设置大小： setSize(w,h)
+
+
+  // 已经对完实现的属性
+  所有清晰度列表 allDefinitionList ✅
+  当前正在使用的清晰度 currentDefinition ✅
+  当前清晰度列表 currentDefinitionList ✅
+  当前清晰度列表的索引 currentDefinitionListIndex ✅
+  调度获取的原始token originToken ✅
+  经过计算后的token newToken ✅
 	
 	
 	

@@ -18,6 +18,7 @@ export default class Lag extends Plugin {
 
   init(opts = {}) {
     super.init(opts);
+    this._allConfig = opts;
     this._handleCareEvent();
   }
 
@@ -83,7 +84,8 @@ export default class Lag extends Plugin {
 
         // 如果大于4秒， 汇报卡顿， 重置卡顿开始时间
         let elapsed = Date.now() - this._lastLagTime;
-        if (elapsed > 4000) {
+        const lagThreshold = +this._allConfig.lagThreshold * 1000; // 默认4秒
+        if (elapsed > lagThreshold) {
           this.player.emit('lagreport');
           this._lastLagTime = 0;
         }

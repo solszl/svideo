@@ -44,7 +44,8 @@ class PlayerProxy extends Component {
 
     this.video = createElement('video', {
       id: 'vh-video',
-      controls: true
+      controls: true,
+      muted: true,
     }, Object.assign({
       width: '100%',
       height: '100%',

@@ -18,4 +18,13 @@ export default class HlsPlayer extends Hls {
     super.getDownloadSize();
     return Model.OBJ.downloadSize;
   }
+
+  set src(val) {
+    this._src = val;
+    this.loadSource(val);
+    this.attachMedia(this.video);
+    this.on(Hls.Events.MEDIA_ATTACHED, () => {
+      // this.play();
+    });
+  }
 }

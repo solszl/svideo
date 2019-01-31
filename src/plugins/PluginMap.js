@@ -23,7 +23,7 @@ PluginMap.set(Fullscreen.type, Fullscreen);
 PluginMap.set(Capture.type, Capture);
 
 if (process.env.PF === 'vhall') {
-  Log.OBJ.info(`注册插件：${Lag.type},${Reporter.type},${Scheduler.type}`);
+  Log.OBJ.info(`注册插件：${Lag.type},${Reporter.type},${Scheduler.type},${Switcher.type}`);
   PluginMap.set(Lag.type, Lag);
   PluginMap.set(Reporter.type, Reporter);
   PluginMap.set(Scheduler.type, Scheduler);

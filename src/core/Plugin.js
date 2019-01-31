@@ -35,8 +35,4 @@ export default class Plugin extends Component {
   static get type() {
     return 'BASE_PLUGIN';
   }
-
-  destroy() {
-
-  }
 }

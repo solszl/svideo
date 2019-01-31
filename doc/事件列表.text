@@ -8,3 +8,4 @@
 全屏变化  fullscreenChanged state string  (fullscreen | normal)
 当前清晰度变化 definitionChanged
 当前清晰度列表变化 definitionListChanged
+调度获取清晰度列表完成 schedulerCompleted

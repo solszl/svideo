@@ -175,7 +175,6 @@ export default class Reporter extends Plugin {
   }
 
   __play(e) {
-    console.log('from reporter, play');
     if (!this.running) {
       this.start();
     }
@@ -187,7 +186,6 @@ export default class Reporter extends Plugin {
   }
 
   __pause(e) {
-    console.log('from reporter, pause');
     let obj = {
       sd: this.getURLInfo().hostname,
       tt: Date.now() - this._tt,

@@ -49,7 +49,8 @@
           webinar_id: '439466233',
           uid: '162647881',
           bu: 0,
-          quality: ['same', '360p', '480p']
+          quality: ['same', '360p', '480p'],
+          defaultDef: '480p'
         }
 
         v = new VHVideoModule()
@@ -70,6 +71,7 @@
           autoplay: false,
           lagThreshold: 4, // 卡顿临界值， 超过此数值，则记录为一次卡顿
           switchLineThreshold: 8, // 因为卡顿或者线路不可达，则切换线路的临界值
+          muted:true,
           plugin_lag: JSON.stringify(lagConfig),
           plugin_reporter: JSON.stringify(reportConfig),
           plugin_scheduler: JSON.stringify(schedulerConfig)
@@ -118,6 +120,14 @@
         v.on('seeked', e => {
           outputInfo(`seek 完成,时间为: ${v.currentTime}`)
         })
+
+        v.on('definitionChanged', def => {
+          outputInfo(`当前清晰度变化，切换为 ${def.def}`);
+        });
+
+        v.on('definitionListChanged', e=>{
+          outputInfo('清晰度列表变化');
+        });
 
         // v.currentTime = 30;
 
@@ -182,7 +192,7 @@
   <span>播放相关</span> <button onclick="v.play();">播放</button>
   <button onclick="v.pause();">暂停</button>
   <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
-  <button onclick="outputInfo(JSON.stringify(v.allDefinitions))">全清晰度</button>
+  <button onclick="outputInfo(JSON.stringify(v.allDefinitionList))">全清晰度</button>
   <br />
   <span>循环相关</span> <button onclick="v.loop = true">设置循环</button>
   <button onclick="v.loop = false">取消循环</button>

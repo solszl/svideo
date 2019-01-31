@@ -16,6 +16,7 @@ const VOD_API = 'api/dispatch_replay';
 export default class Scheduler extends Plugin {
   constructor() {
     super();
+    this._schedulerCfg = null;
     this._resetStatus();
   }
 
@@ -26,7 +27,9 @@ export default class Scheduler extends Plugin {
     // 是否是直播
     this._isLive = opts.isLive;
     let isLive = this._isLive;
-    let schedulerCfg = JSON.parse(this._config);
+    // 调度配置
+    this._schedulerCfg = JSON.parse(this._config);
+    let schedulerCfg = this._schedulerCfg;
     this._domain = schedulerCfg.url;
     this._webinar_id = schedulerCfg.webinar_id;
     this._uid = schedulerCfg.uid;
@@ -36,6 +39,7 @@ export default class Scheduler extends Plugin {
     originURL.href = this._allConfig.url;
     this._uri = isLive ? '' : originURL.pathname;
     this._qualities = schedulerCfg.quality || ['same'];
+    this._defaultDef = schedulerCfg.defaultDef || 'same';
 
     let queryString = '';
     let api = '';
@@ -89,6 +93,8 @@ export default class Scheduler extends Plugin {
     this._uid = '';
     this._qualities = ['same'];
     this._isLive = false;
+    this._currentDefListIndex = -1;
+    this._defaultDef = null;
   }
 
   _getRandom() {
@@ -209,7 +215,7 @@ export default class Scheduler extends Plugin {
       Object.values(obj[item]).forEach((subItem, index) => {
         let def = {
           idx: index,
-          url: subItem[key],
+          url: 'http://127.0.0.1:9090/videos/1.mp4', // subItem[key],
           line: subItem['line'],
           def: item
         };
@@ -237,22 +243,69 @@ export default class Scheduler extends Plugin {
 
   _defineProperty(defs, token) {
     let nToken = this._createToken(token);
-    Object.defineProperties(this.player, {
-      allDefinitions: {
-        value: defs,
-        writeable: false,
-        enumerable: true
-      },
-      originToken: {
-        value: token,
-        writeable: false,
-        enumerable: true
-      },
-      newToken: {
-        value: nToken,
-        writeable: false,
-        enumerable: true
+
+    this._currentDefListIndex = 0; // 默认选中列表中第一个
+    this._currentDefList = defs[this._currentDefListIndex] || []; // 当前清晰度列表
+
+    let sameDef = null; // 如果预设画质没找到，返回原画
+    let defaultDefList = this._currentDefList.filter(item => {
+      if (item.def === 'same') {
+        sameDef = item; // 记录一下原画实体
       }
+      return item.def === this._defaultDef;
     });
+    this._currentDef = defaultDefList.length ? defaultDefList[0] : sameDef;
+
+    // Object.defineProperties(this.player, {
+    //   allDefinitionList: {
+    //     value: defs // 调度获取的全部清晰度列表， 可能有若干线路， 每条线路有若干个清晰度
+    //   },
+    //   currentDefinition: {
+    //     value: this._currentDef // 当前清晰度实体
+    //   },
+    //   currentDefinitionList: {
+    //     value: this._currentDefList // 当前清晰度列表
+    //   },
+    //   currentDefinitionListIndex: {
+    //     value: this._currentDefListIndex // 当前清晰度列表在全部清晰度列表中的索引
+    //   },
+    //   originToken: {
+    //     value: token // 原始token, 从调度获取的
+    //   },
+    //   newToken: {
+    //     value: nToken // 计算过后的token
+    //   }
+    // });
+
+    // defineProperty 的getter 和setter的优先级要高于 defineProperties中的getter 与 setter
+    // https://www.imooc.com/wenda/detail/401551
+
+    let currentDefinition = this._currentDef;
+    let allDefinitionList = defs;
+    let currentDefinitionList = this._currentDefList;
+    let currentDefinitionListIndex = this._currentDefListIndex;
+    let originToken = token;
+    let newToken = nToken;
+    var properties = {
+      currentDefinition,
+      allDefinitionList,
+      currentDefinitionList,
+      currentDefinitionListIndex,
+      originToken,
+      newToken
+    };
+
+    for (const key in properties) {
+      Object.defineProperty(this.player, key, {
+        get: function () {
+          return properties[key];
+        },
+        set: function (newValue) {
+          properties[key] = newValue;
+        }
+      });
+    }
+
+    this.player.emit('schedulerCompleted');
   }
 }

@@ -124,11 +124,12 @@ export default class VideoModule extends Component {
     player.initVideo(this._config);
     Object.assign(this, player);
     this.initEvents();
-    player.loadSource(this._config.url);
-    player.attachMedia(player.video);
-    player.on(Hls.Events.MEDIA_ATTACHED, () => {
-      // this.play();
-    });
+    // player.loadSource(this._config.url);
+    // player.attachMedia(player.video);
+    // player.on(Hls.Events.MEDIA_ATTACHED, () => {
+    //   // this.play();
+    // });
+    this.player.src = this._config.url;
   }
 
   _createNativePlayer() {
