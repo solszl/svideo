@@ -81,7 +81,7 @@
         //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
 
-        v.on('fullscreenChanged', state => {
+        v.on('fullscreenchanged', state => {
           outputInfo(`全屏状态修改为 ${state}`)
         })
 
@@ -121,12 +121,16 @@
           outputInfo(`seek 完成,时间为: ${v.currentTime}`)
         })
 
-        v.on('definitionChanged', def => {
+        v.on('definitionchange', def => {
           outputInfo(`当前清晰度变化，切换为 ${def.def}`);
         });
 
-        v.on('definitionListChanged', e=>{
+        v.on('definitionlistchange', e => {
           outputInfo('清晰度列表变化');
+        });
+
+        v.on('playbackratelistchange', e => {
+          outputInfo(`倍速列表变化: ${v.playbackRateList}`);
         });
 
         // v.currentTime = 30;
@@ -211,6 +215,7 @@
     <option value="2">x2</option>
     <option value="4">x4</option>
   </select>
+  <button onclick="outputInfo(v.playbackRateList)">倍速列表</button>
   <button onclick="fetchDownloadSize()">已下载数据量</button>
   <div>
     <span>Token</span>

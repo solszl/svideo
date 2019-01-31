@@ -13,6 +13,7 @@ import Play from './Play';
 import Reporter from './Reporter';
 import Scheduler from './Scheduler';
 import Switcher from './Switcher';
+import PlaybackRate from './PlaybackRate';
 
 let PluginMap = new Map();
 
@@ -21,6 +22,7 @@ PluginMap.set(Keyboard.type, Keyboard);
 PluginMap.set(Play.type, Play);
 PluginMap.set(Fullscreen.type, Fullscreen);
 PluginMap.set(Capture.type, Capture);
+PluginMap.set(PlaybackRate.type, PlaybackRate);
 
 if (process.env.PF === 'vhall') {
   Log.OBJ.info(`注册插件：${Lag.type},${Reporter.type},${Scheduler.type},${Switcher.type}`);
