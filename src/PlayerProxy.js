@@ -1,11 +1,10 @@
+import Component from './core/Component';
 import {
   PlayerEvent
 } from './PlayerEvents';
 import {
   createElement
 } from './utils/Dom';
-import Log from './utils/Log';
-import Component from './core/Component';
 
 /**
  * 播放器的基类
@@ -358,7 +357,7 @@ class PlayerProxy extends Component {
     v = +v;
 
     if (v > 1 || v < 0) {
-      Log.OBJ.warn('volume value range should be between 0 to 1');
+      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`);
       v = Math.min(Math.max(0, v), 1);
     }
 

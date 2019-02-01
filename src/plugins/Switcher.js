@@ -127,8 +127,8 @@ export default class Switcher extends Plugin {
 
   _changeDef() {
     // def = {idx:index, url: "", line:"线路1", def:'same'}
-    // 如，果默认清晰度开始卡了，通过卡顿责任链，以原画，720，480，360的顺序进行找，如果找到360了，还是不行，就换线，如果没线了，就从原画重新轮询
-    this.info('info', '卡了， 开始换清晰度');
+    // 如果默认清晰度开始卡了，通过卡顿责任链，以原画，720，480，360的顺序进行找，如果找到360了，还是不行，就换线，如果没线了，就从原画重新轮询
+    this.info('info', '卡顿， 开始换清晰度');
     return this._lagChain.execute(this._pollingDefs);
   }
 }

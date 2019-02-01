@@ -19,173 +19,180 @@
   }); -->
   </script>
   <script>
-    var v
+    var v;
 
-      window.onload = function() {
+    window.onload = function() {
 
-        let lagConfig = {}
-        let reportConfig = {
-          url: '//la.e.vhall.com',
-          webinar_id: '439466233',
-          uid: '162647881',
-          session_id: '',
-          vid: '',
-          vfid:'',
-          ndi:'',
-          guid:'',
-          vtype:'',
-          topic:'',
-          app_id:'',
-          biz_role:'',
-          flow_type:2,
-          biz_id:'-',
-          biz_des01:0,
-          bu:0,
-          enable:false
-        }
-        
-        let schedulerConfig = {
-          url: '//gslb.e.vhall.com',
-          webinar_id: '439466233',
-          uid: '162647881',
-          bu: 0,
-          quality: ['same', '360p', '480p'],
-          defaultDef: '480p'
-        }
+      let lagConfig = {}
+      let reportConfig = {
+        url: '//la.e.vhall.com',
+        webinar_id: '439466233',
+        uid: '162647881',
+        session_id: '',
+        vid: '',
+        vfid:'',
+        ndi:'',
+        guid:'',
+        vtype:'',
+        topic:'',
+        app_id:'',
+        biz_role:'',
+        flow_type:2,
+        biz_id:'-',
+        biz_des01:0,
+        bu:0,
+        enable:false
+      }
+      
+      let schedulerConfig = {
+        url: '//gslb.e.vhall.com',
+        webinar_id: '439466233',
+        uid: '162647881',
+        bu: 0,
+        quality: ['same', '360p', '480p'],
+        defaultDef: '480p'
+      }
 
-        v = new VHVideoModule()
-        v.init({
-          type: 'native',
-          isLive: false,
-          id: 'video-wrapper',
-          flvurl: 'http://127.0.0.1:9090/videos/1.flv',
-          hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-          nativeurl: 'http://127.0.0.1:9090/videos/1.mp4',
-          // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-          // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-          // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
-          cors: 'cors',
-          x5: true,
-          poster:
-            'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
-          autoplay: false,
-          lagThreshold: 4, // 卡顿临界值， 超过此数值，则记录为一次卡顿
-          switchLineThreshold: 8, // 因为卡顿或者线路不可达，则切换线路的临界值
-          muted:true,
-          plugin_lag: JSON.stringify(lagConfig),
-          plugin_reporter: JSON.stringify(reportConfig),
-          plugin_scheduler: JSON.stringify(schedulerConfig)
-        })
+      let watermarkConfig = {
+        url:'http://www.vhall.com/public/static/images/index/new/logo.png',
+        align:'tl',
+        position: ['10px','10px'],
+        size: ['48px','48px']
+      }
 
+      v = new VHVideoModule()
+      v.init({
+        type: 'hls',
+        isLive: false,
+        id: 'video-wrapper',
+        flvurl: 'http://127.0.0.1:9090/videos/1.flv',
+        hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
+        nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
+        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+        cors: 'cors',
+        x5: true,
+        poster:
+          'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
+        autoplay: false,
+        muted:true,
+        plugin_lag: JSON.stringify(lagConfig),
+        plugin_reporter: JSON.stringify(reportConfig),
+        plugin_scheduler: JSON.stringify(schedulerConfig),
+        plugin_watermark: JSON.stringify(watermarkConfig)
+      })
 
-        v.on('fullscreenchanged', state => {
-          outputInfo(`全屏状态修改为 ${state}`)
-        })
+      // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+      //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+      //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
 
-        v.on('timeupdate', t => {
-          // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
-        })
+      v.on('fullscreenchanged', state => {
+        outputInfo(`全屏状态修改为 ${state}`)
+      })
 
-        v.on('ratechange', v => {
-          outputInfo(`倍速播放修改为: ${v}`)
-        })
+      v.on('timeupdate', t => {
+        // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
+      })
 
-        v.on('volumechange', t => {
-          outputInfo(`设置音量为: ${v.volume}`)
-        })
+      v.on('ratechange', v => {
+        outputInfo(`倍速播放修改为: ${v}`)
+      })
 
-        v.on('progress', e => {
-          outputInfo(e.type)
-        })
+      v.on('volumechange', t => {
+        outputInfo(`设置音量为: ${v.volume}`)
+      })
 
-        v.on('play', () => {
-          outputInfo('开始播放')
-        })
+      v.on('progress', e => {
+        // outputInfo(e.type)
+      })
 
-        v.on('pause', () => {
-          outputInfo('暂停')
-        })
+      v.on('play', () => {
+        outputInfo('开始播放')
+      })
 
-        v.on('ended', () => {
-          outputInfo('播放完毕')
-        })
+      v.on('pause', () => {
+        outputInfo('暂停')
+      })
 
-        v.on('seeked', e => {
-          outputInfo(`seek 完成,时间为: ${v.currentTime}`)
-        })
+      v.on('ended', () => {
+        outputInfo('播放完毕')
+      })
 
-        v.on('definitionchange', def => {
-          outputInfo(`当前清晰度变化，切换为 ${def.def}`);
-        });
+      v.on('seeked', e => {
+        outputInfo(`seek 完成,时间为: ${v.currentTime}`)
+      })
 
-        v.on('definitionlistchange', e => {
-          outputInfo('清晰度列表变化');
-        });
+      v.on('definitionchange', def => {
+        outputInfo(`当前清晰度变化，切换为 ${def.def}`);
+      });
 
-        v.on('playbackratelistchange', e => {
-          outputInfo(`倍速列表变化: ${v.playbackRateList}`);
-        });
+      v.on('definitionlistchange', e => {
+        outputInfo('清晰度列表变化');
+      });
 
-        v.player.on('loopchange', b => {
-          outputInfo(`循环发生变化, loop: ${b}`);
-        });
+      v.on('playbackratelistchange', e => {
+        outputInfo(`倍速列表变化: ${v.playbackRateList}`);
+      });
 
-        v.player.on('srcchange', e =>{
-          outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
-        });
+      v.player.on('loopchange', b => {
+        outputInfo(`循环发生变化, loop: ${b}`);
+      });
 
-        v.player.on('setcurrenttime', t =>{
-          outputInfo(`设置当前播放器事件为: ${t}`);
-        });
+      v.player.on('srcchange', e =>{
+        outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
+      });
 
-        v.player.on('mutedchange', b => {
-          outputInfo(`静音属性发生变化: ${b}`);
-        });
+      v.player.on('setcurrenttime', t =>{
+        outputInfo(`设置当前播放器事件为: ${t}`);
+      });
 
-        // v.currentTime = 30;
+      v.player.on('mutedchange', b => {
+        outputInfo(`静音属性发生变化: ${b}`);
+      });
 
-        setTimeout(function() {
-          console.log('开始获取已下载大小 ', v.getDownloadSize())
-        }, 1000)
+      // v.currentTime = 30;
+
+      setTimeout(function() {
+        console.log('开始获取已下载大小 ', v.getDownloadSize())
+      }, 1000)
+    }
+
+    function onPlaybackRateChanged() {
+      let opts = document.getElementById('playbackRate').options
+      var val = opts[opts.selectedIndex].value
+      v.playbackRate = val
+    }
+
+    function captureVideo() {
+      let data = v.capture()
+      let ctx = document.getElementById('cvsCapture').getContext('2d')
+      var image = new Image()
+      image.onload = function() {
+        ctx.drawImage(image, 0, 0, 300, 150)
       }
+      image.src = data
+    }
 
-      function onPlaybackRateChanged() {
-        let opts = document.getElementById('playbackRate').options
-        var val = opts[opts.selectedIndex].value
-        v.playbackRate = val
-      }
+    function fetchDownloadSize() {
+      let size = v.getDownloadSize()
+      outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
+    }
 
-      function captureVideo() {
-        let data = v.capture()
-        let ctx = document.getElementById('cvsCapture').getContext('2d')
-        var image = new Image()
-        image.onload = function() {
-          ctx.drawImage(image, 0, 0, 300, 150)
-        }
-        image.src = data
+    // 控制台、信息框 双输出
+    function outputInfo(str) {
+      console.log(str);
+      var ta = document.getElementById('taInfo')
+      const now = () => {
+        var str = ''
+        var date = new Date()
+        str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`
+        return str
       }
-
-      function fetchDownloadSize() {
-        let size = v.getDownloadSize()
-        outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
-      }
-
-      // 信息输出
-      function outputInfo(str) {
-        var ta = document.getElementById('taInfo')
-        const now = () => {
-          var str = ''
-          var date = new Date()
-          str = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`
-          return str
-        }
-        ta.value += `${now()} ${str}` + '\n'
-        ta.scrollTop = ta.scrollHeight
-      }
-    </script>
+      ta.value += `${now()} ${str}` + '\n'
+      ta.scrollTop = ta.scrollHeight
+    }
+  </script>
 </head>
 
 <body>
@@ -227,12 +234,12 @@
     <option value="2">x2</option>
     <option value="4">x4</option>
   </select>
-  <button onclick="outputInfo(v.playbackRateList)">倍速列表</button>
+  <button onclick="outputInfo('倍速列表：' + v.playbackRateList)">倍速列表</button>
   <button onclick="fetchDownloadSize()">已下载数据量</button>
   <div>
     <span>Token</span>
-    <button onclick="outputInfo(v.originToken)">原始</button>
-    <button onclick="outputInfo(v.newToken)">计算后</button>
+    <button onclick="outputInfo('调度获取token: ' + v.originToken)">原始</button>
+    <button onclick="outputInfo('计算后token: ' + v.newToken)">计算后</button>
   </div>
   <div>
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>

@@ -3,9 +3,8 @@ import {
 } from './config';
 import Component from './core/Component';
 import FlvPlayer from './player/flv/FlvPlayer';
-import Hls from './player/hls/hls';
+import HlsPlayer from './player/hls/HlsPlayer';
 import NativePlayer from './player/native/NativePlayer';
-import PlayerProxy from './PlayerProxy';
 import PluginMap from './plugins/PluginMap';
 
 
@@ -14,7 +13,7 @@ import PluginMap from './plugins/PluginMap';
  *
  * @export
  * @class VideoModule
- * @extends {PlayerProxy}
+ * @extends {Component}
  */
 export default class VideoModule extends Component {
   constructor() {
@@ -72,7 +71,7 @@ export default class VideoModule extends Component {
       break;
     case 'hls':
       config.url = option.hlsurl;
-      if (!Hls.isSupported()) {
+      if (!HlsPlayer.isSupported()) {
         config.url = this._config.hlsurl;
       }
       break;
@@ -96,7 +95,7 @@ export default class VideoModule extends Component {
       this._createFLVPlayer();
       break;
     case 'hls':
-      if (!Hls.isSupported()) {
+      if (!HlsPlayer.isSupported()) {
         this._config.url = this._config.hlsurl;
         this._createNativePlayer();
         break;
@@ -121,7 +120,7 @@ export default class VideoModule extends Component {
   }
 
   _createHLSPlayer() {
-    this.player = new Hls(this._config);
+    this.player = new HlsPlayer(this._config);
     let player = this.player;
     player.initVideo(this._config);
     Object.assign(this, player);

@@ -26,6 +26,12 @@ export default class NativePlayer extends PlayerProxy {
     if (Model.OBJ.fileSize === -1) {
       return -1;
     }
+
+    /* 计算思路为：
+      根据视频时长以及视频文件大小，估算出每秒平均大小
+      获取当前video 的buffered 缓冲时间区域，计算总缓冲时长
+      用平均每秒大小乘以缓冲时长估算出下载总量
+    */
     let duration = this.duration;
     let ranges = this.buffered;
     let totalRangeTime = 0;
