@@ -130,9 +130,11 @@ export default class Reporter extends Plugin {
     let xhr = this._xhr;
     xhr.open('GET', url);
     if (this.enable) {
-      this.info('info', JSON.stringify(param));
-      this.info('info', url);
-      // xhr.send();
+      this.info('info', '日志参数列表:' + JSON.stringify(param));
+      this.info('info', '日志url:' + url);
+      xhr.send();
+    } else {
+      this.info('info', '日志上报配置文件[enable:false],不进行日志上报');
     }
   }
 

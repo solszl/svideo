@@ -11,6 +11,7 @@ import Plugin from '../core/Plugin';
 export default class PlaybackRate extends Plugin {
   constructor() {
     super();
+    this._allConfig = null;
   }
 
   init(opts = {}) {

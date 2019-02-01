@@ -86,15 +86,11 @@
         })
 
         v.on('timeupdate', t => {
-          // console.log('接收播放器发来的消息',t);
+          // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
         })
 
         v.on('ratechange', v => {
           outputInfo(`倍速播放修改为: ${v}`)
-        })
-
-        v.on('current_time_changed', v => {
-          console.log('time changed', v)
         })
 
         v.on('volumechange', t => {
@@ -131,6 +127,22 @@
 
         v.on('playbackratelistchange', e => {
           outputInfo(`倍速列表变化: ${v.playbackRateList}`);
+        });
+
+        v.player.on('loopchange', b => {
+          outputInfo(`循环发生变化, loop: ${b}`);
+        });
+
+        v.player.on('srcchange', e =>{
+          outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
+        });
+
+        v.player.on('setcurrenttime', t =>{
+          outputInfo(`设置当前播放器事件为: ${t}`);
+        });
+
+        v.player.on('mutedchange', b => {
+          outputInfo(`静音属性发生变化: ${b}`);
         });
 
         // v.currentTime = 30;
