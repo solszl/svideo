@@ -1,3 +1,5 @@
+import Log from './Log';
+
 /**
  * 创建一个为 tagName 标签 element
  *
@@ -18,6 +20,21 @@ export function createElement(tagName = 'div', properties = {}, attributes = {})
   });
 
   return el;
+}
+
+export function appendChild(parentId, child) {
+  const parent = document.getElementById(parentId);
+  if (!parent) {
+    Log.OBJ.error(`doesn't exist parent element id: ${parentId}`);
+    return;
+  }
+
+  if (!child) {
+    Log.OBJ.error('doesn\'t exist child');
+    return;
+  }
+
+  parent.appendChild(child);
 }
 
 /**

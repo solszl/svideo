@@ -16,6 +16,7 @@ export default class HlsPlayer extends Hls {
 
   getDownloadSize() {
     super.getDownloadSize();
+
     return Model.OBJ.downloadSize;
   }
 

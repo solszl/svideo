@@ -55,9 +55,10 @@
 
       let watermarkConfig = {
         url:'http://www.vhall.com/public/static/images/index/new/logo.png',
-        align:'tl',
-        position: ['10px','10px'],
-        size: ['48px','48px']
+        align:'tr',
+        position: ['20px','20px'],
+        size: ['80px','35px'],
+        enable: true
       }
 
       v = new VHVideoModule()
@@ -74,7 +75,7 @@
         cors: 'cors',
         x5: true,
         poster:
-          'https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=09a4b0094b90f60304b09b410129d426/91ef76c6a7efce1b1e30f4f2ae51f3deb48f65ea.jpg',
+          'https://csdnimg.cn/feed/20190202/c19cdfd20aaf06d72711cd1350d7fb95.jpg',
         autoplay: false,
         muted:true,
         plugin_lag: JSON.stringify(lagConfig),
@@ -199,7 +200,7 @@
   <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
   <span>
     <div id="video-wrapper"></div>
-    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出"></textarea>
+    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出" style="margin-top:10px"></textarea>
     <div>
       <button onclick="taInfo.value = ''">清空</button>
       <button onclick="window.location.reload()">刷新</button>

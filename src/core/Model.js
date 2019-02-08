@@ -1,7 +1,7 @@
 const private_data_model = Symbol('private_data_model');
 
 /**
- *
+ * 数据中心
  *
  * @export
  * @class Model
@@ -27,6 +27,7 @@ export default class Model {
   reset() {
     this._fileSize = 0;
     this._downloadSize = 0;
+    this._url = '';
   }
 
   _initData() {

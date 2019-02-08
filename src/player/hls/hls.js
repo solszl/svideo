@@ -10,6 +10,7 @@ import {
 import ID3TrackController from './controller/id3-track-controller';
 import LevelController from './controller/level-controller';
 import StreamController from './controller/stream-controller';
+import VhallController from './controller/vhall-controller';
 import {
   ErrorDetails,
   ErrorTypes
@@ -142,10 +143,6 @@ export default class Hls extends PlayerProxy {
     // FIXME: FragmentTracker must be defined before StreamController because the order of event handling is important
     const fragmentTracker = new FragmentTracker(this);
 
-
-
-
-
     /**
      * @member {StreamController} streamController
      */
@@ -172,6 +169,9 @@ export default class Hls extends PlayerProxy {
       id3TrackController,
       fragmentTracker
     ];
+
+    const vhallController = this.vhallController = new VhallController(this);
+    coreComponents.push(vhallController);
 
     /**
      * @member {ICoreComponent[]}
@@ -490,7 +490,7 @@ export default class Hls extends PlayerProxy {
    * this setter is used to force next auto level.
    * this is useful to force a switch down in auto mode:
    * in case of load error on level N, hls.js can set nextAutoLevel to N-1 for example)
-   * forced value is valid for one fragment. upon succesful frag loading at forced level,
+   * forced value is valid for one fragment. upon successful frag loading at forced level,
    * this value will be resetted to -1 by ABR controller.
    * @type {number}
    */

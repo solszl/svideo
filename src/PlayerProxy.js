@@ -52,8 +52,9 @@ class PlayerProxy extends Component {
       'z-index': 0
     }, x5cfg, poster));
 
-    let parent = document.getElementById(config['id']);
+    const parent = document.getElementById(config['id']);
     parent.appendChild(this.video);
+    parent.style.position = 'relative';
 
     this.autoplay = config.autoplay || false;
   }
