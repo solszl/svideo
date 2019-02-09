@@ -3,11 +3,11 @@
 	当前屏幕状态： displayState  return (fullScreen | normal) ✅
 	是否是全屏： isFullscreen return (true | false) ✅
 	
-	播放源：src
-	播放：play() ✅
-	暂停：pause() ✅
-	播放时间： currentTime return 单位秒 ✅
-	总时长： duration return 单位秒 ✅
+	播放源：src ✅
+	播放：play() (限点播) ✅
+	暂停：pause() (限点播) ✅
+	播放时间： currentTime return 单位秒(限点播) ✅
+	总时长： duration return 单位秒(限点播) ✅
 	
 	静音： mute boolean (true | false) ✅
 	设置声音：volume (0~1) ✅
@@ -15,7 +15,7 @@
 	销毁：destroy()
 	
 	带宽：bandwidth
-	实时网速：netSpeed
+	实时网速：netSpeed 最后一次下载时的网速，因为可能会播放buffer内容，并不是一直在加载
 	网络状态： networkState return (0|1|2|3)
 	
 	缓冲大小： buffer

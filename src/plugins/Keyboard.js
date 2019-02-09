@@ -36,7 +36,6 @@ export default class Keyboard extends Plugin {
       case 32:
         // 播放、暂停
         p.isPaused ? p.play() : p.pause();
-        console.log(p.isPaused);
         break;
       case 37:
         // 按左 减10秒
