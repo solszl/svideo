@@ -14,8 +14,7 @@
 	
 	销毁：destroy()
 	
-	带宽：bandwidth
-	实时网速：netSpeed 最后一次下载时的网速，因为可能会播放buffer内容，并不是一直在加载
+	实时网速：estimateNetSpeed (KBps) 最后一次下载时的网速，因为可能会播放buffer内容，并不是一直在加载 ✅
 	网络状态： networkState return (0|1|2|3)
 	
 	缓冲大小： buffer

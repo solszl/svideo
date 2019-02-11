@@ -121,7 +121,7 @@ class PlayerProxy extends Component {
    * @returns
    * @memberof PlayerProxy
    */
-  getDownloadSize() {
+  get downloadSize() {
     return -1;
   }
 
@@ -405,6 +405,16 @@ class PlayerProxy extends Component {
     return this._isLive;
   }
 
+  /**
+   * 获取预估网速
+   *
+   * @readonly
+   * @memberof PlayerProxy
+   */
+  get estimateNetSpeed() {
+    return 0;
+  }
+
   _initOriginalEvents() {
     const e = {
       /** 开始播放*/
@@ -428,7 +438,9 @@ class PlayerProxy extends Component {
       /** 播放速率发生变更的时候，派发的事件 */
       ratechange: this.__ratechange.bind(this),
       /** 声音发生改变的时候，派发的事件 */
-      volumechange: this.__volumechange.bind(this)
+      volumechange: this.__volumechange.bind(this),
+      // loadstart: this.__loadstart.bind(this),
+      // canplaythrough: this.__canplaythrough.bind(this)
     };
 
     // 添加监听
@@ -481,6 +493,15 @@ class PlayerProxy extends Component {
   __volumechange(e) {
     this.emit(PlayerEvent.VOLUME_CHANGE, e);
   }
+
+  // __loadstart(e) {
+  //   this.emit(PlayerEvent.LOADSTART, e);
+  // }
+
+  // __canplaythrough(e) {
+  //   this.emit(PlayerEvent.CANPLAYTHROUGH, e);
+  // }
+
   reset() {
     this._lastEmitTimeupdate = 0;
   }

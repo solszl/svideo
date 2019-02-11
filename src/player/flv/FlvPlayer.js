@@ -1,4 +1,5 @@
 import Flv from './flv';
+import Model from '../../core/Model';
 
 /**
  *
@@ -11,5 +12,14 @@ import Flv from './flv';
 export default class FlvPlayer extends Flv {
   constructor(mediaDataSource, config) {
     super(mediaDataSource, config);
+  }
+
+  get estimateNetSpeed() {
+    let speed = this.statisticsInfo ? this.statisticsInfo.speed : 500;
+    return speed;
+  }
+
+  get downloadSize() {
+    return Model.OBJ.downloadSize;
   }
 }

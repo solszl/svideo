@@ -63,19 +63,20 @@
 
       v = new VHVideoModule()
       v.init({
-        type: 'hls',
+        type: 'native',
         isLive: false,
         id: 'video-wrapper',
-        flvurl: 'http://127.0.0.1:9090/videos/1.flv',
-        hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-        nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
-        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+        // flvurl: 'http://127.0.0.1:9090/videos/1.flv',
+        // hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
+        // // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
+        // nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
+        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
         cors: 'cors',
         x5: true,
         poster:
-          'https://csdnimg.cn/feed/20190202/c19cdfd20aaf06d72711cd1350d7fb95.jpg',
+          'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg',
         autoplay: false,
         muted:true,
         plugin_lag: JSON.stringify(lagConfig),
@@ -155,7 +156,7 @@
       // v.currentTime = 30;
 
       setTimeout(function() {
-        console.log('开始获取已下载大小 ', v.getDownloadSize())
+        console.log('开始获取已下载大小 ', v.downloadSize);
       }, 1000)
     }
 
@@ -176,8 +177,13 @@
     }
 
     function fetchDownloadSize() {
-      let size = v.getDownloadSize()
+      let size = v.downloadSize;
       outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
+    }
+
+    function getEstimateNetSpeed() {
+      let speed = v.estimateNetSpeed;
+      outputInfo(`预估网速为:${(speed / 1024).toFixed(3)}M/s`);
     }
 
     // 控制台、信息框 双输出
@@ -237,6 +243,7 @@
   </select>
   <button onclick="outputInfo('倍速列表：' + v.playbackRateList)">倍速列表</button>
   <button onclick="fetchDownloadSize()">已下载数据量</button>
+  <button onclick="getEstimateNetSpeed()">预估网速</button>
   <div>
     <span>Token</span>
     <button onclick="outputInfo('调度获取token: ' + v.originToken)">原始</button>

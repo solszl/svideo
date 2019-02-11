@@ -26,10 +26,12 @@ export default class VideoModule extends Component {
     // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
     return new Proxy(this, {
       get: function (target, prop, receiver) {
-        if (target[prop] !== undefined) {
-          return target[prop];
-        } else if (target.player[prop] !== undefined) {
-          return target.player[prop];
+        const targetProp = target[prop];
+        const playerProp = target.player[prop];
+        if (targetProp !== undefined) {
+          return targetProp;
+        } else if (playerProp !== undefined) {
+          return playerProp;
         } else {
           target.info('error', `undefined Method or Property: ${prop}`);
           return undefined;

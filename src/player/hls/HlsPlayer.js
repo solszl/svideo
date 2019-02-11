@@ -14,10 +14,12 @@ export default class HlsPlayer extends Hls {
     super(config);
   }
 
-  getDownloadSize() {
-    super.getDownloadSize();
-
+  get downloadSize() {
     return Model.OBJ.downloadSize;
+  }
+
+  get estimateNetSpeed() {
+    return this.abrController.estimateNetSpeed;
   }
 
   set src(val) {

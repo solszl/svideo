@@ -21,8 +21,7 @@ export default class NativePlayer extends PlayerProxy {
     fileSize.start(option.url);
   }
 
-  getDownloadSize() {
-    super.getDownloadSize();
+  get downloadSize() {
     if (Model.OBJ.fileSize === -1) {
       return -1;
     }
@@ -42,5 +41,11 @@ export default class NativePlayer extends PlayerProxy {
     }
 
     return fileSize / duration * totalRangeTime;
+  }
+
+  get estimateNetSpeed() {
+    // TODO: 实现默认网速预估算法
+    this.info('warn', 'unrealized get native player estimate net speed, return default speed 500KBps');
+    return 500;
   }
 }

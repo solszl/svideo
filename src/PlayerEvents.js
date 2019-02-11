@@ -24,5 +24,7 @@ export const PlayerEvent = {
   WAITING: 'waiting',
   ERROR: 'error',
   LOADEDMETADATA: 'loadedmetadata',
-  PROGRESS: 'progress'
+  PROGRESS: 'progress',
+  // LOADSTART: 'loadstart',
+  // CANPLAYTHROUGH: 'canplaythrough'
 };
