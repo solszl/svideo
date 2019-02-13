@@ -1,5 +1,5 @@
 含义  名称  参数  类型  取值范围
-设置当前时间  currentTimeChanged  t number
+设置当前时间  setcurrenttime  t number
 循环变化  loopchange v boolean
 静音变化  mutedchange b  boolean
 倍速变化  ratechange v number  (0~4)
@@ -10,3 +10,17 @@
 当前清晰度列表变化 definitionlistchange
 调度获取清晰度列表完成 schedulerCompleted
 倍速列表变化 playbackratelistchange
+
+卡顿 lagreport
+卡顿恢复 lagrecover
+
+开始播放 play
+暂停 pause
+加载资源加载中 progress
+播放器自身的错误 error
+时间进度更新 timeupdate
+加载完元数据 loadedmetadata
+seek完成 seeked
+buffer中没有数据可以播放了 waiting
+播放完毕 ended
+

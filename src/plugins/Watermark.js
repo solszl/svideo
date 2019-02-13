@@ -74,17 +74,17 @@ export default class Watermark extends Plugin {
   }
 
   _analysisPosition(a, p) {
-    let xpos = '10px';
-    let ypos = '10px';
+    let xPos = '10px';
+    let yPos = '10px';
     if (!Array.isArray(p)) {
       this.info('warn', `could not resolve position paramter, ${p}`);
       return {
-        left: xpos,
-        top: ypos
+        left: xPos,
+        top: yPos
       };
     } else {
-      xpos = p[0];
-      ypos = p[1];
+      xPos = p[0];
+      yPos = p[1];
     }
 
     let result = {};
@@ -92,20 +92,20 @@ export default class Watermark extends Plugin {
     alphabets.forEach(ab => {
       switch (ab) {
       case 't':
-        result.top = ypos;
+        result.top = yPos;
         break;
       case 'b':
-        result.bottom = ypos;
+        result.bottom = yPos;
         break;
       case 'l':
-        result.left = xpos;
+        result.left = xPos;
         break;
       case 'r':
-        result.right = xpos;
+        result.right = xPos;
         break;
       default:
-        result.left = xpos;
-        result.top = ypos;
+        result.left = xPos;
+        result.top = yPos;
         break;
       }
     });
