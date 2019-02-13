@@ -91,7 +91,11 @@ export default class VideoModule extends Component {
     switch (type) {
     case 'flv':
       if (!FlvPlayer.isSupported()) {
-        alert('不支持mse');
+        this.info('error', '不支持mse');
+        break;
+      }
+      if (!this._config.isLive) {
+        this.info('warn', '不支持flv格式点播');
         break;
       }
       this._createFLVPlayer();

@@ -84,7 +84,7 @@ export default class Switcher extends Plugin {
   }
 
   __schedulerCompleted() {
-    this.info('info', '调度完成，可以使用清晰度列表了');
+    this.info('info', '卡顿切换策略--->build');
     this._allDefList = this.player.allDefinitionList;
     this._currentDef = this.player.currentDefinition;
     this._currentDefList = this.player.currentDefinitionList;
@@ -100,6 +100,7 @@ export default class Switcher extends Plugin {
     });
 
     nodeSame.setNext(node720p).setNext(node480p).setNext(node360p).setNext(nodeSame);
+    this.info('info', '卡顿切换策略--->build complete');
   }
 
   __changeLine() {

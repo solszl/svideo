@@ -185,6 +185,7 @@ export default class Scheduler extends Plugin {
       this.info('error', `获取回放状态码不为200，状态码为:${data.code}`);
       return;
     }
+    let error = false;
     let obj = null;
     let key = '';
     let type = this._allConfig.type;
@@ -200,8 +201,15 @@ export default class Scheduler extends Plugin {
     default:
       this.info('warn', `暂时不支持${type}类型的点播`);
       this._defineProperty([], data['data']['token']);
+      error = true;
       return;
     }
+
+    // 因为不支持flv点播，直接return
+    if (error) {
+      return;
+    }
+
     // 先获取有多少个线路, 因为原画肯定是有的， 所以用原画获取
     let lineCount = obj['same'].length;
     // let defs = new Array(lineCount).fill([], 0);

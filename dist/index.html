@@ -25,7 +25,7 @@
 
       let lagConfig = {}
       let reportConfig = {
-        url: '//la.e.vhall.com',
+        url: '//la.e.vhall.com/login',
         webinar_id: '439466233',
         uid: '162647881',
         session_id: '',
@@ -63,16 +63,16 @@
 
       v = new VHVideoModule()
       v.init({
-        type: 'native',
+        type: 'flv',
         isLive: false,
         id: 'video-wrapper',
-        // flvurl: 'http://127.0.0.1:9090/videos/1.flv',
-        // hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
-        // // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-        // nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
-        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+        flvurl: 'http://127.0.0.1:9090/videos/1.flv',
+        hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
+        // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
+        nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
+        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
         cors: 'cors',
         x5: true,
         poster:
@@ -137,6 +137,9 @@
         outputInfo(`倍速列表变化: ${v.playbackRateList}`);
       });
 
+      if(!v.player.hasOwnProperty('on')) {
+        return;
+      }
       v.player.on('loopchange', b => {
         outputInfo(`循环发生变化, loop: ${b}`);
       });

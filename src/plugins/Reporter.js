@@ -15,8 +15,6 @@ const Code = {
 
 const HEARTBEAT_INTERVAL = 60 * 1000;
 
-const API = 'login';
-
 /**
  * 日志上报插件
  *
@@ -126,7 +124,7 @@ export default class Reporter extends Plugin {
     };
 
     let queryString = qs.stringify(param);
-    url = `${p}${this._domain}/${API}?${queryString}`;
+    url = `${p}${this._domain}?${queryString}`;
     let xhr = this._xhr;
     xhr.open('GET', url);
     if (this.enable) {
