@@ -69,6 +69,7 @@ export default class Barrage extends Plugin {
     const parent = document.getElementById(this._allConfig['id']);
     this.cvs.setAttribute('width', parent.clientWidth);
     this.cvs.setAttribute('height', parent.clientHeight);
+    this.cvs.style.pointerEvents = 'none';
     appendChild(this._allConfig['id'], this.cvs);
 
     this._core = new BarrageCore();
