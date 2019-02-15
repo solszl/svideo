@@ -33,7 +33,7 @@ export default class NormalRenderer extends BaseRenderer {
     this.itemPool = [];
     this.tweenType = 'quad';
     this.tweenMethod = this.tween.Linear;
-    this.duration = opt.duration || 5000;
+    this.duration = opt.duration * 1000 || 5000;
     this.globalChanged = false;
 
     this.changeStyle(opt);

@@ -64,7 +64,7 @@
 
       let barrageConfig = {
         enable: true,
-        speed: 0, // 0: 快, 1: 中, 2: 慢
+        duration: 5, // 完成基准，基于这个时间进行下浮动,取值范围为：(Math.random() * duration / 3)>>>0
         position: 3, // 0:top,距离上10%~~50%, 1：middle,30%~70%， 2：bottom,50%~90% 3:all,距离上下各10%
         fontsize: 18,
         alpha: 0.8,
