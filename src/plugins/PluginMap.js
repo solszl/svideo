@@ -4,6 +4,7 @@
  */
 
 import Log from '../utils/Log';
+import Barrage from './Barrage';
 import Capture from './Capture';
 import Fullscreen from './Fullscreen';
 import I18N from './I18n';
@@ -24,6 +25,7 @@ PluginMap.set(Capture.type, Capture);
 PluginMap.set(PlaybackRate.type, PlaybackRate);
 // PluginMap.set(Keyboard.type, Keyboard);
 PluginMap.set(Watermark.type, Watermark);
+PluginMap.set(Barrage.type, Barrage);
 
 if (process.env.PF === 'vhall') {
   Log.OBJ.info(`注册Vhall平台插件：${Lag.type},${Reporter.type},${Scheduler.type},${Switcher.type}`);

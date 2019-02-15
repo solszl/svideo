@@ -20,6 +20,7 @@
   </script>
   <script>
     var v;
+    var autoBarrageInterval = 0;
 
     window.onload = function() {
 
@@ -61,15 +62,25 @@
         enable: true
       }
 
+      let barrageConfig = {
+        enable: true,
+        speed: 0, // 0: 快, 1: 中, 2: 慢
+        position: 3, // 0:top,距离上10%~~50%, 1：middle,30%~70%， 2：bottom,50%~90% 3:all,距离上下各10%
+        fontsize: 18,
+        alpha: 0.8,
+        font: 'Microsoft YaHei',
+        color: '#FFF'
+      }
+
       v = new VHVideoModule()
       v.init({
-        type: 'hls',
+        type: 'native',
         isLive: false,
         id: 'video-wrapper',
         flvurl: 'http://127.0.0.1:9090/videos/1.flv',
         hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
         // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-        nativeurl: 'http://127.0.0.1:9090/videos/2.mp4',
+        nativeurl: 'http://127.0.0.1:9090/videos/1.mp4',
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
         // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
@@ -82,7 +93,8 @@
         plugin_lag: JSON.stringify(lagConfig),
         plugin_reporter: JSON.stringify(reportConfig),
         plugin_scheduler: JSON.stringify(schedulerConfig),
-        plugin_watermark: JSON.stringify(watermarkConfig)
+        plugin_watermark: JSON.stringify(watermarkConfig),
+        plugin_barrage: JSON.stringify(barrageConfig)
       })
 
       // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
@@ -119,6 +131,7 @@
 
       v.on('ended', () => {
         outputInfo('播放完毕')
+        clearInterval(autoBarrageInterval);
       })
 
       v.on('seeked', e => {
@@ -201,6 +214,34 @@
       outputInfo(`预估网速为:${(speed / 1024).toFixed(3)}M/s`);
     }
 
+    function addBarrage() {
+      var ti = document.getElementById('tiBarrage');
+      var content = ti.value;
+      v.addBarrage(content);
+    }
+
+    function autoFireBarrage(b) {
+      if(b) {
+        var p1 = ['大浪','刚哥','C咪','小仙女','Q总'];
+        var act = ['吃了','爱上','踹了','亲了','摸了'];
+        var p2 = ['大蒜','榴莲','香蕉','草莓','菠萝蜜'];
+        var act2 = [',真香~~',',好软~',',好硬!',',好强!',',好骚气~']
+        autoBarrageInterval = setInterval(()=>{
+          const generateWord = arr => {
+            let idx = Math.floor(Math.random() * 5);
+            return arr[idx];
+          }
+          let s = `${generateWord(p1)}${generateWord(act)}${generateWord(p2)}${generateWord(act2)}`;
+          let result = v.addBarrage(s);
+          if(result === false) {
+            clearInterval(autoBarrageInterval);
+          }
+        }, Math.random() * 500 + 500);
+      } else {
+        clearInterval(autoBarrageInterval);
+      }
+    }
+
     // 控制台、信息框 双输出
     function outputInfo(str) {
       console.log(str);
@@ -272,6 +313,17 @@
       <option value="320px,180px">16:9 - 320*180</option>
       <option value="480px,270px">16:9 - 480*270</option>
     </select>
+  </div>
+  <div>
+    <span>弹幕</span>
+    <input type="text" placeholder="弹幕内容" id="tiBarrage"><button onclick="addBarrage()">发送</button>
+    <button onclick="v.openBarrage()">开启</button>
+    <button onclick="v.closeBarrage()">关闭</button>
+    <button onclick="v.clearBarrage()">清空</button>
+    <br>
+    <span>自动弹幕</span>
+    <button onclick="autoFireBarrage(true)">开启</button>
+    <button onclick="autoFireBarrage(false)">停止</button>
   </div>
   <div>
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>

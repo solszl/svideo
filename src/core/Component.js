@@ -14,6 +14,11 @@ export default class Component {
     EventEmitter(this);
   }
 
+  /**
+   * 销毁操作
+   *
+   * @memberof Component
+   */
   destroy() {
 
   }
