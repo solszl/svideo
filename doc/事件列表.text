@@ -6,6 +6,7 @@
 源变化  srcChanged {oldUrl: o, newUrl: n} string
 声音变化  volumechange {oldVolume:o, newVolume:n}  number  (0~1)
 全屏变化  fullscreenchanged state string  (fullscreen | normal)
+
 当前清晰度变化 definitionchange
 当前清晰度列表变化 definitionlistchange
 调度获取清晰度列表完成 schedulerCompleted
@@ -23,4 +24,8 @@
 seek完成 seeked
 buffer中没有数据可以播放了 waiting
 播放完毕 ended
+
+开启弹幕功能 openbarrage
+关闭弹幕功能 closebarrage
+清空弹幕 clearbarrage
 

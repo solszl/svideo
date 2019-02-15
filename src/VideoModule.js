@@ -21,8 +21,6 @@ export default class VideoModule extends Component {
     this.player = {};
     this._config = {};
     this.pluginInstance = [];
-    // super();
-
     // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
     return new Proxy(this, {
       get: function (target, prop, receiver) {
@@ -61,9 +59,6 @@ export default class VideoModule extends Component {
 
   _configMapping(option = {}) {
     let config = {};
-    // this.info('info', `config: ${JSON.stringify(config)}`);
-    // this.info('info', `config: ${JSON.stringify(VHVideoConfig)}`);
-    // this.info('info', `config: ${JSON.stringify(option)}`);
     Object.assign(VHVideoConfig, option);
     Object.assign(config, VHVideoConfig);
     switch (config.type) {

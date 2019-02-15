@@ -28,13 +28,6 @@ export default class Watermark extends Plugin {
       return;
     }
     this._createWatermark(watermarkCfg);
-
-    /* {
-      url:'http://abc.com/1.jpg',
-      align:'tl | rl | bl | br',
-      position: ['10px','10px'],
-      size: ['48px','48px']
-    }*/
   }
 
   static get type() {
@@ -99,22 +92,22 @@ export default class Watermark extends Plugin {
     const alphabets = a.toLowerCase().split('');
     alphabets.forEach(ab => {
       switch (ab) {
-        case 't':
-          result.top = yPos;
-          break;
-        case 'b':
-          result.bottom = yPos;
-          break;
-        case 'l':
-          result.left = xPos;
-          break;
-        case 'r':
-          result.right = xPos;
-          break;
-        default:
-          result.left = xPos;
-          result.top = yPos;
-          break;
+      case 't':
+        result.top = yPos;
+        break;
+      case 'b':
+        result.bottom = yPos;
+        break;
+      case 'l':
+        result.left = xPos;
+        break;
+      case 'r':
+        result.right = xPos;
+        break;
+      default:
+        result.left = xPos;
+        result.top = yPos;
+        break;
       }
     });
     return result;

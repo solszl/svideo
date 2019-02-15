@@ -154,6 +154,18 @@
         outputInfo(`Error: ${e.details}`);
       });
 
+      v.on('openbarrage', e => {
+        outputInfo('弹幕功能开启');
+      })
+
+      v.on('closebarrage', e => {
+        outputInfo('弹幕功能关闭');
+      })
+
+      v.on('clearbarrage', e => {
+        outputInfo('弹幕清空');
+      })
+
       if(!v.player.hasOwnProperty('on')) {
         return;
       }

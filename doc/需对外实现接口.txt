@@ -10,7 +10,7 @@
 	总时长： duration return 单位秒(限点播) ✅
   是否暂停 isPause (限点播) ✅
   自动播放 autoplay ✅
-  获取当前video 的buffered buffered 返回timerange ✅
+  获取当前video 的buffered buffered 返回timeRanges ✅
   设置跨域 crossOrigin ✅
   当前时间 currentTime (限点播) ✅
 	默认是否为静音 defaultMuted 只读 ✅
@@ -26,7 +26,7 @@
   可在buffered区间内快速seek的时间范围 seekable 只读 返回timeRanges ✅
   是否是直播 isLive 只读 ✅
 	
-	销毁：destroy()
+	销毁：destroy() ✅
 	
 	预估实时网速：estimateNetSpeed (KBps) 最后一次下载时的网速，因为可能会播放buffer内容，并不是一直在加载 ✅
 	网络状态： networkState return (0|1|2|3) 只读 ✅
@@ -35,7 +35,7 @@
 	缓冲时长： buffered 只读 返回已缓冲的timeRanges ✅
   给定时间是否已经缓冲 timeInBuffer(time) 秒 返回 true | false ✅
 	
-	设置大小： setSize(w,h)
+	设置大小： setSize(w,h) ✅
 
   // 已经对完实现的属性
   所有清晰度列表 allDefinitionList ✅
@@ -46,7 +46,20 @@
   经过计算后的token newToken ✅
 
   获取已经下载大小 downloadSize 单位KBps ✅
-	
+
+	开启弹幕功能 openBarrage() ✅
+  关闭弹幕功能 closeBarrage() ✅
+  添加弹幕  addBarrage(content, type) content内容，type 默认 'normal' 预留扩展高级弹幕 ✅
+  清空弹幕  clearBarrage() ✅
+  获取弹幕帧率fps barrageFPS 只读 ✅
+  弹幕位置属性 barragePosition (0|1|2|3) 上、中、下、全屏 ✅
+  弹幕文字透明度 barrageAlpha (0~1) ✅
+  弹幕文字大小 barrageFontsize (int类型) ✅
+  弹幕文字颜色 barrageColor ('#FFFFFF') ✅
+
+  截图功能 capture() 返回blob字符串 ✅
+
+  倍速列表 playbackRateList 返回支持的倍速 [] ✅
 	
 	
 	

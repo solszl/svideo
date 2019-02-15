@@ -178,6 +178,7 @@ export default class Barrage extends Plugin {
     this.info('info', '启动弹幕');
     this._isOpen = true;
     this._core.start();
+    this.player.emit('openbarrage');
   }
   _closeBarrage() {
     this.info('info', '关闭弹幕');
@@ -185,11 +186,13 @@ export default class Barrage extends Plugin {
     let core = this._core;
     core.stop();
     core.clear();
+    this.player.emit('closebarrage');
   }
 
   _clearBarrage() {
     this.info('info', '清空弹幕');
     this._core.clear();
+    this.player.emit('clearbarrage');
   }
 
   _play() {
