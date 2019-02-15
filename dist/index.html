@@ -63,7 +63,7 @@
 
       v = new VHVideoModule()
       v.init({
-        type: 'flv',
+        type: 'hls',
         isLive: false,
         id: 'video-wrapper',
         flvurl: 'http://127.0.0.1:9090/videos/1.flv',
@@ -135,6 +135,10 @@
 
       v.on('playbackratelistchange', e => {
         outputInfo(`倍速列表变化: ${v.playbackRateList}`);
+      });
+
+      v.on('error', e => {
+        outputInfo(`Error: ${e.details}`);
       });
 
       if(!v.player.hasOwnProperty('on')) {

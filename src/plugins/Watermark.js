@@ -1,5 +1,6 @@
 import Plugin from '../core/Plugin';
 import {
+  removeFromParent,
   createElement,
   appendChild
 } from '../utils/Dom';
@@ -42,6 +43,12 @@ export default class Watermark extends Plugin {
 
   destroy() {
     super.destroy();
+    if (this.elImage) {
+      this.elImage.src = '';
+      this.elImage.onerror = null;
+      removeFromParent(this.elImage);
+      this.elImage = null;
+    }
   }
 
   /**
@@ -61,10 +68,11 @@ export default class Watermark extends Plugin {
     const p = this._analysisPosition(align, position);
     this.elImage = createElement('img', {
       id: 'vh-watermark',
-      src: url,
+      src: url
     });
     appendChild(this._allConfig['id'], this.elImage);
 
+    this.elImage.onerror = this._imgOnError.bind(this);
     this.elImage.style.position = 'absolute';
     Object.assign(this.elImage.style, p);
     Object.assign(this.elImage.style, {
@@ -91,24 +99,33 @@ export default class Watermark extends Plugin {
     const alphabets = a.toLowerCase().split('');
     alphabets.forEach(ab => {
       switch (ab) {
-      case 't':
-        result.top = yPos;
-        break;
-      case 'b':
-        result.bottom = yPos;
-        break;
-      case 'l':
-        result.left = xPos;
-        break;
-      case 'r':
-        result.right = xPos;
-        break;
-      default:
-        result.left = xPos;
-        result.top = yPos;
-        break;
+        case 't':
+          result.top = yPos;
+          break;
+        case 'b':
+          result.bottom = yPos;
+          break;
+        case 'l':
+          result.left = xPos;
+          break;
+        case 'r':
+          result.right = xPos;
+          break;
+        default:
+          result.left = xPos;
+          result.top = yPos;
+          break;
       }
     });
     return result;
+  }
+
+  _imgOnError(e) {
+    let evt = {
+      type: 'error',
+      details: 'Watermark load failed.'
+    };
+    this.player.emit(evt.type, evt);
+    this.info('error', 'Watermark load failed.');
   }
 }
