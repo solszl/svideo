@@ -173,6 +173,14 @@
       v.playbackRate = val
     }
 
+    function onSizeChanged() {
+      let opts = document.getElementById('sizeList').options
+      var val = opts[opts.selectedIndex].value
+      var w = val.split(',')[0];
+      var h = val.split(',')[1];
+      v.setSize(w, h);
+    }
+
     function captureVideo() {
       let data = v.capture()
       let ctx = document.getElementById('cvsCapture').getContext('2d')
@@ -255,6 +263,15 @@
     <span>Token</span>
     <button onclick="outputInfo('调度获取token: ' + v.originToken)">原始</button>
     <button onclick="outputInfo('计算后token: ' + v.newToken)">计算后</button>
+  </div>
+  <div>
+    <span>尺寸</span>
+    <select id="sizeList" onchange="onSizeChanged()">
+      <option value="320px,240px">4:3 - 320*240</option>
+      <option value="480px,320px">4:3 - 480*320</option>
+      <option value="320px,180px">16:9 - 320*180</option>
+      <option value="480px,270px">16:9 - 480*270</option>
+    </select>
   </div>
   <div>
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>

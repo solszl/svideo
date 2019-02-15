@@ -67,21 +67,21 @@ export default class VideoModule extends Component {
     Object.assign(VHVideoConfig, option);
     Object.assign(config, VHVideoConfig);
     switch (config.type) {
-    case 'flv':
-      config.url = option.flvurl;
-      config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime;
-      break;
-    case 'hls':
-      config.url = option.hlsurl;
-      if (!HlsPlayer.isSupported()) {
-        config.url = this._config.hlsurl;
-      }
-      break;
-    case 'native':
-      config.url = option.nativeurl;
-      break;
-    default:
-      break;
+      case 'flv':
+        config.url = option.flvurl;
+        config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime;
+        break;
+      case 'hls':
+        config.url = option.hlsurl;
+        if (!HlsPlayer.isSupported()) {
+          config.url = this._config.hlsurl;
+        }
+        break;
+      case 'native':
+        config.url = option.nativeurl;
+        break;
+      default:
+        break;
     }
     return config;
   }
@@ -89,28 +89,28 @@ export default class VideoModule extends Component {
   _createPlayer() {
     let type = this._config.type;
     switch (type) {
-    case 'flv':
-      if (!FlvPlayer.isSupported()) {
-        this.info('error', '不支持mse');
+      case 'flv':
+        if (!FlvPlayer.isSupported()) {
+          this.info('error', '不支持mse');
+          break;
+        }
+        if (!this._config.isLive) {
+          this.info('warn', '不支持flv格式点播');
+          break;
+        }
+        this._createFLVPlayer();
         break;
-      }
-      if (!this._config.isLive) {
-        this.info('warn', '不支持flv格式点播');
+      case 'hls':
+        if (!HlsPlayer.isSupported()) {
+          this._config.url = this._config.hlsurl;
+          this._createNativePlayer();
+          break;
+        }
+        this._createHLSPlayer();
         break;
-      }
-      this._createFLVPlayer();
-      break;
-    case 'hls':
-      if (!HlsPlayer.isSupported()) {
-        this._config.url = this._config.hlsurl;
+      case 'native':
         this._createNativePlayer();
         break;
-      }
-      this._createHLSPlayer();
-      break;
-    case 'native':
-      this._createNativePlayer();
-      break;
     }
   }
 
@@ -168,5 +168,14 @@ export default class VideoModule extends Component {
     this.pluginInstance = null;
     this.player.destroy();
     this.player = null;
+  }
+
+  setSize(w, h) {
+    const parent = document.getElementById(this._config['id']);
+    parent.style.width = w;
+    parent.style.height = h;
+    this.pluginInstance.forEach(plugin => {
+      plugin.setSize(w, h);
+    });
   }
 }
