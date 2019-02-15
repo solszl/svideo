@@ -95,6 +95,10 @@ export default class BarrageCore extends Component {
     }
 
     this.running = true;
+    this.renderers.forEach(renderer => {
+      let r = renderer.renderer;
+      r.start();
+    });
     this[loop]();
   }
 
@@ -105,6 +109,10 @@ export default class BarrageCore extends Component {
    */
   stop() {
     this.running = false;
+    this.renderers.forEach(renderer => {
+      let r = renderer.renderer;
+      r.stop();
+    });
   }
 
   /**
@@ -198,6 +206,16 @@ export default class BarrageCore extends Component {
   }
   set fontsize(val) {
     this.normalRenderer.fontsize = val;
+  }
+
+  setSize(w, h) {
+    this.width = w;
+    this.height = h;
+    this.clear();
+    this.renderers.forEach(renderer => {
+      let r = renderer.renderer;
+      r.resize(w, h);
+    });
   }
 
 }

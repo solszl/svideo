@@ -53,8 +53,8 @@ export default class VideoModule extends Component {
   init(option = {}) {
     let config = this._configMapping(option);
     this._config = config;
-    this._pluginCall();
     this._createPlayer();
+    this._pluginCall();
   }
 
   _configMapping(option = {}) {
@@ -166,7 +166,7 @@ export default class VideoModule extends Component {
   }
 
   setSize(w, h) {
-    const parent = document.getElementById(this._config['id']);
+    const parent = this.player.root;
     parent.style.width = w;
     parent.style.height = h;
     this.pluginInstance.forEach(plugin => {

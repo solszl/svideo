@@ -23,7 +23,7 @@
 	静音： mute boolean (true | false) ✅
 	设置声音：volume (0~1) ✅
   是否正处于seek状态 seeking 只读 ✅
-  可在buffered区间内快速seek的时间范围 seekable 只读 返回timeRanges ✅
+  可在buffered 区间内快速seek的时间范围 seekable 只读 返回timeRanges ✅
   是否是直播 isLive 只读 ✅
 	
 	销毁：destroy() ✅
@@ -60,6 +60,8 @@
   截图功能 capture() 返回blob字符串 ✅
 
   倍速列表 playbackRateList 返回支持的倍速 [] ✅
+
+  获取最外层容器 root ✅
 	
 	
 	

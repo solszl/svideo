@@ -58,7 +58,7 @@ export default class Fullscreen extends Plugin {
    */
   enterFullscreen() {
     // H5下 全屏 el 需要为video？
-    let el = document.getElementById('video-wrapper');
+    let el = this.player.root;
     if (el.webkitEnterFullScreen) {
       el.webkitEnterFullScreen();
     } else if (el.mozRequestFullScreen) {

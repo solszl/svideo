@@ -44,6 +44,14 @@ export default class BaseRenderer {
     this._pause = false;
   }
 
+  start() {
+    this._pause = false;
+  }
+
+  stop() {
+    this._pause = true;
+  }
+
   destory() {
 
   }
@@ -61,14 +69,8 @@ export default class BaseRenderer {
   }
 
   resize(w, h) {
-    this.canvas.width = w;
-    this.canvas.height = h;
     this.width = w;
     this.height = h;
-  }
-
-  invalidateSize() {
-    this.globalChanged = true;
   }
 
   get data() {

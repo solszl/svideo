@@ -47,6 +47,7 @@ export default class Barrage extends Plugin {
     this.player.off('play', this._play);
     this.player.off('pause', this._pause);
     this.player.off('ended', this._ended);
+    this.player.off('fullscreenchanged', this._fullscreenChanged);
 
     this._core.destroy();
     this._core = null;
@@ -66,10 +67,12 @@ export default class Barrage extends Plugin {
     });
 
     this.cvs.style.position = 'absolute';
-    const parent = document.getElementById(this._allConfig['id']);
+    const parent = this.player.root;
     this.cvs.setAttribute('width', parent.clientWidth);
     this.cvs.setAttribute('height', parent.clientHeight);
     this.cvs.style.pointerEvents = 'none';
+    this.cvs.style.left = 0;
+    this.cvs.style.top = 0;
     appendChild(this._allConfig['id'], this.cvs);
 
     this._core = new BarrageCore();
@@ -161,6 +164,7 @@ export default class Barrage extends Plugin {
     this.player.on('play', this._play.bind(this));
     this.player.on('pause', this._pause.bind(this));
     this.player.on('ended', this._ended.bind(this));
+    this.player.on('fullscreenchanged', this._fullscreenChanged.bind(this));
   }
 
 
@@ -211,4 +215,29 @@ export default class Barrage extends Plugin {
     core.stop();
     core.clear();
   }
+  _fullscreenChanged(e) {
+    this._rearrangement();
+  }
+
+  setSize(w, h) {
+    super.setSize(w, h);
+    this._rearrangement();
+  }
+
+  _rearrangement() {
+    let core = this._core;
+    core.pause();
+    core.clear();
+    // 加延迟是因为尺寸变化后直接获取宽高可能不准确
+    setTimeout(() => {
+      const parent = this.player.root;
+      const mw = parent.clientWidth;
+      const mh = parent.clientHeight;
+      this.cvs.setAttribute('width', mw);
+      this.cvs.setAttribute('height', mh);
+      core.setSize(mw, mh);
+      core.resume();
+    }, 300);
+  }
+
 }

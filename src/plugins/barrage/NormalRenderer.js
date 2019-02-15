@@ -33,7 +33,7 @@ export default class NormalRenderer extends BaseRenderer {
     this.itemPool = [];
     this.tweenType = 'quad';
     this.tweenMethod = this.tween.Linear;
-    this.duration = opt.duration * 1000 || 5000;
+    this.duration = opt.duration * 1000 || 8000;
     this.globalChanged = false;
 
     this.changeStyle(opt);
@@ -91,10 +91,10 @@ export default class NormalRenderer extends BaseRenderer {
       item.elapsedTime += t;
       // elapsedTime,start,dist,duration
       item.x = this.tween[this.tweenType](this.tweenMethod, item.elapsedTime, w, -item.width - w, item.duration);
-      // this.ctx.fillStyle = item.fillStyle;
+      this.ctx.font = this.globalFont;
       this.ctx.fillStyle = this.color;
-      // 边界检查、回收
-      if (item.x < -item.width) {
+      // 边界检查、回收, 预留2倍长度像素空间
+      if (item.x < -item.width * 2) {
         this._recycle(item);
         continue;
       }
@@ -116,7 +116,7 @@ export default class NormalRenderer extends BaseRenderer {
     itemData.elapsedTime = 0;
     itemData.data = content;
     itemData.height = this.fontsize;
-    itemData.duration = this.duration - (Math.random() * this.duration / 3) >> 0;
+    itemData.duration = this.duration + Math.pow(-1, Math.random() > 0.5 ? 1 : 0) * (Math.random() * this.duration / 3) >> 0;
     itemData.fillStyle = this.color;
     // 计算轨道
     itemData.y = this._randomRow();
@@ -127,6 +127,11 @@ export default class NormalRenderer extends BaseRenderer {
     super.destory();
     this.itemPool = [];
     this._data = [];
+  }
+
+  resize(w, h) {
+    super.resize(w, h);
+    this._calcRow();
   }
 
   _recycle(item) {

@@ -52,7 +52,8 @@ class PlayerProxy extends Component {
       'z-index': 0
     }, x5cfg, poster));
 
-    const parent = document.getElementById(config['id']);
+    this._root = document.getElementById(config['id']);
+    const parent = this._root;
     parent.appendChild(this.video);
     parent.style.position = 'relative';
 
@@ -413,6 +414,10 @@ class PlayerProxy extends Component {
    */
   get estimateNetSpeed() {
     return 0;
+  }
+
+  get root() {
+    return this._root;
   }
 
   _initOriginalEvents() {
