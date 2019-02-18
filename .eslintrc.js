@@ -7,7 +7,6 @@ module.exports = {
   },
   'globals': {
     // Compile-time defines
-    '__VERSION__': true,
     '__USE_SUBTITLES__': false,
     '__USE_ALT_AUDIO__': false,
     '__USE_EME_DRM__': false

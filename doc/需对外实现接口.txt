@@ -62,6 +62,7 @@
   倍速列表 playbackRateList 返回支持的倍速 [] ✅
 
   获取最外层容器 root ✅
+  获取播放器版本 version ✅
 	
 	
 	

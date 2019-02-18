@@ -173,4 +173,8 @@ export default class VideoModule extends Component {
       plugin.setSize(w, h);
     });
   }
+
+  get version() {
+    return process.env.VERSION;
+  }
 }

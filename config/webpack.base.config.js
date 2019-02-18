@@ -38,7 +38,6 @@ const webpackConfig = {
         VERSION: JSON.stringify(ver),
         PF: JSON.stringify(process.env.PF)
       },
-      __VERSION__: JSON.stringify(false),
       __USE_ALT_AUDIO__: JSON.stringify(false),
     })
   ]

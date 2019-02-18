@@ -34,13 +34,6 @@ import {
  */
 export default class Hls extends PlayerProxy {
   /**
-   * @type {string}
-   */
-  static get version() {
-    return __VERSION__;
-  }
-
-  /**
    * @type {boolean}
    */
   static isSupported() {

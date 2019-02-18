@@ -1,6 +1,6 @@
 {
   "name": "svideo",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "mix flv.js video.js muxing for vhall",
   "main": "index.js",
   "scripts": {
