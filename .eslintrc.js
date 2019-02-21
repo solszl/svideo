@@ -5,6 +5,12 @@ module.exports = {
     "es6": true,
     "node": true
   },
+  'globals': {
+    // Compile-time defines
+    '__USE_SUBTITLES__': false,
+    '__USE_ALT_AUDIO__': false,
+    '__USE_EME_DRM__': false
+  },
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": 2015,

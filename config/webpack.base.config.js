@@ -35,8 +35,10 @@ const webpackConfig = {
     new webpack.DefinePlugin({
       'process.env': {
         LOG_LEVEL: JSON.stringify(process.env.LOG_LEVEL),
-        VERSION: JSON.stringify(ver)
-      }
+        VERSION: JSON.stringify(ver),
+        PF: JSON.stringify(process.env.PF)
+      },
+      __USE_ALT_AUDIO__: JSON.stringify(false),
     })
   ]
 };

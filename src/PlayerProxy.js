@@ -1,12 +1,10 @@
 import Component from './core/Component';
 import {
+  PlayerEvent
+} from './PlayerEvents';
+import {
   createElement
 } from './utils/Dom';
-import Log from './utils/Log';
-
-const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
-// 私有函数更新
-const updateDisplayList = Symbol('component-display-update');
 
 /**
  * 播放器的基类
@@ -16,21 +14,54 @@ const updateDisplayList = Symbol('component-display-update');
  * @author zhenliang.sun
  */
 class PlayerProxy extends Component {
-  constructor(opts = {}) {
+  constructor() {
     super();
+
     this._volume = 0.5;
     this._src = '';
     this._isLive = false;
-    this._started = false;
+    this._isPlaying = false;
+    this.video = null;
+    this._lastEmitTimeupdate = 0;
+    this.reset();
+  }
+
+  initVideo(config = {}) {
+    let x5cfg = {};
+    if (config['x5']) {
+      x5cfg['webkit-playsinline'] = true;
+      x5cfg['playsinline'] = true;
+      x5cfg['x5-playsinline'] = true;
+      // x5cfg['x5-video-player-type'] = 'h5';
+      // x5cfg['x5-video-player-fullscreen'] = true;
+      // x5cfg['x5-video-orientation'] = 'portraint';
+    }
+
+    let poster = config['poster'] ? {
+      poster: config['poster']
+    } : {};
+
     this.video = createElement('video', {
       id: 'vh-video',
-      controls: true
-    }, {
+      controls: true,
+      muted: true,
+    }, Object.assign({
       width: '100%',
-      height: '100%'
-    });
+      height: '100%',
+      crossOrigin: 'anonymous',
+      'z-index': 0
+    }, x5cfg, poster));
 
-    // requestAnimationFrame(() => this[updateDisplayList]());
+    this._root = document.getElementById(config['id']);
+    const parent = this._root;
+    parent.appendChild(this.video);
+    parent.style.position = 'relative';
+
+    this.autoplay = config.autoplay || false;
+  }
+
+  initEvents() {
+    this._initOriginalEvents();
   }
 
   /**
@@ -41,8 +72,7 @@ class PlayerProxy extends Component {
   play() {
     this.video.focus();
     this.video.play();
-    this._started = true;
-    this.emit('play');
+    this._isPlaying = true;
   }
 
   /**
@@ -52,8 +82,48 @@ class PlayerProxy extends Component {
    */
   pause() {
     this.video.pause();
-    this._started = false;
-    this.emit('pause');
+    this._isPlaying = false;
+  }
+
+  /**
+   * 判断某个时间是否已经缓存了
+   *
+   * @param {*} time 秒为单位
+   * @returns 返回是否已经缓存该时刻
+   * @memberof PlayerProxy
+   */
+  timeInBuffer(time) {
+    let result = false;
+    if (this.buffered.length === 0) {
+      return result;
+    }
+
+    time = +time;
+    let len = this.buffered.length;
+    for (let i = 0; i < len; i += 1) {
+      if (time > this.buffered.end(i)) {
+        continue;
+      }
+
+      if (time > this.buffered.start(i)) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 获取下载大小，指的是不论seek还是自然下载的总和
+   * 针对于HLS，仅统计了TS大小 
+   * 针对于FLV, 统计flv流文件大小
+   * 针对于原生MP4模拟计算出来的，如：一个MP4文件大小为100M，总时长为100分钟，则认为每分钟大小约为1M。
+   *       通过video 的buffer 计算时间缓冲区间，然后累加获取
+   *
+   * @returns
+   * @memberof PlayerProxy
+   */
+  get downloadSize() {
+    return -1;
   }
 
   /**
@@ -63,8 +133,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   get isPaused() {
-    // return this.video.paused;
-    return this._started === false;
+    return this.video.paused && this._isPlaying === false;
   }
 
   /**
@@ -120,7 +189,7 @@ class PlayerProxy extends Component {
    */
   set currentTime(t) {
     this.video.currentTime = t;
-    this.emit('currentTimeChanged', t);
+    this.emit(PlayerEvent.CURRENT_TIME_CHANGED, t);
   }
 
   /**
@@ -164,7 +233,7 @@ class PlayerProxy extends Component {
   set loop(v) {
     if (this.video.loop !== v) {
       this.video.loop = v;
-      this.emit('loopChanged', v);
+      this.emit(PlayerEvent.LOOP_CHANGED, v);
     }
   }
 
@@ -189,7 +258,7 @@ class PlayerProxy extends Component {
   set muted(b) {
     if (this.video.muted !== b) {
       this.video.muted = b;
-      this.emit('mutedChanged', b);
+      this.emit(PlayerEvent.MUTED_CHANGED, b);
     }
   }
 
@@ -210,9 +279,9 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set playbackRate(v) {
+    v = +v;
     if (this.video.playbackRate !== v) {
       this.video.playbackRate = v;
-      this.emit('playbackRateChanged', v);
     }
   }
 
@@ -265,14 +334,16 @@ class PlayerProxy extends Component {
     return this._src;
   }
   set src(url) {
-    if (this._src !== url) {
+    if (this._src !== url && this._src !== undefined) {
       let oldSrc = this._src;
       this._src = url;
-      this.emit('srcChanged', {
+      this.emit(PlayerEvent.SRC_CHANGED, {
         oldUrl: oldSrc,
         newUrl: this._src
       });
     }
+
+    this.video.src = url;
   }
 
   /**
@@ -285,13 +356,10 @@ class PlayerProxy extends Component {
   }
 
   set volume(v) {
-    if (typeof v === 'string') {
-      Log.OBJ.warn('volume param should be number');
-      v = parseFloat(v);
-    }
+    v = +v;
 
     if (v > 1 || v < 0) {
-      Log.OBJ.warn('volume value range should be between 0 to 1');
+      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`);
       v = Math.min(Math.max(0, v), 1);
     }
 
@@ -299,11 +367,6 @@ class PlayerProxy extends Component {
       let oldVolume = this._volume;
       this._volume = v;
       this.video.volume = this._volume;
-
-      this.emit('volumeChanged', {
-        oldVolume: oldVolume,
-        newVolume: this._volume
-      });
     }
 
     this.muted = this._volume === 0;
@@ -343,9 +406,113 @@ class PlayerProxy extends Component {
     return this._isLive;
   }
 
+  /**
+   * 获取预估网速
+   *
+   * @readonly
+   * @memberof PlayerProxy
+   */
+  get estimateNetSpeed() {
+    return 0;
+  }
 
-  [updateDisplayList]() {
+  get root() {
+    return this._root;
+  }
 
+  _initOriginalEvents() {
+    const e = {
+      /** 开始播放*/
+      play: this.__play.bind(this),
+      /** 暂停 */
+      pause: this.__pause.bind(this),
+      /** 开始加载新的数据，每加载一次，执行一次 */
+      progress: this.__progress.bind(this),
+      /** 播放出错 */
+      error: this.__error.bind(this),
+      /** 视频时间戳更新触发事件 */
+      timeupdate: this.__timeupdate.bind(this),
+      /** 播放完毕执行的事件 */
+      ended: this.__ended.bind(this),
+      /** 视频设置src后，加载元数据后，派发的事件 */
+      loadedmetadata: this.__loadedmetadata.bind(this),
+      /** seek完成后，触发的事件 */
+      seeked: this.__seeked.bind(this),
+      /** 当没有buffer开始播放的时候，派发waiting事件，也就是说，卡顿了 */
+      waiting: this.__waiting.bind(this),
+      /** 播放速率发生变更的时候，派发的事件 */
+      ratechange: this.__ratechange.bind(this),
+      /** 声音发生改变的时候，派发的事件 */
+      volumechange: this.__volumechange.bind(this),
+      // loadstart: this.__loadstart.bind(this),
+      // canplaythrough: this.__canplaythrough.bind(this)
+    };
+
+    // 添加监听
+    Object.keys(e).forEach(item => {
+      this.video.addEventListener(item, e[item]);
+    });
+  }
+
+  __play() {
+    this.emit(PlayerEvent.PLAY);
+  }
+  __pause() {
+    this.emit(PlayerEvent.PAUSE);
+  }
+  __progress(e) {
+    this.emit(PlayerEvent.PROGRESS, e);
+  }
+  __error(e) {
+    this.emit(PlayerEvent.ERROR, e);
+  }
+  __timeupdate(e) {
+    // 每大于500ms 派发一次事件
+    let now = Date.now();
+    if (now - this._lastEmitTimeupdate > 500) {
+      this._lastEmitTimeupdate = now;
+      this.emit(PlayerEvent.TIMEUPDATE, e);
+    }
+  }
+  __ended() {
+    this.emit(PlayerEvent.PLAY_END);
+  }
+
+  __loadedmetadata(e) {
+    this.emit(PlayerEvent.LOADEDMETADATA, e);
+  }
+
+  __seeked(e) {
+    this.emit(PlayerEvent.SEEKED, e);
+  }
+
+  __waiting(e) {
+    this.emit(PlayerEvent.WAITING, e);
+  }
+
+  __ratechange(e) {
+    let rate = this.video.playbackRate;
+    this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, rate);
+  }
+
+  __volumechange(e) {
+    this.emit(PlayerEvent.VOLUME_CHANGE, e);
+  }
+
+  // __loadstart(e) {
+  //   this.emit(PlayerEvent.LOADSTART, e);
+  // }
+
+  // __canplaythrough(e) {
+  //   this.emit(PlayerEvent.CANPLAYTHROUGH, e);
+  // }
+
+  reset() {
+    this._lastEmitTimeupdate = 0;
+  }
+
+  destroy() {
+    super.destroy();
   }
 }
 

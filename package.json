@@ -1,14 +1,14 @@
 {
   "name": "svideo",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "mix flv.js video.js muxing for vhall",
   "main": "index.js",
   "scripts": {
     "start": "npm run build-local",
-    "build-prod": "cross-env NODE_ENV=production LOG_LEVEL=warn node config/build.js",
-    "build-dev": "cross-env NODE_ENV=development LOG_LEVEL=all node config/build.js",
-    "build-local": "cross-env NODE_ENV=development LOG_LEVEL=all webpack-dev-server --config config/webpack.local.config.js",
-    "analyzer": "cross-env NODE_ENV=production LOG_LEVEL=warn ANALYZER=true node config/build.js",
+    "build-prod": "cross-env NODE_ENV=production LOG_LEVEL=warn PF=vhall node config/build.js",
+    "build-dev": "cross-env NODE_ENV=development LOG_LEVEL=all PF=vhall node config/build.js",
+    "build-local": "cross-env NODE_ENV=development LOG_LEVEL=all PF=vhall webpack-dev-server --config config/webpack.local.config.js",
+    "analyzer": "cross-env NODE_ENV=production LOG_LEVEL=warn PF=vhall ANALYZER=true node config/build.js",
     "lint-fix": "eslint --fix --ext .js src/"
   },
   "repository": {
@@ -21,7 +21,12 @@
     "url": "https://github.com/solszl/svideo/issues"
   },
   "homepage": "https://github.com/solszl/svideo#readme",
+  "dependencies": {
+    "eventemitter3": "3.1.0",
+    "url-toolkit": "^2.1.6"
+  },
   "devDependencies": {
+    "arraybuffer-equal": "^1.0.4",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
@@ -30,8 +35,12 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
+    "chromedriver": "^2.38.3",
     "concat-typed-array": "^1.0.2",
+    "crc-32": "^1.2.0",
     "cross-env": "^5.2.0",
+    "deep-strict-equal": "^0.2.0",
+    "es6-promise": "^4.2.5",
     "eslint": "^5.6.1",
     "event-emitter": "^0.3.5",
     "node-sass": "^4.10.0",
@@ -47,6 +56,7 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-merge": "^4.1.4",
-    "webworkify": "^1.5.0"
+    "webworkify": "^1.5.0",
+    "webworkify-webpack": "^2.1.2"
   }
 }

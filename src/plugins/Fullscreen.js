@@ -46,7 +46,7 @@ export default class Fullscreen extends Plugin {
         // console.log(document.webkitFullscreenElement, e.target);
         this._fullscreenTarget = e.target;
         self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal';
-        self.player.emit('fullscreenChanged', self._displayState);
+        self.player.emit('fullscreenchanged', self._displayState);
       });
     });
   }
@@ -57,11 +57,14 @@ export default class Fullscreen extends Plugin {
    * @memberof Fullscreen
    */
   enterFullscreen() {
-    let el = document.getElementById('video-wrapper');
-    if (el.requestFullscreen) {
-      el.requestFullscreen();
+    // H5下 全屏 el 需要为video？
+    let el = this.player.root;
+    if (el.webkitEnterFullScreen) {
+      el.webkitEnterFullScreen();
     } else if (el.mozRequestFullScreen) {
       el.mozRequestFullScreen();
+    } else if (el.requestFullscreen) {
+      el.requestFullscreen();
     } else if (el.webkitRequestFullscreen) {
       el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
     } else if (el.msRequestFullscreen) {

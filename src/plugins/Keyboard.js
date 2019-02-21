@@ -2,7 +2,6 @@ import Plugin from '../core/Plugin';
 import {
   debounce
 } from '../utils/util';
-import Log from './../utils/Log';
 
 /**
  * 键盘控制插件
@@ -37,7 +36,6 @@ export default class Keyboard extends Plugin {
       case 32:
         // 播放、暂停
         p.isPaused ? p.play() : p.pause();
-        console.log(p.isPaused);
         break;
       case 37:
         // 按左 减10秒
@@ -56,7 +54,7 @@ export default class Keyboard extends Plugin {
         p.volume -= 0.05;
         break;
       default:
-        Log.OBJ.error(`unrecognized keyCode: ${e.keyCode}`);
+        this.info('error', `unrecognized keyCode: ${e.keyCode}`);
         break;
       }
     }, 500));

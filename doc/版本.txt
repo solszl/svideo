@@ -1,0 +1,11 @@
+hls 
+项目库： https://github.com/video-dev/hls.js
+基于版本： master
+hash: 259c6c0f79deeb634a3b00d25568835678368b74
+commit time: 2018-12-23 00:38:09
+
+flv
+项目库：https://github.com/bilibili/flv.js
+基于版本： master
+hash: 8c1bed1245640deb51ec5545bc2f4e9080f01ded
+commit time: 2018-12-14 09:12:15

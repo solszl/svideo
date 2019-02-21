@@ -3,26 +3,66 @@
 	当前屏幕状态： displayState  return (fullScreen | normal) ✅
 	是否是全屏： isFullscreen return (true | false) ✅
 	
-	播放源：src
-	播放：play()
-	暂停：pause()
-	播放时间： currentTime return Xs
-	总时长： duration return Xs
+	播放源：src ✅
+	播放：play() (限点播) ✅
+	暂停：pause() (限点播) ✅
+	播放时间： currentTime return 单位秒(限点播) ✅
+	总时长： duration return 单位秒(限点播) ✅
+  是否暂停 isPause (限点播) ✅
+  自动播放 autoplay ✅
+  获取当前video 的buffered buffered 返回timeRanges ✅
+  设置跨域 crossOrigin ✅
+  当前时间 currentTime (限点播) ✅
+	默认是否为静音 defaultMuted 只读 ✅
+  是否播放完毕 ended 只读 ✅
+  设置循环 loop ✅
+  获取当前是否处于静音状态 muted ✅
+  播放速度 playbackRate ✅
+  已经播放的时间 played 只读 返回timeRanges ✅
+  准备状态 readyState return [0,1,2,3,4] 只读 ✅  0:没有任何信息，1：拥有元数据，2：当前位置播放数据可用，但是下一帧数据不够用，3：当前及下一帧数据可用，4，数据足够多，可以播放了
+	静音： mute boolean (true | false) ✅
+	设置声音：volume (0~1) ✅
+  是否正处于seek状态 seeking 只读 ✅
+  可在buffered 区间内快速seek的时间范围 seekable 只读 返回timeRanges ✅
+  是否是直播 isLive 只读 ✅
 	
-	静音： mute()
-	设置声音：volume (0~1)
+	销毁：destroy() ✅
 	
-	销毁：destroy()
-	
-	带宽：bandwidth
-	实时网速：netSpeed
-	网络状态： networkState return (0|1|2|3)
+	预估实时网速：estimateNetSpeed (KBps) 最后一次下载时的网速，因为可能会播放buffer内容，并不是一直在加载 ✅
+	网络状态： networkState return (0|1|2|3) 只读 ✅
 	
 	缓冲大小： buffer
-	缓冲时长： bufferTime
+	缓冲时长： buffered 只读 返回已缓冲的timeRanges ✅
+  给定时间是否已经缓冲 timeInBuffer(time) 秒 返回 true | false ✅
 	
-	设置大小： setSize(w,h)
-	
+	设置大小： setSize(w,h) ✅
+
+  // 已经对完实现的属性
+  所有清晰度列表 allDefinitionList ✅
+  当前正在使用的清晰度 currentDefinition ✅
+  当前清晰度列表 currentDefinitionList ✅
+  当前清晰度列表的索引 currentDefinitionListIndex ✅
+  调度获取的原始token originToken ✅
+  经过计算后的token newToken ✅
+
+  获取已经下载大小 downloadSize 单位KBps ✅
+
+	开启弹幕功能 openBarrage() ✅
+  关闭弹幕功能 closeBarrage() ✅
+  添加弹幕  addBarrage(content, type) content内容，type 默认 'normal' 预留扩展高级弹幕 ✅
+  清空弹幕  clearBarrage() ✅
+  获取弹幕帧率fps barrageFPS 只读 ✅
+  弹幕位置属性 barragePosition (0|1|2|3) 上、中、下、全屏 ✅
+  弹幕文字透明度 barrageAlpha (0~1) ✅
+  弹幕文字大小 barrageFontsize (int类型) ✅
+  弹幕文字颜色 barrageColor ('#FFFFFF') ✅
+
+  截图功能 capture() 返回blob字符串 ✅
+
+  倍速列表 playbackRateList 返回支持的倍速 [] ✅
+
+  获取最外层容器 root ✅
+  获取播放器版本 version ✅
 	
 	
 	

@@ -20,9 +20,9 @@ export default class Plugin extends Component {
    * @param {*} [opts={}]
    * @memberof Plugin
    */
-  init(opts = {}) {
+  init(opts = {}) {}
 
-  }
+  setSize(w, h) {}
 
   get player() {
     return this._player;
@@ -34,9 +34,5 @@ export default class Plugin extends Component {
 
   static get type() {
     return 'BASE_PLUGIN';
-  }
-
-  destroy() {
-
   }
 }
