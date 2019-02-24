@@ -142,18 +142,18 @@ export default class Scheduler extends Plugin {
     let key = '';
     let type = this._allConfig.type;
     switch (type) {
-    case 'flv':
-      obj = data['data']['httpflv_urls'];
-      key = 'httpflv_url';
-      break;
-    case 'hls':
-      obj = data['data']['hls_urls'];
-      key = 'hls_url';
-      break;
-    default:
-      this.info('warn', `暂时不支持${type}类型的直播`);
-      this._defineProperty([], data['data']['token']);
-      return;
+      case 'flv':
+        obj = data['data']['httpflv_urls'];
+        key = 'httpflv_url';
+        break;
+      case 'hls':
+        obj = data['data']['hls_urls'];
+        key = 'hls_url';
+        break;
+      default:
+        this.info('warn', `暂时不支持${type}类型的直播`);
+        this._defineProperty([], data['data']['token']);
+        return;
     }
 
     let lineCount = obj['same'].length;
@@ -190,23 +190,23 @@ export default class Scheduler extends Plugin {
     let key = '';
     let type = this._allConfig.type;
     switch (type) {
-    case 'native':
-      obj = data['data']['mp4_domainnames'];
-      key = 'mp4_domainname';
-      break;
-    case 'hls':
-      obj = data['data']['hls_domainnames'];
-      key = 'hls_domainname';
-      break;
-    default:
-      this.info('warn', `暂时不支持${type}类型的点播`);
-      this._defineProperty([], data['data']['token']);
-      error = true;
-      return;
+      case 'native':
+        obj = data['data']['mp4_domainnames'];
+        key = 'mp4_domainname';
+        break;
+      case 'hls':
+        obj = data['data']['hls_domainnames'];
+        key = 'hls_domainname';
+        break;
+      default:
+        this.info('warn', `暂时不支持${type}类型的点播`);
+        this._defineProperty([], data['data']['token']);
+        error = true;
+        return;
     }
 
     // 因为不支持flv点播，直接return
-    if (error) {
+    if (error || !obj) {
       return;
     }
 

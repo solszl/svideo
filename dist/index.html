@@ -24,172 +24,59 @@
 
     window.onload = function() {
 
-      let lagConfig = {}
-      let reportConfig = {
-        url: '//la.e.vhall.com/login',
-        webinar_id: '439466233',
-        uid: '162647881',
-        session_id: '',
-        vid: '',
-        vfid:'',
-        ndi:'',
-        guid:'',
-        vtype:'',
-        topic:'',
-        app_id:'',
-        biz_role:'',
-        flow_type:2,
-        biz_id:'-',
-        biz_des01:0,
-        bu:0,
-        enable:false
-      }
+      // let lagConfig = {}
+      // let reportConfig = {
+      //   url: '//la.e.vhall.com/login',
+      //   webinar_id: '439466233',
+      //   uid: '162647881',
+      //   session_id: '',
+      //   vid: '',
+      //   vfid:'',
+      //   ndi:'',
+      //   guid:'',
+      //   vtype:'',
+      //   topic:'',
+      //   app_id:'',
+      //   biz_role:'',
+      //   flow_type:2,
+      //   biz_id:'-',
+      //   biz_des01:0,
+      //   bu:0,
+      //   enable:false
+      // }
       
-      let schedulerConfig = {
-        url: '//gslb.e.vhall.com',
-        webinar_id: '439466233',
-        uid: '162647881',
-        bu: 0,
-        quality: ['same', '360p', '480p'],
-        defaultDef: '480p'
-      }
+      // let schedulerConfig = {
+      //   url: '//gslb.e.vhall.com',
+      //   webinar_id: '439466233',
+      //   uid: '162647881',
+      //   bu: 0,
+      //   quality: ['same', '360p', '480p'],
+      //   defaultDef: '480p'
+      // }
 
-      let watermarkConfig = {
-        url:'http://www.vhall.com/public/static/images/index/new/logo.png',
-        align:'tr',
-        position: ['20px','20px'],
-        size: ['80px','35px'],
-        enable: true
-      }
+      // let watermarkConfig = {
+      //   url:'http://www.vhall.com/public/static/images/index/new/logo.png',
+      //   align:'tr',
+      //   position: ['20px','20px'],
+      //   size: ['80px','35px'],
+      //   enable: true
+      // }
 
-      let barrageConfig = {
-        enable: true,
-        duration: 12, // 完成基准，基于这个时间进行下浮动,取值范围为：(Math.random() * duration / 3)>>>0
-        position: 3, // 0:top,距离上10%~~50%, 1：middle,30%~70%， 2：bottom,50%~90% 3:all,距离上下各10%
-        fontsize: 18,
-        alpha: 0.8,
-        font: 'Microsoft YaHei',
-        color: '#FFF'
-      }
+      // let barrageConfig = {
+      //   enable: true,
+      //   duration: 12, // 完成基准，基于这个时间进行下浮动,取值范围为：(Math.random() * duration / 3)>>>0
+      //   position: 3, // 0:top,距离上10%~~50%, 1：middle,30%~70%， 2：bottom,50%~90% 3:all,距离上下各10%
+      //   fontsize: 18,
+      //   alpha: 0.8,
+      //   font: 'Microsoft YaHei',
+      //   color: '#FFF'
+      // }
 
       v = new VHVideoModule()
-      v.init({
-        type: 'flv',
-        isLive: true,
-        id: 'video-wrapper',
-        // flvurl: 'http://127.0.0.1:9090/videos/1.flv',
-        // hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
-        // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-        // nativeurl: 'http://127.0.0.1:9090/videos/1.mp4',
-        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
-        cors: 'cors',
-        x5: true,
-        poster:
-          'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg',
-        autoplay: false,
-        muted:true,
-        plugin_lag: JSON.stringify(lagConfig),
-        plugin_reporter: JSON.stringify(reportConfig),
-        plugin_scheduler: JSON.stringify(schedulerConfig),
-        plugin_watermark: JSON.stringify(watermarkConfig),
-        plugin_barrage: JSON.stringify(barrageConfig)
-      })
-
-      // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-      //  hlsurl:'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-      //https://yunqivedio.alicdn.com/2017yq/v2/0x0/96d79d3f5400514a6883869399708e11/96d79d3f5400514a6883869399708e11.m3u8
-
-      v.on('fullscreenchanged', state => {
-        outputInfo(`全屏状态修改为 ${state}`)
-      })
-
-      v.on('timeupdate', t => {
-        // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
-      })
-
-      v.on('ratechange', v => {
-        outputInfo(`倍速播放修改为: ${v}`)
-      })
-
-      v.on('volumechange', t => {
-        outputInfo(`设置音量为: ${v.volume}`)
-      })
-
-      v.on('progress', e => {
-        // outputInfo(e.type)
-      })
-
-      v.on('play', () => {
-        outputInfo('开始播放')
-      })
-
-      v.on('pause', () => {
-        outputInfo('暂停')
-      })
-
-      v.on('ended', () => {
-        outputInfo('播放完毕')
-        clearInterval(autoBarrageInterval);
-      })
-
-      v.on('seeked', e => {
-        outputInfo(`seek 完成,时间为: ${v.currentTime}`)
-      })
-
-      v.on('definitionchange', def => {
-        outputInfo(`当前清晰度变化，切换为 ${def.def}`);
-      });
-
-      v.on('definitionlistchange', e => {
-        outputInfo('清晰度列表变化');
-      });
-
-      v.on('playbackratelistchange', e => {
-        outputInfo(`倍速列表变化: ${v.playbackRateList}`);
-      });
-
-      v.on('error', e => {
-        outputInfo(`Error: ${e.details}`);
-      });
-
-      v.on('openbarrage', e => {
-        outputInfo('弹幕功能开启');
-      })
-
-      v.on('closebarrage', e => {
-        outputInfo('弹幕功能关闭');
-      })
-
-      v.on('clearbarrage', e => {
-        outputInfo('弹幕清空');
-      })
-
-      if(!v.player.hasOwnProperty('on')) {
-        return;
-      }
-      v.player.on('loopchange', b => {
-        outputInfo(`循环发生变化, loop: ${b}`);
-      });
-
-      v.player.on('srcchange', e =>{
-        outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
-      });
-
-      v.player.on('setcurrenttime', t =>{
-        outputInfo(`设置当前播放器事件为: ${t}`);
-      });
-
-      v.player.on('mutedchange', b => {
-        outputInfo(`静音属性发生变化: ${b}`);
-      });
-
-      // v.currentTime = 30;
-
-      setTimeout(function() {
-        console.log('开始获取已下载大小 ', v.downloadSize);
-      }, 1000)
+      
+      // setTimeout(function() {
+      //   console.log('开始获取已下载大小 ', v.downloadSize);
+      // }, 1000);
     }
 
     function playSrcHandler() {
@@ -281,6 +168,135 @@
       ta.value += `${now()} ${str}` + '\n'
       ta.scrollTop = ta.scrollHeight
     }
+
+    function initPlayer() {
+      v.destroy();
+
+      // 直播类型
+      let typeOpts = document.getElementById('playerType').options
+      var type = typeOpts[typeOpts.selectedIndex].value
+
+      // 播放地址
+      let url = document.getElementById('tiVideoSrc').value;
+
+      // 封面图
+      let posterUrl = document.getElementById('tiPosterUrl').value;
+
+      let lagConfig = '';
+      let reportConfig = document.getElementById('tiReport').value;
+      let schedulerConfig = document.getElementById('tiScheduler').value;
+      let watermarkConfig = document.getElementById('tiWatermark').value;
+      let barrageConfig = document.getElementById('tiBarrage').value;
+
+      let isLive = document.getElementById('tiIsLive').checked;
+      v.init({
+        type: type,
+        isLive: isLive,
+        id: 'video-wrapper',
+        flvurl: url,
+        hlsurl: url,
+        nativeurl: url,
+        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+        cors: 'cors',
+        x5: true,
+        poster: posterUrl,
+        autoplay: false,
+        muted:true,
+        plugin_lag: lagConfig,
+        plugin_reporter: reportConfig,
+        plugin_scheduler: schedulerConfig,
+        plugin_watermark: watermarkConfig,
+        plugin_barrage: barrageConfig
+      })
+    }
+
+    function initEvents() {
+      v.on('fullscreenchanged', state => {
+        outputInfo(`全屏状态修改为 ${state}`)
+      })
+
+      v.on('timeupdate', t => {
+        // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
+      })
+
+      v.on('ratechange', v => {
+        outputInfo(`倍速播放修改为: ${v}`)
+      })
+
+      v.on('volumechange', t => {
+        outputInfo(`设置音量为: ${v.volume}`)
+      })
+
+      v.on('progress', e => {
+        // outputInfo(e.type)
+      })
+
+      v.on('play', () => {
+        outputInfo('开始播放')
+      })
+
+      v.on('pause', () => {
+        outputInfo('暂停')
+      })
+
+      v.on('ended', () => {
+        outputInfo('播放完毕')
+        clearInterval(autoBarrageInterval);
+      })
+
+      v.on('seeked', e => {
+        outputInfo(`seek 完成,时间为: ${v.currentTime}`)
+      })
+
+      v.on('definitionchange', def => {
+        outputInfo(`当前清晰度变化，切换为 ${def.def}`);
+      });
+
+      v.on('definitionlistchange', e => {
+        outputInfo('清晰度列表变化');
+      });
+
+      v.on('playbackratelistchange', e => {
+        outputInfo(`倍速列表变化: ${v.playbackRateList}`);
+      });
+
+      v.on('error', e => {
+        outputInfo(`Error: ${e.details}`);
+      });
+
+      v.on('openbarrage', e => {
+        outputInfo('弹幕功能开启');
+      })
+
+      v.on('closebarrage', e => {
+        outputInfo('弹幕功能关闭');
+      })
+
+      v.on('clearbarrage', e => {
+        outputInfo('弹幕清空');
+      })
+
+      if(!v.player.hasOwnProperty('on')) {
+        return;
+      }
+      v.player.on('loopchange', b => {
+        outputInfo(`循环发生变化, loop: ${b}`);
+      });
+
+      v.player.on('srcchange', e =>{
+        outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
+      });
+
+      v.player.on('setcurrenttime', t =>{
+        outputInfo(`设置当前播放器事件为: ${t}`);
+      });
+
+      v.player.on('mutedchange', b => {
+        outputInfo(`静音属性发生变化: ${b}`);
+      });
+    }
   </script>
 </head>
 
@@ -296,12 +312,35 @@
   </span>
   <hr />
   <div>
+    <span>初始化</span>
+    <div>
+      <span>上报配置</span>
+      <input id="tiReport" class="initInput" type="text" value='{"url":"//la.e.vhall.com/login","webinar_id":"439466233","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+      <br>
+      <span>调度配置</span>
+      <input id="tiScheduler" class="initInput" type="text" value='{"url":"//gslb.e.vhall.com","webinar_id":"439466233","uid":"162647881","bu":0,"quality":["same","360p","480p"],"defaultDef":"480p"}'>
+      <br>
+      <span>水印配置</span>
+      <input id="tiWatermark" class="initInput" type="text" value='{"url":"http://www.vhall.com/public/static/images/index/new/logo.png","align":"tr","position":["20px","20px"],"size":["80px","35px"],"enable":true}'>
+      <br>
+      <span>弹幕配置</span>
+      <input id="tiBarrage" class="initInput" type="text" value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
+      <br>
+      <span>封面图</span>
+      <input id="tiPosterUrl" class="initInput" type="text" value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
+      <br>
+      <button onclick="initPlayer();">确认</button>
+    </div>
+  </div>
+  <hr />
+  <div>
     <span>播放</span>
     <select id="playerType">
       <option value="flv">FLV</option>
       <option value="hls">HLS</option>
       <option value="native">MP4等</option>
     </select>
+    <span>直播</span><input id="tiIsLive" type="checkbox" value="true">
     <input id="tiVideoSrc" value="https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba" placeholder="视频地址">
     <button onclick="playSrcHandler()">播放</button>
   </div>
