@@ -223,7 +223,8 @@ export default class Scheduler extends Plugin {
       Object.values(obj[item]).forEach((subItem, index) => {
         let def = {
           idx: index,
-          url: 'http://127.0.0.1:9090/videos/1.mp4', // subItem[key],
+          // url: 'http://127.0.0.1:9090/videos/1.mp4', // subItem[key],
+          url: subItem[key],
           line: subItem['line'],
           def: item
         };

@@ -11,7 +11,7 @@ module.exports = {
     '__USE_ALT_AUDIO__': false,
     '__USE_EME_DRM__': false
   },
-  "extends": "eslint:recommended",
+  "extends": "standard",
   "parserOptions": {
     "ecmaVersion": 2015,
     "sourceType": "module"

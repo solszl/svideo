@@ -22,4 +22,12 @@ export default class FlvPlayer extends Flv {
   get downloadSize() {
     return Model.OBJ.downloadSize;
   }
+
+  set src(val) {
+    super.src = val;
+  }
+
+  get src() {
+    return super.src;
+  }
 }

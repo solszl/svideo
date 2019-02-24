@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Video Demo</title>
+  <title>H5 Player | Video Demo</title>
   <link rel="stylesheet" href="./index.css" />
   <script src="./index.js"></script>
   <!-- <div id="player"></div>
@@ -74,16 +74,16 @@
 
       v = new VHVideoModule()
       v.init({
-        type: 'native',
-        isLive: false,
+        type: 'flv',
+        isLive: true,
         id: 'video-wrapper',
-        flvurl: 'http://127.0.0.1:9090/videos/1.flv',
-        hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
+        // flvurl: 'http://127.0.0.1:9090/videos/1.flv',
+        // hlsurl: 'https://bili.meijuzuida.com/20190207/2598_21abfd65/index.m3u8',
         // hlsurl: 'http://127.0.0.1:9090/videos/hls/1.m3u8',
-        nativeurl: 'http://127.0.0.1:9090/videos/1.mp4',
-        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+        // nativeurl: 'http://127.0.0.1:9090/videos/1.mp4',
+        flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+        hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+        nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
         cors: 'cors',
         x5: true,
         poster:
@@ -192,6 +192,20 @@
       }, 1000)
     }
 
+    function playSrcHandler() {
+      if(!v) {
+        outputInfo('播放器尚未初始化');
+        return;
+      }
+
+      let src = document.getElementById('tiVideoSrc').value;
+      if(src === '') {
+        outputInfo('播放地址不能为空');
+        return;
+      }
+      v.src = src;
+    }
+
     function onPlaybackRateChanged() {
       let opts = document.getElementById('playbackRate').options
       var val = opts[opts.selectedIndex].value
@@ -280,6 +294,17 @@
       <button onclick="window.location.reload()">刷新</button>
     </div>
   </span>
+  <hr />
+  <div>
+    <span>播放</span>
+    <select id="playerType">
+      <option value="flv">FLV</option>
+      <option value="hls">HLS</option>
+      <option value="native">MP4等</option>
+    </select>
+    <input id="tiVideoSrc" value="https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba" placeholder="视频地址">
+    <button onclick="playSrcHandler()">播放</button>
+  </div>
   <hr />
   <span>全屏相关</span> <button onclick="v.enterFullscreen();">全屏</button>
   <button onclick="outputInfo('当前状态为：'+v.displayState);">状态</button>
