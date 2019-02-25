@@ -51,7 +51,6 @@ export default class NativePlayer extends PlayerProxy {
 
   set src(val) {
     super.src = val;
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa', val);
   }
 
   get src() {
