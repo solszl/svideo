@@ -347,7 +347,7 @@ class PlayerProxy extends Component {
       });
     }
 
-    this.video.src = this.beforeSetSrcHook(url);
+    this.video.src = url; //this.beforeSetSrcHook(url);
   }
 
   /**
@@ -530,7 +530,6 @@ class PlayerProxy extends Component {
   }
 
   async beforeSetSrcHook(s) {
-    console.log(s);
     return await s;
   }
 }

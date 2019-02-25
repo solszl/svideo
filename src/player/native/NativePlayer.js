@@ -48,4 +48,13 @@ export default class NativePlayer extends PlayerProxy {
     this.info('warn', 'unrealized get native player estimate net speed, return default speed 500KBps');
     return 500;
   }
+
+  set src(val) {
+    super.src = val;
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa', val);
+  }
+
+  get src() {
+    return super.src;
+  }
 }
