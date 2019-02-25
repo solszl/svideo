@@ -14,6 +14,17 @@ export default class FlvPlayer extends Flv {
     super(mediaDataSource, config);
   }
 
+  get mediaDataSource() {
+    return this._mediaDataSource;
+  }
+
+  updateMediaDataSource() {
+    this.detachMediaElement(this.video);
+    this.unload()
+    this.attachMediaElement(this.video);
+    this.load();
+  }
+
   get estimateNetSpeed() {
     let speed = this.statisticsInfo ? this.statisticsInfo.speed : 500;
     return speed;
@@ -25,9 +36,17 @@ export default class FlvPlayer extends Flv {
 
   set src(val) {
     super.src = val;
+    this.mediaDataSource.url = val;
+    this.updateMediaDataSource();
   }
 
   get src() {
     return super.src;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unload();
+    this.detachMediaElement();
   }
 }

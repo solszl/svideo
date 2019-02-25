@@ -183,10 +183,10 @@
       let posterUrl = document.getElementById('tiPosterUrl').value;
 
       let lagConfig = '';
-      let reportConfig = document.getElementById('tiReport').value;
-      let schedulerConfig = document.getElementById('tiScheduler').value;
-      let watermarkConfig = document.getElementById('tiWatermark').value;
-      let barrageConfig = document.getElementById('tiBarrage').value;
+      let reportConfig = document.getElementById('tiReportConfig').value;
+      let schedulerConfig = document.getElementById('tiSchedulerConfig').value;
+      let watermarkConfig = document.getElementById('tiWatermarkConfig').value;
+      let barrageConfig = document.getElementById('tiBarrageConfig').value;
 
       let isLive = document.getElementById('tiIsLive').checked;
       v.init({
@@ -310,16 +310,16 @@
     <span>初始化</span>
     <div>
       <span>上报配置</span>
-      <input id="tiReport" class="initInput" type="text" value='{"url":"//la.e.vhall.com/login","webinar_id":"439466233","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+      <input id="tiReportConfig" class="initInput" type="text" value='{"url":"//la.e.vhall.com/login","webinar_id":"904633281","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
       <br>
       <span>调度配置</span>
-      <input id="tiScheduler" class="initInput" type="text" value='{"url":"//gslb.e.vhall.com","webinar_id":"439466233","uid":"162647881","bu":0,"quality":["same","360p","480p"],"defaultDef":"480p"}'>
+      <input id="tiSchedulerConfig" class="initInput" type="text" value='{"url":"//gslb.e.vhall.com","webinar_id":"904633281","uid":"162647881","bu":0,"quality":["same","360p","480p"],"defaultDef":"480p"}'>
       <br>
       <span>水印配置</span>
-      <input id="tiWatermark" class="initInput" type="text" value='{"url":"http://www.vhall.com/public/static/images/index/new/logo.png","align":"tr","position":["20px","20px"],"size":["80px","35px"],"enable":true}'>
+      <input id="tiWatermarkConfig" class="initInput" type="text" value='{"url":"http://www.vhall.com/public/static/images/index/new/logo.png","align":"tr","position":["20px","20px"],"size":["80px","35px"],"enable":true}'>
       <br>
       <span>弹幕配置</span>
-      <input id="tiBarrage" class="initInput" type="text" value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
+      <input id="tiBarrageConfig" class="initInput" type="text" value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text" value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
@@ -335,8 +335,8 @@
       <option value="hls">HLS</option>
       <option value="native">MP4等</option>
     </select>
-    <span>直播</span><input id="tiIsLive" type="checkbox" value="true">
-    <input id="tiVideoSrc" value="https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba" placeholder="视频地址">
+    <span>直播</span><input id="tiIsLive" type="checkbox" checked>
+    <input id="tiVideoSrc" value="https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv" placeholder="视频地址">
     <button onclick="playSrcHandler()">播放</button>
   </div>
   <hr />
