@@ -304,11 +304,6 @@
   <!-- 视频包装器，所有的视频相关的节点都在这里面 -->
   <span>
     <div id="video-wrapper"></div>
-    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出" style="margin-top:10px"></textarea>
-    <div>
-      <button onclick="taInfo.value = ''">清空</button>
-      <button onclick="window.location.reload()">刷新</button>
-    </div>
   </span>
   <hr />
   <div>
@@ -400,6 +395,28 @@
     <span>自动弹幕</span>
     <button onclick="autoFireBarrage(true)">开启</button>
     <button onclick="autoFireBarrage(false)">停止</button>
+    <br>
+    <span>颜色</span>
+    <input type="text" placeholder="输入 '#FFFFFF' 类型色值" value="#FF0000" id="tiBarrageColor" class="initInput">
+    <button onclick="v.barrageColor = document.getElementById('tiBarrageColor').value">确定</button>
+    <br>
+    <span>字号</span>
+    <input type="text" placeholder="输入数字" value="14" id="tiBarrageFontsize" class="initInput">
+    <button onclick="v.barrageFontsize = document.getElementById('tiBarrageFontsize').value">确定</button>
+    <br>
+    <span>弹幕位置</span>
+    <input type="text" placeholder="输入数字(0,1,2,3)" value="0" id="tiBarragePosition" class="initInput">
+    <button onclick="v.barragePosition = document.getElementById('tiBarragePosition').value">确定</button>
+    <br>
+    <span>透明度</span>
+    <input type="range" min="0" max="1" value="1" step="0.1" id="tiBarrageAlpha" class="initInput" onchange="v.barrageAlpha = document.getElementById('tiBarrageAlpha').value;">
+  </div>
+  <div>
+    <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出" style="margin-top:10px"></textarea>
+    <div>
+      <button onclick="taInfo.value = ''">清空</button>
+      <button onclick="window.location.reload()">刷新</button>
+    </div>
   </div>
   <div>
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
