@@ -180,7 +180,7 @@ export default class NormalRenderer extends BaseRenderer {
   }
 
   set position(val) {
-    let pos = POSITION[val];
+    let pos = POSITION[val] || POSITION[0];
     this._position = val;
     const {
       offsetYPercent,

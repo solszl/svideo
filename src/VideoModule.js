@@ -54,6 +54,7 @@ export default class VideoModule extends Component {
     let config = this._configMapping(option);
     this._config = config;
     this._createPlayer();
+    this.initPluginListener();
     this._pluginCall();
   }
 
@@ -116,7 +117,7 @@ export default class VideoModule extends Component {
     Object.assign(this, player);
     this.initEvents();
     player.attachMediaElement(player.video);
-    player.load();
+    // player.load();
     // this.play();
   }
 
@@ -131,7 +132,7 @@ export default class VideoModule extends Component {
     // player.on(Hls.Events.MEDIA_ATTACHED, () => {
     //   // this.play();
     // });
-    this.player.src = this._config.url;
+    // this.player.src = this._config.url;
   }
 
   _createNativePlayer() {
@@ -140,7 +141,7 @@ export default class VideoModule extends Component {
     let player = this.player;
     player.initVideo(this._config);
     this.initEvents();
-    player.src = this._config.url;
+    // player.src = this._config.url;
     // this.play();
   }
 
@@ -178,6 +179,18 @@ export default class VideoModule extends Component {
     this.pluginInstance.forEach(plugin => {
       plugin.setSize(w, h);
     });
+  }
+
+  initPluginListener() {
+    const self = this;
+    this.on('schedulerCompleted', () => {
+      const def = self.currentDefinition;
+      const token = self.newToken;
+      // let url = `${def.url}?token=${token}`;
+      let url = `${def.url}?token=alibaba`;
+      self._config.url = url;
+      this.player.src = url
+    })
   }
 
   get version() {
