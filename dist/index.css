@@ -16,3 +16,7 @@ span {
 button {
   border-radius: 4px;
 }
+
+.initInput {
+  width: 300px;
+}

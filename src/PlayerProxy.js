@@ -3,8 +3,12 @@ import {
   PlayerEvent
 } from './PlayerEvents';
 import {
-  createElement
+  createElement,
+  removeFromParent
 } from './utils/Dom';
+import {
+  Promise
+} from 'es6-promise';
 
 /**
  * 播放器的基类
@@ -343,7 +347,7 @@ class PlayerProxy extends Component {
       });
     }
 
-    this.video.src = url;
+    this.video.src = this.beforeSetSrcHook(url);
   }
 
   /**
@@ -513,6 +517,21 @@ class PlayerProxy extends Component {
 
   destroy() {
     super.destroy();
+    this._volume = 0.5;
+    this._src = '';
+    this._isLive = false;
+    this._isPlaying = false;
+    this.reset();
+
+    if (this.video) {
+      removeFromParent(this.video);
+      this.video = null;
+    }
+  }
+
+  async beforeSetSrcHook(s) {
+    console.log(s);
+    return await s;
   }
 }
 
