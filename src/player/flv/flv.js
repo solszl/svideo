@@ -89,6 +89,7 @@ export default class Flv extends PlayerProxy {
   }
 
   destroy() {
+    super.destroy();
     if (this._progressChecker != null) {
       window.clearInterval(this._progressChecker);
       this._progressChecker = null;
