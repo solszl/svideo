@@ -23,11 +23,15 @@ export default class HlsPlayer extends Hls {
   }
 
   set src(val) {
-    this._src = val;
+    super.src = val;
     this.loadSource(val);
     this.attachMedia(this.video);
     this.on(Hls.Events.MEDIA_ATTACHED, () => {
       // this.play();
     });
+  }
+
+  get src() {
+    return super.src;
   }
 }
