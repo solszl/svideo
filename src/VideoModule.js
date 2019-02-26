@@ -186,8 +186,8 @@ export default class VideoModule extends Component {
     this.on('schedulerCompleted', () => {
       const def = self.currentDefinition;
       const token = self.newToken;
-      // let url = `${def.url}?token=${token}`;
-      let url = `${def.url}?token=alibaba`;
+      let url = `${def.url}?token=${token}`;
+      // let url = `${def.url}?token=alibaba`;
       self._config.url = url;
       this.player.src = url
     })

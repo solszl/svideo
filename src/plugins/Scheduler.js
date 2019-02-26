@@ -243,8 +243,8 @@ export default class Scheduler extends Plugin {
 
     // 短token 翻转
     let reverseToken = pre.split('').reverse().join('');
-    let n = (crc32.str(reverseToken) >>> 0).toString(16); // >>>0 的原因是 crc32 库做完的数据可能会有负数的情况
-    let newToken = `${n}_${last}`.toLocaleUpperCase();
+    let n = (crc32.str(reverseToken) >>> 0).toString(16).toUpperCase(); // >>>0 的原因是 crc32 库做完的数据可能会有负数的情况
+    let newToken = `${n}_${last}`;
     this.info('info', `origin token: ${originToken}`);
     this.info('info', `new token: ${newToken}`);
     return newToken;
