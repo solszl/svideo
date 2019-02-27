@@ -103,7 +103,7 @@ export default class Switcher extends Plugin {
     this.info('info', '卡顿切换策略--->build complete');
   }
 
-  __changeLine() {
+  async __changeLine() {
     // 如果清晰度列表为空的话，玩蛋去！
     if (this._currentDefList === null || this._currentDefList.length === 0) {
       this.info('error', 'no available definition list');
@@ -115,6 +115,12 @@ export default class Switcher extends Plugin {
     if (!def) {
       this.info('error', 'no available definition');
       return;
+    }
+
+    // 判断token是否过期，如果过期，获取新的token
+    if (this.player.tokenIsExpire()) {
+      this.info('info', 'token过期，获取新token');
+      await this.player.fetchToken();
     }
 
     const token = this.player.newToken;
