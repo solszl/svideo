@@ -63,6 +63,9 @@
 
   获取最外层容器 root ✅
   获取播放器版本 version ✅
+
+  判断token是否过期 tokenIsExpire() return true | false ✅
+  获取新token fetchToken() ✅
 	
 	
 	

@@ -17,6 +17,7 @@ export default class Scheduler extends Plugin {
   constructor() {
     super();
     this._schedulerCfg = null;
+    this._needResolveResponseData = true; // 是否需要解析数据, 直播过程 token过期 现在线上为8小时， 回放为7天。
     this._resetStatus();
   }
 
@@ -26,7 +27,6 @@ export default class Scheduler extends Plugin {
     this._config = opts[Scheduler.type];
     // 是否是直播
     this._isLive = opts.isLive;
-    let isLive = this._isLive;
     // 调度配置
     this._schedulerCfg = JSON.parse(this._config);
     let schedulerCfg = this._schedulerCfg;
@@ -37,10 +37,50 @@ export default class Scheduler extends Plugin {
     this._rand = this._getRandom();
     let originURL = document.createElement('a');
     originURL.href = this._allConfig.url;
-    this._uri = isLive ? '' : originURL.pathname;
+    this._uri = this._isLive ? '' : originURL.pathname;
     this._qualities = schedulerCfg.quality || ['same'];
     this._defaultDef = schedulerCfg.defaultDef || 'same';
 
+    this._needResolveResponseData = true;
+    let cbk = this._isLive ? this._resolveLiveData.bind(this) : this._resolveVodData.bind(this);
+    this._buildFetchRequest(cbk);
+    this._defineFunctions();
+  }
+
+  destroy() {
+    super.destroy();
+    this._needResolveResponseData = true;
+    this._resetStatus();
+    this.__innerXHRDestroy();
+  }
+
+  static get type() {
+    return 'plugin_scheduler';
+  }
+
+  _resetStatus() {
+    this._allConfig = null;
+    this._config = null;
+    this._domain = '';
+    this._webinar_id = '';
+    this._rand = this._getRandom();
+    this._uri = '';
+    this._bu = 0;
+    this._uid = '';
+    this._qualities = ['same'];
+    this._isLive = false;
+    this._currentDefListIndex = -1;
+    this._defaultDef = null;
+
+    this._tokenExpireTime = -1;
+  }
+
+  _getRandom() {
+    return ((Math.random() * 899999999) >> 0) + 100000000;
+  }
+
+  _buildFetchRequest(callback) {
+    const isLive = this._isLive;
     let queryString = '';
     let api = '';
     if (isLive) {
@@ -69,39 +109,10 @@ export default class Scheduler extends Plugin {
 
     this.info('info', `isLive: ${isLive}, url: ${fetchURL}`);
 
-    this._fetchURLs(fetchURL);
+    this._fetchURLs(fetchURL, callback);
   }
 
-  destroy() {
-    super.destroy();
-    this._resetStatus();
-    this.__innerXHRDestroy();
-  }
-
-  static get type() {
-    return 'plugin_scheduler';
-  }
-
-  _resetStatus() {
-    this._allConfig = null;
-    this._config = null;
-    this._domain = '';
-    this._webinar_id = '';
-    this._rand = this._getRandom();
-    this._uri = '';
-    this._bu = 0;
-    this._uid = '';
-    this._qualities = ['same'];
-    this._isLive = false;
-    this._currentDefListIndex = -1;
-    this._defaultDef = null;
-  }
-
-  _getRandom() {
-    return ((Math.random() * 899999999) >> 0) + 100000000;
-  }
-
-  _fetchURLs(url) {
+  _fetchURLs(url, callback = null) {
     this.xhr = new XMLHttpRequest();
     let xhr = this.xhr;
     xhr.responseType = 'json';
@@ -113,7 +124,7 @@ export default class Scheduler extends Plugin {
 
     xhr.onload = e => {
       let data = xhr.response;
-      this._isLive ? this._resolveLiveData(data) : this._resolveVodData(data);
+      callback && callback(data);
     };
 
     xhr.onloadend = e => this.__innerXHRDestroy();
@@ -264,6 +275,7 @@ export default class Scheduler extends Plugin {
       return item.def === this._defaultDef;
     });
     this._currentDef = defaultDefList.length ? defaultDefList[0] : sameDef;
+    this._tokenExpireTime = Date.now() + this._allConfig.tokenExpireTime;
 
     // Object.defineProperties(this.player, {
     //   allDefinitionList: {
@@ -295,13 +307,15 @@ export default class Scheduler extends Plugin {
     let currentDefinitionListIndex = this._currentDefListIndex;
     let originToken = token;
     let newToken = nToken;
+    let tokenExpireTime = this._tokenExpireTime;
     var properties = {
       currentDefinition,
       allDefinitionList,
       currentDefinitionList,
       currentDefinitionListIndex,
       originToken,
-      newToken
+      newToken,
+      tokenExpireTime
     };
 
     for (const key in properties) {
@@ -316,5 +330,40 @@ export default class Scheduler extends Plugin {
     }
 
     this.player.emit('schedulerCompleted');
+  }
+
+  _defineFunctions() {
+    this.player.__proto__.tokenIsExpire = this.isExpired.bind(this);
+    this.player.__proto__.fetchToken = this.fetchToken.bind(this);
+  }
+
+  /**
+   * 获取token
+   *
+   * @memberof Scheduler
+   */
+  async fetchToken() {
+    this._needResolveResponseData = false;
+    this._buildFetchRequest(data => {
+      if (+data.code !== 200) {
+        this.info('error', `获取回放状态码不为200，状态码为:${data.code}`);
+        return;
+      }
+
+      let oToken = data['data']['token'];
+      this.player.originToken = oToken;
+      this.player.newToken = this._createToken(oToken);
+      this._tokenExpireTime = Date.now() + this._allConfig.tokenExpireTime;
+      this.player.tokenExpireTime = this._tokenExpireTime;
+    });
+  }
+
+  /**
+   * 检查token是否过期
+   *
+   * @memberof Scheduler
+   */
+  isExpired() {
+    return Date.now() > this.player.tokenExpireTime;
   }
 }

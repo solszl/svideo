@@ -279,40 +279,8 @@ export default class Flv extends PlayerProxy {
     }
   }
 
-  play() {
-    return this._mediaElement.play();
-  }
-
-  pause() {
-    this._mediaElement.pause();
-  }
-
   get type() {
     return this._type;
-  }
-
-  get buffered() {
-    return this._mediaElement.buffered;
-  }
-
-  get duration() {
-    return this._mediaElement.duration;
-  }
-
-  get volume() {
-    return this._mediaElement.volume;
-  }
-
-  set volume(value) {
-    this._mediaElement.volume = value;
-  }
-
-  get muted() {
-    return this._mediaElement.muted;
-  }
-
-  set muted(muted) {
-    this._mediaElement.muted = muted;
   }
 
   get currentTime() {
