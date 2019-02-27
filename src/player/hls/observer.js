@@ -13,6 +13,11 @@ import Component from '../../core/Component';
  *
  */
 export class Observer extends Component {
+
+  constructor() {
+    super();
+  }
+
   /**
    *
    * @param {string} event
