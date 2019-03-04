@@ -13,7 +13,25 @@ const Code = {
   Lag: 94001
 };
 
-const HEARTBEAT_INTERVAL = 60 * 1000;
+const LIVE_CODE = {
+  Start: 102001,
+  Info: 102002,
+  HeartBeat: 102003,
+  Error: 104001
+};
+const VOD_CODE = {
+  /** 初始化完成 */
+  Start: 92001,
+  Pause: 92002,
+  /** 心跳 */
+  HeartBeat: 92003,
+  Resume: 92004,
+  Info: 92005,
+  /** 卡顿 */
+  Lag: 94001
+};
+
+const INFO_PACK_INTERVAL = 30 * 1000;
 
 /**
  * 日志上报插件
@@ -27,13 +45,16 @@ export default class Reporter extends Plugin {
   constructor() {
     super();
     /** 心跳计时器 */
-    this._heartbeatInterval = 0;
+    this._infoPackInterval = 0;
     this._lagCount = 0;
     this.el = null; // 用来记录各种url的
     this._tt = Date.now();
+    this._bt = 0; // 卡顿时长
     this.basicInfo = {};
     this.enable = true;
     this._xhr = new XMLHttpRequest();
+    this._infoPackCount = 0; // 24小时直播需要发 60*60*24/30
+    this._lastDownloadSize = 0;
   }
 
   init(opts = {}) {
@@ -45,7 +66,7 @@ export default class Reporter extends Plugin {
     // 竟然需要这么多数据，还只是基础数据 真是醉了
     this.basicInfo = {};
     this.basicInfo.pf = 3,
-    this.basicInfo.ua = navigator.userAgent;
+      this.basicInfo.ua = navigator.userAgent;
     this.basicInfo.p = reporterCfg.webinar_id;
     this.basicInfo.aid = reporterCfg.webinar_id;
     this.basicInfo.uid = reporterCfg.uid;
@@ -62,6 +83,8 @@ export default class Reporter extends Plugin {
     this.basicInfo.biz_id = reporterCfg.biz_id;
     this.basicInfo.biz_des01 = reporterCfg.biz_des01;
     this.basicInfo.bu = reporterCfg.bu;
+    this.basicInfo.ver = this.player.version;
+    this.basicInfo.tf = 0;
 
     this.enable = reporterCfg.enable === undefined ? true : reporterCfg.enable;
 
@@ -73,8 +96,10 @@ export default class Reporter extends Plugin {
 
   destroy() {
     super.destroy();
-    clearInterval(this._heartbeatInterval);
+    clearInterval(this._infoPackInterval);
     this._lagCount = 0;
+    this._infoPack = 0;
+    this._lastDownloadSize = 0;
     this.el = null;
     if (this._xhr) {
       this._xhr.ontimeout = null;
@@ -88,6 +113,7 @@ export default class Reporter extends Plugin {
     this.player.off('ended', this.__ended);
     this.player.off('lagreport', this.__lag);
     this.player.off('lagrecover', this.__lagRecover);
+    this.player.off('ready', this.__ready);
   }
 
   static get type() {
@@ -100,19 +126,28 @@ export default class Reporter extends Plugin {
     }
     this.info('info', '启动日志上报');
     this.running = true;
-    clearInterval(this._heartbeatInterval);
-    this._heartbeatInterval = setInterval(this._heartbeat.bind(this), HEARTBEAT_INTERVAL);
+    clearInterval(this._infoPackInterval);
+    this._infoPackInterval = setInterval(this._infoPack.bind(this), INFO_PACK_INTERVAL);
   }
 
   stop() {
     this.info('info', '停止日志上报');
-    clearInterval(this._heartbeatInterval);
+    clearInterval(this._infoPackInterval);
     this.running = false;
   }
 
   fire(code, obj) {
     let url = '';
     let p = window.location.protocol;
+
+    // 下载量
+    this.basicInfo.tf = this.player.downloadSize - this._lastDownloadSize;
+    this._lastDownloadSize = this.player.downloadSize;
+    // 播放地址
+    this.basicInfo.sd = this.getURLInfo().hostname;
+    this.basicInfo.fd = this.getURLInfo().pathname;
+    // 卡顿时长
+    this.basicInfo.bt = this._bt;
     Object.assign(obj, this.basicInfo);
     let token = btoa(JSON.stringify(obj));
     let param = {
@@ -132,8 +167,11 @@ export default class Reporter extends Plugin {
       this.info('info', '日志url:' + url);
       xhr.send();
     } else {
-      this.info('info', '日志上报配置文件[enable:false],不进行日志上报');
+      this.info('info', `日志上报配置文件[enable:false],不进行日志上报, code:${code}`);
     }
+
+    this.basicInfo.bt = 0;
+    this._bt = 0;
   }
 
   _buildRocket() {
@@ -156,22 +194,38 @@ export default class Reporter extends Plugin {
     this.player.on('ended', this.__ended.bind(this));
     this.player.on('lagreport', this.__lag.bind(this));
     this.player.on('lagrecover', this.__lagRecover.bind(this));
+    this.player.once('ready', this.__ready.bind(this));
   }
 
-  _heartbeat() {
+  _infoPack() {
     let obj = {
-      tt: 0,
+      tt: Date.now() - this._tt,
       _bc: this._lagCount,
-      _bt: 0,
-      sd: this.getURLInfo().hostname
+      _bt: this._bt,
+      bt: this._bt
     };
-    // 派发心跳汇报
-    this.fire(Code.HeartBeat, obj);
-    // 如果有卡顿次数， 发送卡顿汇报
-    if (this._lagCount > 0) {
-      this.fire(Code.Lag, obj);
-      this._lagCount = 0;
+
+    // 信息报每隔30秒派发一个
+    // 心跳包每分钟派发一个
+    if (this._infoPack & 1) {
+      if (this.isLive) {
+        this.fire(LIVE_CODE.HeartBeat, obj);
+      } else {
+        this.fire(VOD_CODE.HeartBeat, obj);
+      }
     }
+
+    if (this.isLive) {
+      this.fire(LIVE_CODE.Info, obj);
+    } else {
+      this.fire(VOD_CODE.Info, obj);
+    }
+    // 如果有卡顿次数， 发送卡顿汇报
+    if (this._lagCount > 0 && !this.isLive) {
+      this.fire(VOD_CODE.Lag, obj);
+    }
+    this._lagCount = 0;
+    this._infoPack += 1;
   }
 
   __play(e) {
@@ -179,19 +233,20 @@ export default class Reporter extends Plugin {
       this.start();
     }
     this._tt = Date.now();
-    let obj = {
-      sd: this.getURLInfo().hostname
-    };
-    this.fire(Code.Start, obj);
+
+    if (!this.isLive) {
+      this.fire(VOD_CODE.Resume, {});
+    }
   }
 
   __pause(e) {
-    let obj = {
-      sd: this.getURLInfo().hostname,
-      tt: Date.now() - this._tt,
-      _bc: this._lagCount
-    };
-    this.fire(Code.End, obj);
+    if (!this.isLive) {
+      let obj = {
+        tt: Date.now() - this._tt,
+        _bc: this._lagCount
+      };
+      this.fire(VOD_CODE.Pause, obj);
+    }
   }
 
   __waiting(e) {
@@ -211,6 +266,13 @@ export default class Reporter extends Plugin {
 
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`);
+    this._bt = t;
+  }
+
+  __ready() {
+    // 播放器初始化完成
+    let code = this.isLive ? LIVE_CODE.Start : VOD_CODE.Start;
+    this.fire(code, {});
   }
 
   /**
@@ -227,5 +289,9 @@ export default class Reporter extends Plugin {
     let el = this.el;
     el.href = url;
     return el;
+  }
+
+  get isLive() {
+    return this._allConfig.isLive;
   }
 }

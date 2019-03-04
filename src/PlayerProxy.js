@@ -6,9 +6,7 @@ import {
   createElement,
   removeFromParent
 } from './utils/Dom';
-import {
-  Promise
-} from 'es6-promise';
+import Model from './core/Model';
 
 /**
  * 播放器的基类
@@ -348,6 +346,7 @@ class PlayerProxy extends Component {
     }
 
     this.video.src = url; //this.beforeSetSrcHook(url);
+    Model.OBJ.url = url;
   }
 
   /**

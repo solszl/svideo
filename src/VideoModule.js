@@ -56,6 +56,7 @@ export default class VideoModule extends Component {
     this._createPlayer();
     this.initPluginListener();
     this._pluginCall();
+    this.emit('ready');
   }
 
   _configMapping(option = {}) {
