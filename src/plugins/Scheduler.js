@@ -52,6 +52,13 @@ export default class Scheduler extends Plugin {
     this._needResolveResponseData = true;
     this._resetStatus();
     this.__innerXHRDestroy();
+    delete this.player.currentDefinition,
+      delete this.player.allDefinitionList,
+      delete this.player.currentDefinitionList,
+      delete this.player.currentDefinitionListIndex,
+      delete this.player.originToken,
+      delete this.player.newToken,
+      delete this.player.tokenExpireTime
   }
 
   static get type() {
@@ -320,6 +327,7 @@ export default class Scheduler extends Plugin {
 
     for (const key in properties) {
       Object.defineProperty(this.player, key, {
+        configurable: true,
         get: function () {
           return properties[key];
         },

@@ -58,7 +58,7 @@ export default class Reporter extends Plugin {
     this._domain = reporterCfg.url;
     // 竟然需要这么多数据，还只是基础数据 真是醉了
     this.basicInfo = {};
-    this.basicInfo.pf = 3,
+    this.basicInfo.pf = 7,
       this.basicInfo.ua = navigator.userAgent;
     this.basicInfo.p = reporterCfg.webinar_id;
     this.basicInfo.aid = reporterCfg.webinar_id;
@@ -91,7 +91,7 @@ export default class Reporter extends Plugin {
     super.destroy();
     clearInterval(this._infoPackInterval);
     this._lagCount = 0;
-    this._infoPack = 0;
+    this._infoPackCount = 0;
     this._lastDownloadSize = 0;
     this._infoPackCount = 0;
     this._lastPlayTimeInfo = 0;
@@ -135,6 +135,9 @@ export default class Reporter extends Plugin {
   }
 
   fire(code, obj) {
+    if (!this._xhr) {
+      this._buildRocket();
+    }
     let url = '';
     let p = window.location.protocol;
 
@@ -255,9 +258,6 @@ export default class Reporter extends Plugin {
     this._lastPlayTimeHeartbeat = Date.now();
 
     if (!this.isLive) {
-      let obj = {
-        bc: this._lagCount
-      };
       this.fire(VOD_CODE.Pause, obj);
     }
 
