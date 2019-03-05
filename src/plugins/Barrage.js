@@ -53,6 +53,12 @@ export default class Barrage extends Plugin {
     this._core = null;
     removeFromParent(this.cvs);
     this.cvs = null;
+
+    delete this.player.barrageFPS;
+    delete this.player.barragePosition;
+    delete this.player.barrageAlpha;
+    delete this.player.barrageFontsize;
+    delete this.player.barrageColor;
   }
 
   /**
@@ -143,6 +149,7 @@ export default class Barrage extends Plugin {
     };
     for (const key in properties) {
       Object.defineProperty(this.player, key, {
+        configurable: true,
         get: function () {
           return properties[key];
         },
@@ -200,6 +207,9 @@ export default class Barrage extends Plugin {
   }
 
   _play() {
+    if (!this._isOpen) {
+      return;
+    }
     let core = this._core;
     if (core.isRunning) {
       core.resume();
@@ -208,6 +218,9 @@ export default class Barrage extends Plugin {
     }
   }
   _pause() {
+    if (!this._isOpen) {
+      return;
+    }
     this._core.pause();
   }
   _ended() {

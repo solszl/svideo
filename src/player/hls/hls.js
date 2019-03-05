@@ -183,8 +183,8 @@ export default class Hls extends PlayerProxy {
       component.destroy();
     });
     this.url = null;
-    this.removeAllListeners();
     this._autoLevelCapping = -1;
+    super.destroy();
   }
 
   /**
