@@ -41,6 +41,7 @@ export default class FetchSize {
     xhr.open('HEAD', this._url);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
+        // TODO: 运维更新oss，添加请求头的支持 Access-Control-Expose-Headers : Content-Length
         let size = xhr.getResponseHeader('Content-Length');
         Model.OBJ.fileSize = size;
         Log.OBJ.info(`fetch file size: ${(size / 1024 / 1024).toFixed(2)}Mb`);

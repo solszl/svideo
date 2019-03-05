@@ -29,3 +29,4 @@ buffer中没有数据可以播放了 waiting
 关闭弹幕功能 closebarrage
 清空弹幕 clearbarrage
 
+播放器初始化完成 ready

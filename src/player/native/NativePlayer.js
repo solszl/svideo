@@ -13,12 +13,13 @@ import Model from '../../core/Model';
 export default class NativePlayer extends PlayerProxy {
   constructor(opt = {}) {
     super(opt);
+    this.fileSize = null;
+    this.playedTime = 0;
   }
 
   initVideo(option = {}) {
     super.initVideo(option);
-    let fileSize = new FetchSize();
-    fileSize.start(option.url);
+    this.fileSize = new FetchSize();
   }
 
   get downloadSize() {
@@ -50,7 +51,15 @@ export default class NativePlayer extends PlayerProxy {
   }
 
   set src(val) {
-    super.src = val;
+    // 阿里cdn 支持range， 使用range减少不必要的计算
+    // 因为点播每次请求的mp4需要添加start参数， 故导致每次请求的文件大小均不同
+    // let url = 'http://t-alioss01.e.vhall.com/vhallcoop/demand/e983faee411fcc98617cd0eeff0920b2/945218473/e983faee411fcc98617cd0eeff0920b2_360p.mp4?token=alibaba'
+    this.playedTime = this.currentTime;
+    this.fileSize.start(url);
+    super.src = url;
+
+    // 切线过后，设置当前播放时间
+    this.currentTime = this.playedTime;
   }
 
   get src() {
