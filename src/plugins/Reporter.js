@@ -212,6 +212,11 @@ export default class Reporter extends Plugin {
         this.fire(LIVE_CODE.HeartBeat, obj);
       } else {
         this.fire(VOD_CODE.HeartBeat, obj);
+        // 如果有卡顿次数， 发送卡顿汇报
+        if (this._lagCount > 0) {
+          this.fire(VOD_CODE.Lag, obj);
+          this._lagCount = 0;
+        }
       }
     }
 
@@ -223,11 +228,7 @@ export default class Reporter extends Plugin {
     } else {
       this.fire(VOD_CODE.Info, obj);
     }
-    // 如果有卡顿次数， 发送卡顿汇报
-    if (this._lagCount > 0 && !this.isLive) {
-      this.fire(VOD_CODE.Lag, obj);
-    }
-    this._lagCount = 0;
+
     this._infoPackCount += 1;
   }
 
