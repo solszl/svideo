@@ -100,6 +100,7 @@ export default class Reporter extends Plugin {
     this._lagCount = 0;
     this._infoPack = 0;
     this._lastDownloadSize = 0;
+    this._infoPackCount = 0;
     this.el = null;
     if (this._xhr) {
       this._xhr.ontimeout = null;
@@ -207,7 +208,7 @@ export default class Reporter extends Plugin {
 
     // 信息报每隔30秒派发一个
     // 心跳包每分钟派发一个
-    if (this._infoPack & 1) {
+    if (this._infoPackCount & 1) {
       if (this.isLive) {
         this.fire(LIVE_CODE.HeartBeat, obj);
       } else {
@@ -225,7 +226,7 @@ export default class Reporter extends Plugin {
       this.fire(VOD_CODE.Lag, obj);
     }
     this._lagCount = 0;
-    this._infoPack += 1;
+    this._infoPackCount += 1;
   }
 
   __play(e) {
