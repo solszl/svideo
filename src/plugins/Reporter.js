@@ -201,8 +201,7 @@ export default class Reporter extends Plugin {
   _infoPack() {
     let obj = {
       tt: Date.now() - this._tt,
-      _bc: this._lagCount,
-      _bt: this._bt,
+      bc: this._lagCount,
       bt: this._bt
     };
 
@@ -244,7 +243,7 @@ export default class Reporter extends Plugin {
     if (!this.isLive) {
       let obj = {
         tt: Date.now() - this._tt,
-        _bc: this._lagCount
+        bc: this._lagCount
       };
       this.fire(VOD_CODE.Pause, obj);
     }
