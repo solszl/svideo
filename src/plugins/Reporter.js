@@ -216,6 +216,9 @@ export default class Reporter extends Plugin {
     }
 
     if (this.isLive) {
+      obj.si = '';
+      // 根据直播状态， 如果当前可播放， 那么上报2002 否则上报4001
+      obj.errCode = this.player.readyState == 4 ? 2002 : 4001;
       this.fire(LIVE_CODE.Info, obj);
     } else {
       this.fire(VOD_CODE.Info, obj);
