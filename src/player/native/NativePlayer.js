@@ -55,8 +55,8 @@ export default class NativePlayer extends PlayerProxy {
     // 因为点播每次请求的mp4需要添加start参数， 故导致每次请求的文件大小均不同
     // let url = 'http://t-alioss01.e.vhall.com/vhallcoop/demand/e983faee411fcc98617cd0eeff0920b2/945218473/e983faee411fcc98617cd0eeff0920b2_360p.mp4?token=alibaba'
     this.playedTime = this.currentTime;
-    this.fileSize.start(url);
-    super.src = url;
+    this.fileSize.start(val);
+    super.src = val;
 
     // 切线过后，设置当前播放时间
     this.currentTime = this.playedTime;
