@@ -210,6 +210,8 @@
         plugin_watermark: watermarkConfig,
         plugin_barrage: barrageConfig
       })
+
+      initEvents();
     }
 
     function initEvents() {
@@ -218,7 +220,7 @@
       })
 
       v.on('timeupdate', t => {
-        // console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
+        console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
       })
 
       v.on('ratechange', v => {
@@ -276,6 +278,10 @@
 
       v.on('clearbarrage', e => {
         outputInfo('弹幕清空');
+      })
+
+      v.on('report', u => {
+        outputInfo(`日志上报 ${u}`);
       })
 
       if(!v.player.hasOwnProperty('on')) {
