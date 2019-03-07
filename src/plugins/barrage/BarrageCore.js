@@ -54,12 +54,12 @@ export default class BarrageCore extends Component {
     this.height = canvas.clientHeight;
 
     switch (type) {
-    case 'normal':
-      r = new NormalRenderer(canvas, opt);
-      this.normalRenderer = r;
-      break;
-    default:
-      break;
+      case 'normal':
+        r = new NormalRenderer(canvas, opt);
+        this.normalRenderer = r;
+        break;
+      default:
+        break;
     }
 
     if (r === null) {

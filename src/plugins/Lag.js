@@ -76,7 +76,7 @@ export default class Lag extends Plugin {
     clearInterval(this._readyStateInterval);
     // 每400ms检测一下 状态，如果为2的持续时间超过4秒，汇报一次卡顿
     this._readyStateInterval = setInterval(() => {
-      if (self.player.readyState === 2) {
+      if (self.player.readyState !== 4) {
         // 如果是不可播放状态且未记录时间，记录卡顿的开始时间
         if (this._lastLagTime === 0) {
           this._lastLagTime = Date.now();
@@ -90,17 +90,13 @@ export default class Lag extends Plugin {
           this._lastLagTime = 0;
         }
 
-      } else if (self.player.readyState === 4) {
-
+      } else {
         // 如果当前播放状态可用且卡顿开始时间不为0，发送卡顿恢复
         if (this._lastLagTime !== 0) {
           let elapsed = Date.now() - this._lastLagTime;
           this._lastLagTime = 0;
           this.player.emit('lagrecover', elapsed);
         }
-
-      } else {
-        // doesn't care
       }
     }, 400);
   }

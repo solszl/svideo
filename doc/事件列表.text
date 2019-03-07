@@ -30,3 +30,5 @@ buffer中没有数据可以播放了 waiting
 清空弹幕 clearbarrage
 
 播放器初始化完成 ready
+
+上报事件，发送请求后汇报 report u string 
