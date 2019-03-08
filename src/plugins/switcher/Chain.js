@@ -16,6 +16,13 @@ class Chain {
     this.polling = [];
   }
 
+  destroy() {
+    while (this.nextChain) {
+      this.nextChain.destroy();
+      this.nextChain = null;
+    }
+  }
+
   setNext(chain) {
     this.nextChain = chain;
     return this.nextChain;
@@ -33,6 +40,7 @@ class Chain {
    * @memberof Chain
    */
   findDefinitionByDefKey(key) {
+    this.currentDefList = this.player.currentDefinitionList;
     if (this.currentDefList === null || this.currentDefList.length === 0) {
       return null;
     }
@@ -120,10 +128,17 @@ export class Chain360p extends Chain {
       this.currentDefList = this.allDefList[idx];
       this.player.currentDefinitionListIndex = idx;
       this.player.currentDefinitionList = this.currentDefList;
+      this.player.currentDefinition = this.currentDefList[0];
       this.player.emit('definitionlistchange'); // 派发清晰度列表更新事件
     }
 
     this.polling = [];
     return this.nextChain && this.nextChain.execute(this.polling);
+  }
+
+  destroy() {
+    if (this.nextChain) {
+      this.nextChain = null;
+    }
   }
 }

@@ -24,7 +24,6 @@ class PlayerProxy extends Component {
     this._isLive = false;
     this._isPlaying = false;
     this.video = null;
-    this._lastEmitTimeupdate = 0;
     this.reset();
   }
 
@@ -343,10 +342,9 @@ class PlayerProxy extends Component {
         oldUrl: oldSrc,
         newUrl: this._src
       });
+      this.video.src = url; //this.beforeSetSrcHook(url);
+      Model.OBJ.url = url;
     }
-
-    this.video.src = url; //this.beforeSetSrcHook(url);
-    Model.OBJ.url = url;
   }
 
   /**
@@ -472,6 +470,10 @@ class PlayerProxy extends Component {
   __timeupdate(e) {
     // 每大于500ms 派发一次事件
     let now = Date.now();
+    if (!this._lastEmitTimeupdate) {
+      this._lastEmitTimeupdate = Date.now();
+    }
+
     if (now - this._lastEmitTimeupdate > 500) {
       this._lastEmitTimeupdate = now;
       this.emit(PlayerEvent.TIMEUPDATE, e);
@@ -511,7 +513,7 @@ class PlayerProxy extends Component {
   // }
 
   reset() {
-    this._lastEmitTimeupdate = 0;
+    this._lastEmitTimeupdate = Date.now();
   }
 
   destroy() {
@@ -523,6 +525,17 @@ class PlayerProxy extends Component {
     this.reset();
 
     if (this.video) {
+      this.video.removeEventListener('play', this.__play);
+      this.video.removeEventListener('pause', this.__pause);
+      this.video.removeEventListener('progress', this.__progress);
+      this.video.removeEventListener('error', this.__error);
+      this.video.removeEventListener('timeupdate', this.__timeupdate);
+      this.video.removeEventListener('ended', this.__ended);
+      this.video.removeEventListener('loadedmetadata', this.__loadedmetadata);
+      this.video.removeEventListener('seeked', this.__seeked);
+      this.video.removeEventListener('waiting', this.__waiting);
+      this.video.removeEventListener('ratechange', this.__ratechange);
+      this.video.removeEventListener('volumechange', this.__volumechange);
       removeFromParent(this.video);
       this.video = null;
     }

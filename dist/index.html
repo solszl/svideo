@@ -170,7 +170,9 @@
     }
 
     function initPlayer() {
-      v.destroy();
+      if(v) {
+        v.destroy();
+      }
 
       // 直播类型
       let typeOpts = document.getElementById('playerType').options
@@ -253,7 +255,7 @@
       })
 
       v.on('definitionchange', def => {
-        outputInfo(`当前清晰度变化，切换为 ${def.def}`);
+        outputInfo(`当前清晰度变化，切换为 ${def.def} ${def.url}`);
       });
 
       v.on('definitionlistchange', e => {

@@ -38,16 +38,19 @@ export default class Switcher extends Plugin {
 
   destroy() {
     super.destroy();
-    this.player.off('lagreport', this.__lag);
-    this.player.off('lagrecover', this.__lagRecover);
-    this.player.off('connectError', this.__connectError);
-    this.player.off('schedulerCompleted', this.__schedulerCompleted);
     clearTimeout(this._changeLineTimeout);
+    // this.player.off('lagreport', this.__lag);
+    // this.player.off('lagrecover', this.__lagRecover);
+    // this.player.off('connectError', this.__connectError);
+    // this.player.off('schedulerCompleted', this.__schedulerCompleted);
     this._allDefList = null;
     this._currentDef = null;
     this._currentDefList = null;
     this._currentDefListIndex = -1;
     this._pollingDefs = [];
+    this._lagChain.destroy();
+
+    this.player = null;
   }
 
   static get type() {

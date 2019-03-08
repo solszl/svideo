@@ -44,10 +44,10 @@ export default class Barrage extends Plugin {
   destroy() {
     super.destroy();
     // 取消函数监听
-    this.player.off('play', this._play);
-    this.player.off('pause', this._pause);
-    this.player.off('ended', this._ended);
-    this.player.off('fullscreenchanged', this._fullscreenChanged);
+    // this.player.off('play', this._play);
+    // this.player.off('pause', this._pause);
+    // this.player.off('ended', this._ended);
+    // this.player.off('fullscreenchanged', this._fullscreenChanged);
 
     this._core.destroy();
     this._core = null;

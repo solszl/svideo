@@ -103,13 +103,15 @@ export default class Reporter extends Plugin {
       this._xhr = null;
     }
 
-    this.player.off('play', this.__play);
-    this.player.off('pause', this.__pause);
-    this.player.off('waiting', this.__waiting);
-    this.player.off('ended', this.__ended);
-    this.player.off('lagreport', this.__lag);
-    this.player.off('lagrecover', this.__lagRecover);
-    this.player.off('ready', this.__ready);
+    // this.player.off('play', this.__play);
+    // this.player.off('pause', this.__pause);
+    // this.player.off('waiting', this.__waiting);
+    // this.player.off('ended', this.__ended);
+    // this.player.off('lagreport', this.__lag);
+    // this.player.off('lagrecover', this.__lagRecover);
+    // this.player.off('ready', this.__ready);
+
+    this.player = null;
   }
 
   static get type() {

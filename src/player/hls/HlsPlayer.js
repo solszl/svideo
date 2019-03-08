@@ -24,6 +24,10 @@ export default class HlsPlayer extends Hls {
 
   set src(val) {
     super.src = val;
+    // 停止当前的加载工作。准备切换线路
+    this.networkControllers.forEach(component => {
+      component.stopLoad();
+    });
     this.loadSource(val);
     this.attachMedia(this.video);
     this.on(Hls.Events.MEDIA_ATTACHED, () => {
