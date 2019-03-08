@@ -130,6 +130,7 @@ export default class Flv extends PlayerProxy {
 
   attachMediaElement(mediaElement) {
     this._mediaElement = mediaElement;
+    let self = this;
     mediaElement.addEventListener('loadedmetadata', this.e.onvLoadedMetadata);
     mediaElement.addEventListener('seeking', this.e.onvSeeking);
     mediaElement.addEventListener('canplay', this.e.onvCanPlay);
@@ -153,6 +154,10 @@ export default class Flv extends PlayerProxy {
         ErrorDetails.MEDIA_MSE_ERROR,
         info
       );
+      self.owner.emit('error', {
+        type: 'error',
+        details: info
+      });
     });
 
     this._msectl.attachMediaElement(mediaElement);
@@ -206,6 +211,7 @@ export default class Flv extends PlayerProxy {
       this._mediaElement.currentTime = 0;
     }
 
+    let self = this;
     this._transmuxer = new Transmuxer(this._mediaDataSource, this._config);
 
     this._transmuxer.on(TransmuxingEvents.INIT_SEGMENT, (type, is) => {
@@ -233,9 +239,17 @@ export default class Flv extends PlayerProxy {
       this._emitter.emit(PlayerEvents.RECOVERED_EARLY_EOF);
     });
     this._transmuxer.on(TransmuxingEvents.IO_ERROR, (detail, info) => {
+      self.owner.emit('error', {
+        type: 'error',
+        details: info
+      });
       this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.NETWORK_ERROR, detail, info);
     });
     this._transmuxer.on(TransmuxingEvents.DEMUX_ERROR, (detail, info) => {
+      self.owner.emit('error', {
+        type: 'error',
+        details: info
+      });
       this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.MEDIA_ERROR, detail, {
         code: -1,
         msg: info

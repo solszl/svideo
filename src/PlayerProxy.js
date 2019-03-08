@@ -422,6 +422,10 @@ class PlayerProxy extends Component {
     return this._root;
   }
 
+  get owner() {
+    return this._owner;
+  }
+
   _initOriginalEvents() {
     const e = {
       /** 开始播放*/

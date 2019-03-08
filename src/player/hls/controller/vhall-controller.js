@@ -52,6 +52,8 @@ class VhallController extends EventHandler {
       type,
       details
     }));
+
+    this.hls.owner.emit('error', e);
   }
 
   destroy() {
