@@ -42,6 +42,8 @@ export default class Watermark extends Plugin {
       removeFromParent(this.elImage);
       this.elImage = null;
     }
+
+    this.player = null;
   }
 
   /**
@@ -92,22 +94,22 @@ export default class Watermark extends Plugin {
     const alphabets = a.toLowerCase().split('');
     alphabets.forEach(ab => {
       switch (ab) {
-      case 't':
-        result.top = yPos;
-        break;
-      case 'b':
-        result.bottom = yPos;
-        break;
-      case 'l':
-        result.left = xPos;
-        break;
-      case 'r':
-        result.right = xPos;
-        break;
-      default:
-        result.left = xPos;
-        result.top = yPos;
-        break;
+        case 't':
+          result.top = yPos;
+          break;
+        case 'b':
+          result.bottom = yPos;
+          break;
+        case 'l':
+          result.left = xPos;
+          break;
+        case 'r':
+          result.right = xPos;
+          break;
+        default:
+          result.left = xPos;
+          result.top = yPos;
+          break;
       }
     });
     return result;

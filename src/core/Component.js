@@ -1,5 +1,9 @@
 import EventEmitter from 'event-emitter';
+
 import Log from '../utils/Log';
+
+const allOff = require('event-emitter/all-off');
+
 
 /**
  * 万物之源
@@ -10,8 +14,8 @@ import Log from '../utils/Log';
  */
 export default class Component {
   constructor() {
-    this.CLASS_NAME = this.constructor.name;
     EventEmitter(this);
+    this.CLASS_NAME = this.constructor.name;
   }
 
   /**
@@ -19,11 +23,13 @@ export default class Component {
    *
    * @memberof Component
    */
-  destroy() {
-
-  }
+  destroy() {}
 
   info(type, ...args) {
     Log.OBJ[type](`[${this.CLASS_NAME}] ${args}`);
+  }
+
+  removeAllEvents() {
+    allOff(this);
   }
 }

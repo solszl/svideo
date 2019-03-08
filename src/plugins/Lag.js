@@ -28,11 +28,11 @@ export default class Lag extends Plugin {
     this._readyStateChecking = false;
     this._lastLagTime = 0;
     clearInterval(this._readyStateInterval);
-    this.player.off('play', this.__play);
-    this.player.off('pause', this.__pause);
-    this.player.off('waiting', this.__waiting);
-    this.player.off('ended', this.__ended);
-    this.player.off('lag', this.__lag);
+    // this.player.off('play', this.__play);
+    // this.player.off('pause', this.__pause);
+    // this.player.off('waiting', this.__waiting);
+    // this.player.off('ended', this.__ended);
+    // this.player.off('lag', this.__lag);
   }
 
   static get type() {

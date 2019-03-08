@@ -162,6 +162,7 @@ export default class VideoModule extends Component {
   destroy() {
     super.destroy();
 
+    this.removeAllEvents();
     // 清理插件
     this.pluginInstance.forEach(plugin => {
       plugin.destroy();

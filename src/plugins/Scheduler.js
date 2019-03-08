@@ -52,13 +52,15 @@ export default class Scheduler extends Plugin {
     this._needResolveResponseData = true;
     this._resetStatus();
     this.__innerXHRDestroy();
-    delete this.player.currentDefinition,
-      delete this.player.allDefinitionList,
-      delete this.player.currentDefinitionList,
-      delete this.player.currentDefinitionListIndex,
-      delete this.player.originToken,
-      delete this.player.newToken,
-      delete this.player.tokenExpireTime
+    delete this.player.currentDefinition;
+    delete this.player.allDefinitionList;
+    delete this.player.currentDefinitionList;
+    delete this.player.currentDefinitionListIndex;
+    delete this.player.originToken;
+    delete this.player.newToken;
+    delete this.player.tokenExpireTime;
+
+    this.player = null;
   }
 
   static get type() {
