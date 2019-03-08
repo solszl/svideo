@@ -59,6 +59,7 @@ class PlayerProxy extends Component {
     parent.style.position = 'relative';
 
     this.autoplay = config.autoplay || false;
+    this._isLive = config['isLive']
   }
 
   initEvents() {

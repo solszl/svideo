@@ -48,7 +48,9 @@ export default class Switcher extends Plugin {
     this._currentDefList = null;
     this._currentDefListIndex = -1;
     this._pollingDefs = [];
-    this._lagChain.destroy();
+    if (this._lagChain) {
+      this._lagChain.destroy();
+    }
 
     this.player = null;
   }
