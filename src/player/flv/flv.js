@@ -156,7 +156,7 @@ export default class Flv extends PlayerProxy {
       );
       self.owner.emit('error', {
         type: 'error',
-        details: info
+        details: info.msg
       });
     });
 
@@ -241,14 +241,14 @@ export default class Flv extends PlayerProxy {
     this._transmuxer.on(TransmuxingEvents.IO_ERROR, (detail, info) => {
       self.owner.emit('error', {
         type: 'error',
-        details: info
+        details: info.msg
       });
       this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.NETWORK_ERROR, detail, info);
     });
     this._transmuxer.on(TransmuxingEvents.DEMUX_ERROR, (detail, info) => {
       self.owner.emit('error', {
         type: 'error',
-        details: info
+        details: info.msg
       });
       this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.MEDIA_ERROR, detail, {
         code: -1,
