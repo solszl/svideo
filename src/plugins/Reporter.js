@@ -210,15 +210,19 @@ export default class Reporter extends Plugin {
 
     // 信息报每隔30秒派发一个
     // 心跳包每分钟派发一个
+    // xhr 如果同一时刻发送相同地址的请求，会主动cancel前一个，所以延迟发送消息
     if (this._infoPackCount & 1) {
       obj.tt = this._playHeartbeatDuration + Date.now() - this._lastPlayTimeHeartbeat;
       if (this.isLive) {
-        this.fire(LIVE_CODE.HeartBeat, obj);
+        // this.fire(LIVE_CODE.HeartBeat, obj);
+        this.delayCall(LIVE_CODE.HeartBeat, obj);
       } else {
-        this.fire(VOD_CODE.HeartBeat, obj);
+        // this.fire(VOD_CODE.HeartBeat, obj);
+        this.delayCall(VOD_CODE.HeartBeat, obj);
         // 如果有卡顿次数， 发送卡顿汇报
         if (this._lagCount > 0) {
-          this.fire(VOD_CODE.Lag, obj);
+          // this.fire(VOD_CODE.Lag, obj);
+          this.delayCall(VOD_CODE.Lag, obj);
           this._lagCount = 0;
         }
       }
@@ -317,5 +321,11 @@ export default class Reporter extends Plugin {
 
   get isLive() {
     return this._allConfig.isLive;
+  }
+
+  delayCall(code, obj) {
+    setTimeout(() => {
+      this.fire(code, obj);
+    }, 50);
   }
 }
