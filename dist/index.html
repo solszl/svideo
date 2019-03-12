@@ -223,6 +223,7 @@
 
       v.on('timeupdate', t => {
         console.log('timeudpate:',`duration: ${v.duration}, currentTime: ${v.currentTime}`);
+        outputInfo(`currentTime: ${v.currentTime},当前播放器状态：${v.readyState}`)
       })
 
       v.on('ratechange', v => {
@@ -283,7 +284,7 @@
       })
 
       v.on('report', u => {
-        outputInfo(`日志上报 ${u}`);
+        // outputInfo(`日志上报 ${u}`);
       })
 
       if(!v.player.hasOwnProperty('on')) {
