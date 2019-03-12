@@ -287,6 +287,18 @@
         // outputInfo(`日志上报 ${u}`);
       })
 
+      v.on('lagreport', () => {
+        outputInfo('卡了');
+      });
+
+      v.on('lagrecover', t=>{
+        outputInfo(`卡顿恢复了，耗时${t}`);
+      });
+
+      // v.on('tencentInfo', e => {
+      //   outputInfo(`腾讯信息，是否卡顿${e}`);
+      // })
+
       if(!v.player.hasOwnProperty('on')) {
         return;
       }
@@ -299,7 +311,7 @@
       });
 
       v.player.on('setcurrenttime', t =>{
-        outputInfo(`设置当前播放器事件为: ${t}`);
+        outputInfo(`设置当前播放器时间为: ${t}`);
       });
 
       v.player.on('mutedchange', b => {

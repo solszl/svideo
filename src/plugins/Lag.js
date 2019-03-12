@@ -1,4 +1,5 @@
 import Plugin from '../core/Plugin';
+import TencentLagInject from './lag/TencentLagInject';
 
 /**
  * 卡顿插件
@@ -14,12 +15,16 @@ export default class Lag extends Plugin {
     this._readyStateChecking = false;
     this._readyStateInterval = 0;
     this._lastLagTime = 0;
+    this._tlag = null;
   }
 
   init(opts = {}) {
     super.init(opts);
     this._allConfig = opts;
     this._handleCareEvent();
+    if (TencentLagInject.isSupported()) {
+      this._tlag = new TencentLagInject(this._allConfig.lagThreshold);
+    }
   }
 
   destroy() {
@@ -28,6 +33,8 @@ export default class Lag extends Plugin {
     this._readyStateChecking = false;
     this._lastLagTime = 0;
     clearInterval(this._readyStateInterval);
+    this._tlag.destroy();
+    this._tlag = null;
     // this.player.off('play', this.__play);
     // this.player.off('pause', this.__pause);
     // this.player.off('waiting', this.__waiting);
@@ -97,6 +104,16 @@ export default class Lag extends Plugin {
           this._lastLagTime = 0;
           this.player.emit('lagrecover', elapsed);
         }
+      }
+
+      // 安卓平台下腾讯系的软件，需要一个二级保护伞来判断是否卡顿
+      if (this._tlag) {
+        let t = this.player.currentTime;
+        let isLag = this._tlag.isLag(t);
+        if (isLag) {
+          this.player.emit('lagreport');
+        }
+        // this.player.emit('tencentInfo', isLag);
       }
     }, 400);
   }
