@@ -9,7 +9,7 @@
     "build-dev": "cross-env NODE_ENV=development LOG_LEVEL=all PF=vhall node config/build.js",
     "build-local": "cross-env NODE_ENV=development LOG_LEVEL=all PF=vhall webpack-dev-server --config config/webpack.local.config.js",
     "analyzer": "cross-env NODE_ENV=production LOG_LEVEL=warn PF=vhall ANALYZER=true node config/build.js",
-    "lint-fix": "eslint --fix --ext .js src/"
+    "lint-fix": "eslint --fix --ignore-path .eslintignore --ext .js src/ "
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   "devDependencies": {
     "arraybuffer-equal": "^1.0.4",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^7.1.5",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-es2015-typeof-symbol": "^6.23.0",
@@ -43,6 +44,11 @@
     "es6-promise": "^4.2.5",
     "eslint": "^5.6.1",
     "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.3.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "event-emitter": "^0.3.5",
     "node-sass": "^4.10.0",
     "ora": "^3.0.0",

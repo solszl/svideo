@@ -1,4 +1,4 @@
-import Plugin from '../core/Plugin';
+import Plugin from '../core/Plugin'
 
 /**
  * 倍速播放插件
@@ -10,35 +10,35 @@ import Plugin from '../core/Plugin';
  */
 export default class PlaybackRate extends Plugin {
   constructor() {
-    super();
-    this._allConfig = null;
+    super()
+    this._allConfig = null
   }
 
   destroy() {
-    super.destroy();
+    super.destroy()
     if (this.player.playbackRateList) {
-      delete this.player.playbackRateList;
+      delete this.player.playbackRateList
     }
   }
 
   init(opts = {}) {
-    super.init(opts);
-    this._allConfig = opts;
-    let rateList = this._allConfig.rateList || [0.5, 1, 1.5, 2];
-    let p = this.player;
+    super.init(opts)
+    this._allConfig = opts
+    let rateList = this._allConfig.rateList || [0.5, 1, 1.5, 2]
+    let p = this.player
     Object.defineProperty(this.player, 'playbackRateList', {
       configurable: true,
       get: function () {
-        return rateList;
+        return rateList
       },
       set: function (newValue) {
-        rateList = newValue;
-        p.emit('playbackratelistchange');
+        rateList = newValue
+        p.emit('playbackratelistchange')
       }
-    });
+    })
   }
 
   static get type() {
-    return 'plugin_playbackrate';
+    return 'plugin_playbackrate'
   }
 }

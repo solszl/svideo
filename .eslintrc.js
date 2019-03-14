@@ -55,5 +55,13 @@ module.exports = {
     // , 前不要空格， , 后需要空格
     "comma-spacing": 1,
     // "sort-imports": 1,
+    // 禁止 function 标识符和括号之间出现空格
+    "no-spaced-func": 1,
+    // 强制在 function的左括号之前使用一致的空格
+    "space-before-function-paren": 0,
+    // 只读类原型不可添加属性
+    "no-extend-native": 0,
+    // 类名首字母大写
+    "new-cap": 1
   }
 };
