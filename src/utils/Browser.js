@@ -7,7 +7,7 @@
  */
 export default class Browser {
   static get ua() {
-    return window.navigator && window.navigator.userAgent || ''
+    return (window.navigator.userAgent && window.navigator.userAgent) || ''
   }
 
   /** *****************  FOR IOS START ************************/
