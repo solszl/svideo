@@ -438,8 +438,6 @@ class PlayerProxy extends Component {
       error: this.__error.bind(this),
       /** 视频时间戳更新触发事件 */
       timeupdate: this.__timeupdate.bind(this),
-      /** 播放完毕执行的事件 */
-      ended: this.__ended.bind(this),
       /** 视频设置src后，加载元数据后，派发的事件 */
       loadedmetadata: this.__loadedmetadata.bind(this),
       /** seek完成后，触发的事件 */
@@ -452,6 +450,13 @@ class PlayerProxy extends Component {
       volumechange: this.__volumechange.bind(this)
       // loadstart: this.__loadstart.bind(this),
       // canplaythrough: this.__canplaythrough.bind(this)
+    }
+
+    if (!this.isLive) {
+      Object.assign(e, {
+        /** 播放完毕执行的事件 */
+        ended: this.__ended.bind(this)
+      })
     }
 
     // 添加监听

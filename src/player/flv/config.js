@@ -25,7 +25,7 @@ export const defaultConfig = {
 
   lazyLoad: true,
   lazyLoadMaxDuration: 1 * 60, // 一次性缓冲多长时间
-  lazyLoadRecoverDuration: 30,
+  lazyLoadRecoverDuration: 10,
   deferLoadAfterSourceOpen: false,
 
   // autoCleanupSourceBuffer: default as false, leave unspecified
