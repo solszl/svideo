@@ -57,29 +57,29 @@ export default class Reporter extends Plugin {
     let reporterCfg = JSON.parse(this._config)
     this._domain = reporterCfg.url
     // 竟然需要这么多数据，还只是基础数据 真是醉了
-    this.basicInfo = {};
-    this.basicInfo.pf = 7;
-    this.basicInfo.ua = navigator.userAgent;
-    this.basicInfo.p = reporterCfg.webinar_id;
-    this.basicInfo.aid = reporterCfg.webinar_id;
-    this.basicInfo.uid = reporterCfg.uid;
-    this.basicInfo.s = reporterCfg.session_id;
-    this.basicInfo.vid = reporterCfg.vid;
-    this.basicInfo.vfid = reporterCfg.vfid;
-    this.basicInfo.ndi = reporterCfg.ndi;
-    this.basicInfo.guid = reporterCfg.guid;
-    this.basicInfo.vtype = reporterCfg.vtype;
-    this.basicInfo.topic = reporterCfg.topic;
-    this.basicInfo.app_id = reporterCfg.app_id;
-    this.basicInfo.biz_role = reporterCfg.biz_role;
-    this.basicInfo.flow_type = reporterCfg.flow_type;
-    this.basicInfo.biz_id = reporterCfg.biz_id;
-    this.basicInfo.biz_des01 = reporterCfg.biz_des01;
-    this.basicInfo.bu = reporterCfg.bu;
-    this.basicInfo.ver = this.player.version;
-    this.basicInfo.tf = 0;
+    this.basicInfo = {}
+    this.basicInfo.pf = 7
+    this.basicInfo.ua = navigator.userAgent
+    this.basicInfo.p = reporterCfg.webinar_id
+    this.basicInfo.aid = reporterCfg.webinar_id
+    this.basicInfo.uid = reporterCfg.uid
+    this.basicInfo.s = reporterCfg.session_id
+    this.basicInfo.vid = reporterCfg.vid
+    this.basicInfo.vfid = reporterCfg.vfid
+    this.basicInfo.ndi = reporterCfg.ndi
+    this.basicInfo.guid = reporterCfg.guid
+    this.basicInfo.vtype = reporterCfg.vtype
+    this.basicInfo.topic = reporterCfg.topic
+    this.basicInfo.app_id = reporterCfg.app_id
+    this.basicInfo.biz_role = reporterCfg.biz_role
+    this.basicInfo.flow_type = reporterCfg.flow_type
+    this.basicInfo.biz_id = reporterCfg.biz_id
+    this.basicInfo.biz_des01 = reporterCfg.biz_des01
+    this.basicInfo.bu = reporterCfg.bu
+    this.basicInfo.ver = this.player.version
+    this.basicInfo.tf = 0
 
-    this.enable = reporterCfg.enable === undefined ? true : reporterCfg.enable;
+    this.enable = reporterCfg.enable === undefined ? true : reporterCfg.enable
 
     // 创建xhr 以及绑定超时和错误事件
     this._buildRocket()
@@ -306,7 +306,7 @@ export default class Reporter extends Plugin {
 
   __ready() {
     // 播放器初始化完成
-    let code = this.isLive ? LIVE_CODE.Start : VOD_CODE.Start;
+    let code = this.isLive ? LIVE_CODE.Start : VOD_CODE.Start
     this.fire(code, {})
   }
 

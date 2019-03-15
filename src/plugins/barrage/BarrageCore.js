@@ -1,9 +1,9 @@
-import NormalRenderer from './NormalRenderer';
-import Component from '../../core/Component';
+import NormalRenderer from './NormalRenderer'
+import Component from '../../core/Component'
 
-const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame
 // 私有函数内部循环
-const loop = Symbol('barrage-loop');
+const loop = Symbol('barrage-loop')
 /**
  *  弹幕核心类
  *
@@ -13,33 +13,33 @@ const loop = Symbol('barrage-loop');
  */
 export default class BarrageCore extends Component {
   constructor() {
-    super();
-    this._fps = 0;
-    this.renderers = [];
-    this.running = false;
-    this[loop]();
+    super()
+    this._fps = 0
+    this.renderers = []
+    this.running = false
+    this[loop]()
 
-    this.normalRenderer = null;
+    this.normalRenderer = null
   }
 
   [loop](elapsed = new Date().getTime()) {
-    let now = new Date().getTime();
+    let now = new Date().getTime()
     if (!this.running) {
       this.renderers.forEach(renderer => {
-        let r = renderer.renderer;
-        r.clearRect();
-      });
-      return;
+        let r = renderer.renderer
+        r.clearRect()
+      })
+      return
     }
-    let elapsedTime = now - elapsed;
-    let w = this.width;
-    let h = this.height;
+    let elapsedTime = now - elapsed
+    let w = this.width
+    let h = this.height
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.update(w, h, elapsedTime);
-    });
-    this._fps = 1000 / elapsedTime >> 0;
-    requestAnimationFrame(() => this[loop](now));
+      let r = renderer.renderer
+      r.update(w, h, elapsedTime)
+    })
+    this._fps = 1000 / elapsedTime >> 0
+    requestAnimationFrame(() => this[loop](now))
   }
 
   /**
@@ -48,39 +48,39 @@ export default class BarrageCore extends Component {
    * @memberof Barrage
    */
   regRenderer(type, canvas, opt = {}) {
-    let r;
+    let r
 
-    this.width = canvas.clientWidth;
-    this.height = canvas.clientHeight;
+    this.width = canvas.clientWidth
+    this.height = canvas.clientHeight
 
     switch (type) {
-      case 'normal':
-        r = new NormalRenderer(canvas, opt);
-        this.normalRenderer = r;
-        break;
-      default:
-        break;
+    case 'normal':
+      r = new NormalRenderer(canvas, opt)
+      this.normalRenderer = r
+      break
+    default:
+      break
     }
 
     if (r === null) {
-      return;
+      return
     }
 
     let renderer = {
       id: type + Math.random() * 100 >> 0,
       type: type,
       renderer: r
-    };
-    this.renderers.push(renderer);
+    }
+    this.renderers.push(renderer)
   }
 
   add(content, type = 'normal') {
     this.renderers.forEach(renderer => {
       if (renderer.type === type) {
-        let r = renderer.renderer;
-        r.add(content);
+        let r = renderer.renderer
+        r.add(content)
       }
-    });
+    })
   }
 
   /**
@@ -91,15 +91,15 @@ export default class BarrageCore extends Component {
    */
   start() {
     if (this.running) {
-      return;
+      return
     }
 
-    this.running = true;
+    this.running = true
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.start();
-    });
-    this[loop]();
+      let r = renderer.renderer
+      r.start()
+    })
+    this[loop]()
   }
 
   /**
@@ -108,11 +108,11 @@ export default class BarrageCore extends Component {
    * @memberof Barrage
    */
   stop() {
-    this.running = false;
+    this.running = false
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.stop();
-    });
+      let r = renderer.renderer
+      r.stop()
+    })
   }
 
   /**
@@ -122,9 +122,9 @@ export default class BarrageCore extends Component {
    */
   pause() {
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.pause();
-    });
+      let r = renderer.renderer
+      r.pause()
+    })
   }
 
   /**
@@ -134,9 +134,9 @@ export default class BarrageCore extends Component {
    */
   resume() {
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.resume();
-    });
+      let r = renderer.renderer
+      r.resume()
+    })
   }
 
   /**
@@ -146,23 +146,23 @@ export default class BarrageCore extends Component {
    */
   clear() {
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.clearData();
-      r.clearRect();
-    });
+      let r = renderer.renderer
+      r.clearData()
+      r.clearRect()
+    })
   }
 
   destroy() {
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.clearData();
-      r.clearRect();
-      r.destroy();
-    });
+      let r = renderer.renderer
+      r.clearData()
+      r.clearRect()
+      r.destroy()
+    })
 
-    this.renderers = [];
-    this.running = false;
-    this._fps = 0;
+    this.renderers = []
+    this.running = false
+    this._fps = 0
   }
 
   /**
@@ -172,50 +172,49 @@ export default class BarrageCore extends Component {
    * @memberof Barrage
    */
   get fps() {
-    return this._fps;
+    return this._fps
   }
 
   get isRunning() {
-    return this.running;
+    return this.running
   }
 
   get position() {
-    return this.normalRenderer.position;
+    return this.normalRenderer.position
   }
 
   set position(val) {
-    this.normalRenderer.position = val;
+    this.normalRenderer.position = val
   }
 
   get alpha() {
-    return this.normalRenderer.alpha;
+    return this.normalRenderer.alpha
   }
   set alpha(val) {
-    this.normalRenderer.alpha = val;
+    this.normalRenderer.alpha = val
   }
 
   get color() {
-    return this.normalRenderer.color;
+    return this.normalRenderer.color
   }
   set color(val) {
-    this.normalRenderer.color = val;
+    this.normalRenderer.color = val
   }
 
   get fontsize() {
-    return this.normalRenderer.fontsize;
+    return this.normalRenderer.fontsize
   }
   set fontsize(val) {
-    this.normalRenderer.fontsize = val;
+    this.normalRenderer.fontsize = val
   }
 
   setSize(w, h) {
-    this.width = w;
-    this.height = h;
-    this.clear();
+    this.width = w
+    this.height = h
+    this.clear()
     this.renderers.forEach(renderer => {
-      let r = renderer.renderer;
-      r.resize(w, h);
-    });
+      let r = renderer.renderer
+      r.resize(w, h)
+    })
   }
-
 }

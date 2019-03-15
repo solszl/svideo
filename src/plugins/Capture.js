@@ -1,4 +1,4 @@
-import Plugin from '../core/Plugin';
+import Plugin from '../core/Plugin'
 
 /**
  * 截图接口
@@ -10,43 +10,43 @@ import Plugin from '../core/Plugin';
  */
 export default class Capture extends Plugin {
   constructor() {
-    super();
+    super()
   }
 
   init(opts = {}) {
-    super.init(opts);
+    super.init(opts)
 
-    this.player.__proto__.capture = this.capture.bind(this);
-    this._cvsCapture = document.createElement('canvas');
+    this.player.__proto__.capture = this.capture.bind(this)
+    this._cvsCapture = document.createElement('canvas')
   }
 
   destroy() {
-    super.destroy();
+    super.destroy()
   }
 
   capture(width, height) {
     if (!this.player.video) {
-      return;
+      return
     }
 
     if (!width) {
-      width = this.player.video.videoWidth;
+      width = this.player.video.videoWidth
     }
 
     if (!height) {
-      height = this.player.video.videoHeight;
+      height = this.player.video.videoHeight
     }
 
-    let cvs = this._cvsCapture;
-    cvs.width = width;
-    cvs.height = height;
-    let ctx = cvs.getContext('2d');
+    let cvs = this._cvsCapture
+    cvs.width = width
+    cvs.height = height
+    let ctx = cvs.getContext('2d')
 
-    ctx.drawImage(this.player.video, 0, 0);
-    return cvs.toDataURL('images/png');
+    ctx.drawImage(this.player.video, 0, 0)
+    return cvs.toDataURL('images/png')
   }
 
   static get type() {
-    return 'plugin_capture';
+    return 'plugin_capture'
   }
 }

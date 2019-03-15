@@ -1,4 +1,4 @@
-import Tween from './Tween';
+import Tween from './Tween'
 
 /**
  * 基础渲染器
@@ -9,25 +9,25 @@ import Tween from './Tween';
  */
 export default class BaseRenderer {
   constructor(cvs, opt = {}) {
-    this.type = 'BASE-RENDERER';
-    this.canvas = cvs;
-    this.opt = opt;
-    this.ctx = this.canvas.getContext('2d');
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
+    this.type = 'BASE-RENDERER'
+    this.canvas = cvs
+    this.opt = opt
+    this.ctx = this.canvas.getContext('2d')
+    this.width = this.canvas.width
+    this.height = this.canvas.height
     // 渲染数据的对象池
-    this.itemPool = [];
-    this._data = [];
-    this._pause = false;
+    this.itemPool = []
+    this._data = []
+    this._pause = false
 
     this.tween = new Proxy(new Tween(), {
       get: (target, key) => {
         if (typeof target[key] === 'function') {
-          return target[key].bind(target);
+          return target[key].bind(target)
         }
-        return target[key];
+        return target[key]
       }
-    });
+    })
   }
 
   update(w, h, t) {}
@@ -37,19 +37,19 @@ export default class BaseRenderer {
   }
 
   pause() {
-    this._pause = true;
+    this._pause = true
   }
 
   resume() {
-    this._pause = false;
+    this._pause = false
   }
 
   start() {
-    this._pause = false;
+    this._pause = false
   }
 
   stop() {
-    this._pause = true;
+    this._pause = true
   }
 
   destory() {
@@ -61,19 +61,19 @@ export default class BaseRenderer {
   }
 
   clearRect() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.clearRect(0, 0, this.width, this.height)
   }
 
   clearData() {
-    this._data = [];
+    this._data = []
   }
 
   resize(w, h) {
-    this.width = w;
-    this.height = h;
+    this.width = w
+    this.height = h
   }
 
   get data() {
-    return this._data || [];
+    return this._data || []
   }
 }

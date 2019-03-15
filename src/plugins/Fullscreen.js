@@ -1,4 +1,4 @@
-import Plugin from '../core/Plugin';
+import Plugin from '../core/Plugin'
 
 /**
  * 全屏插件插件
@@ -9,34 +9,34 @@ import Plugin from '../core/Plugin';
  */
 export default class Fullscreen extends Plugin {
   constructor() {
-    super();
+    super()
   }
 
   init(opts = {}) {
-    super.init(opts);
-    let self = this;
+    super.init(opts)
+    let self = this
 
     // 定义显示状态属性
     Object.defineProperty(this.player, 'displayState', {
       get() {
-        return self._displayState || 'normal';
+        return self._displayState || 'normal'
       },
       set(v) {
-        self._displayState = v;
+        self._displayState = v
       },
       configurable: true
-    });
+    })
 
     // 定义是否全屏属性
     Object.defineProperty(this.player, 'isFullscreen', {
       get() {
-        return self.isFullscreen;
+        return self.isFullscreen
       },
       configurable: true
-    });
+    })
 
     // 注册进入全屏功能
-    this.player.__proto__.enterFullscreen = this.enterFullscreen.bind(this);
+    this.player.__proto__.enterFullscreen = this.enterFullscreen.bind(this)
     // 注册离开全屏功能
     this.player.__proto__.exitFullscreen = this.exitFullscreen.bind(this);
 
@@ -44,11 +44,11 @@ export default class Fullscreen extends Plugin {
     ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(item => {
       document.addEventListener(item, e => {
         // console.log(document.webkitFullscreenElement, e.target);
-        this._fullscreenTarget = e.target;
-        self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal';
-        self.player.emit('fullscreenchanged', self._displayState);
-      });
-    });
+        this._fullscreenTarget = e.target
+        self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal'
+        self.player.emit('fullscreenchanged', self._displayState)
+      })
+    })
   }
 
   /**
@@ -58,21 +58,21 @@ export default class Fullscreen extends Plugin {
    */
   enterFullscreen() {
     // H5下 全屏 el 需要为video？
-    let el = this.player.root;
+    let el = this.player.root
     if (el.webkitEnterFullScreen) {
-      el.webkitEnterFullScreen();
+      el.webkitEnterFullScreen()
     } else if (el.mozRequestFullScreen) {
-      el.mozRequestFullScreen();
+      el.mozRequestFullScreen()
     } else if (el.requestFullscreen) {
-      el.requestFullscreen();
+      el.requestFullscreen()
     } else if (el.webkitRequestFullscreen) {
-      el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+      el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
     } else if (el.msRequestFullscreen) {
-      el.msRequestFullscreen();
+      el.msRequestFullscreen()
     } else {
-      console.log('enter fullscreen???');
+      console.log('enter fullscreen???')
     }
-    this.player.displayState = 'fullscreen';
+    this.player.displayState = 'fullscreen'
   }
 
   /**
@@ -82,23 +82,23 @@ export default class Fullscreen extends Plugin {
    */
   exitFullscreen() {
     if (document.exitFullscreen) {
-      document.exitFullscreen();
+      document.exitFullscreen()
     } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
+      document.webkitExitFullscreen()
     } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
+      document.mozCancelFullScreen()
     } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+      document.msExitFullscreen()
     } else {
-      console.log('exit fullscreen???');
+      console.log('exit fullscreen???')
     }
-    this.player.displayState = 'normal';
+    this.player.displayState = 'normal'
   }
 
   destroy() {
-    super.destroy();
-    delete this.player.displayState;
-    delete this.player.isFullscreen;
+    super.destroy()
+    delete this.player.displayState
+    delete this.player.isFullscreen
   }
 
   /**
@@ -112,7 +112,7 @@ export default class Fullscreen extends Plugin {
     return document.fullscreen ||
       document.webkitIsFullScreen ||
       document.mozFullScreen ||
-      false;
+      false
   }
 
   /**
@@ -127,10 +127,10 @@ export default class Fullscreen extends Plugin {
       document.webkitCurrentFullScreenElement ||
       document.mozFullScreenElement ||
       this._fullscreenTarget ||
-      null;
+      null
   }
 
   static get type() {
-    return 'plugin_fullscreen';
+    return 'plugin_fullscreen'
   }
 }

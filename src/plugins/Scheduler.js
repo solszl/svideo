@@ -126,10 +126,21 @@ export default class Scheduler extends Plugin {
     let xhr = this.xhr;
     xhr.responseType = 'json';
     xhr.timeout = 5000; // 5秒超时
-    xhr.onerror = e =>
-      this.info('error', `fetch error. code: ${e.code}, msg: ${e.message}`);
+    xhr.onerror = e => {
+      this.info('error', `fetch error. url: ${url}`);
+      this.emit('error', {
+        details: 'schedulerLoadError',
+        type: 'error'
+      })
+    }
 
-    xhr.ontimeout = e => this.info('error', `fetch timeout. code: ${e.code}`);
+    xhr.ontimeout = e => {
+      this.info('error', `fetch timeout. code: ${e.code}`)
+      this.emit('error', {
+        details: 'schedulerFetchTimeout',
+        type: 'error'
+      })
+    };
 
     xhr.onload = e => {
       let data = xhr.response;

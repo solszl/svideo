@@ -1,10 +1,10 @@
-import Plugin from '../core/Plugin';
+import Plugin from '../core/Plugin'
 import {
   removeFromParent,
   createElement,
   appendChild
-} from '../utils/Dom';
-import BarrageCore from './barrage/BarrageCore';
+} from '../utils/Dom'
+import BarrageCore from './barrage/BarrageCore'
 
 /**
  * 弹幕插件
@@ -16,49 +16,49 @@ import BarrageCore from './barrage/BarrageCore';
  */
 export default class Barrage extends Plugin {
   constructor() {
-    super();
-    this._allConfig = null;
-    this._core = null;
-    this._isOpen = false;
-    this.cvs = null;
+    super()
+    this._allConfig = null
+    this._core = null
+    this._isOpen = false
+    this.cvs = null
   }
 
   init(opts = {}) {
-    super.init(opts);
-    this._allConfig = opts;
-    this._barrageCfg = JSON.parse(opts[Barrage.type]);
-    let barrageCfg = this._barrageCfg;
+    super.init(opts)
+    this._allConfig = opts
+    this._barrageCfg = JSON.parse(opts[Barrage.type])
+    let barrageCfg = this._barrageCfg
     if (barrageCfg.enable === false) {
-      return;
+      return
     }
 
-    this._createBarrage(barrageCfg);
-    this._defineMethods();
-    this._initPlayerEvents();
+    this._createBarrage(barrageCfg)
+    this._defineMethods()
+    this._initPlayerEvents()
   }
 
   static get type() {
-    return 'plugin_barrage';
+    return 'plugin_barrage'
   }
 
   destroy() {
-    super.destroy();
+    super.destroy()
     // 取消函数监听
     // this.player.off('play', this._play);
     // this.player.off('pause', this._pause);
     // this.player.off('ended', this._ended);
     // this.player.off('fullscreenchanged', this._fullscreenChanged);
 
-    this._core.destroy();
-    this._core = null;
-    removeFromParent(this.cvs);
-    this.cvs = null;
+    this._core.destroy()
+    this._core = null
+    removeFromParent(this.cvs)
+    this.cvs = null
 
-    delete this.player.barrageFPS;
-    delete this.player.barragePosition;
-    delete this.player.barrageAlpha;
-    delete this.player.barrageFontsize;
-    delete this.player.barrageColor;
+    delete this.player.barrageFPS
+    delete this.player.barragePosition
+    delete this.player.barrageAlpha
+    delete this.player.barrageFontsize
+    delete this.player.barrageColor
   }
 
   /**
@@ -69,20 +69,20 @@ export default class Barrage extends Plugin {
    */
   _createBarrage(cfg = null) {
     this.cvs = createElement('canvas', {
-      id: 'vh-barrage',
-    });
+      id: 'vh-barrage'
+    })
 
-    this.cvs.style.position = 'absolute';
-    const parent = this.player.root;
-    this.cvs.setAttribute('width', parent.clientWidth);
-    this.cvs.setAttribute('height', parent.clientHeight);
-    this.cvs.style.pointerEvents = 'none';
-    this.cvs.style.left = 0;
-    this.cvs.style.top = 0;
-    appendChild(this._allConfig['id'], this.cvs);
+    this.cvs.style.position = 'absolute'
+    const parent = this.player.root
+    this.cvs.setAttribute('width', parent.clientWidth)
+    this.cvs.setAttribute('height', parent.clientHeight)
+    this.cvs.style.pointerEvents = 'none'
+    this.cvs.style.left = 0
+    this.cvs.style.top = 0
+    appendChild(this._allConfig['id'], this.cvs)
 
-    this._core = new BarrageCore();
-    this._core.regRenderer('normal', this.cvs, cfg);
+    this._core = new BarrageCore()
+    this._core.regRenderer('normal', this.cvs, cfg)
   }
 
   /**
@@ -91,11 +91,11 @@ export default class Barrage extends Plugin {
    * @memberof Barrage
    */
   _defineMethods() {
-    this.player.__proto__.addBarrage = this._addBarrage.bind(this);
-    this.player.__proto__.clearBarrage = this._clearBarrage.bind(this);
-    this.player.__proto__.openBarrage = this._openBarrage.bind(this);
-    this.player.__proto__.closeBarrage = this._closeBarrage.bind(this);
-    let core = this._core;
+    this.player.__proto__.addBarrage = this._addBarrage.bind(this)
+    this.player.__proto__.clearBarrage = this._clearBarrage.bind(this)
+    this.player.__proto__.openBarrage = this._openBarrage.bind(this)
+    this.player.__proto__.closeBarrage = this._closeBarrage.bind(this)
+    let core = this._core
     // Object.defineProperty(this.player, 'barrageFPS', {
     //   get() {
     //     return core.fps;
@@ -135,30 +135,30 @@ export default class Barrage extends Plugin {
     // defProperty('barrageFontSize', core.fontsize);
     // defProperty('barrageColor', core.color);
 
-    let barrageFPS = core.fps;
-    let barragePosition = core.position;
-    let barrageAlpha = core.alpha;
-    let barrageFontsize = core.fontsize;
-    let barrageColor = core.color;
+    let barrageFPS = core.fps
+    let barragePosition = core.position
+    let barrageAlpha = core.alpha
+    let barrageFontsize = core.fontsize
+    let barrageColor = core.color
     const properties = {
       barrageFPS,
       barragePosition,
       barrageAlpha,
       barrageFontsize,
       barrageColor
-    };
+    }
     for (const key in properties) {
       Object.defineProperty(this.player, key, {
         configurable: true,
         get: function () {
-          return properties[key];
+          return properties[key]
         },
         set: function (newValue) {
-          properties[key] = newValue;
-          const prop = key.toLocaleLowerCase().replace('barrage', '');
-          core[prop] = newValue;
+          properties[key] = newValue
+          const prop = key.toLocaleLowerCase().replace('barrage', '')
+          core[prop] = newValue
         }
-      });
+      })
     }
   }
 
@@ -168,89 +168,87 @@ export default class Barrage extends Plugin {
    * @memberof Barrage
    */
   _initPlayerEvents() {
-    this.player.on('play', this._play.bind(this));
-    this.player.on('pause', this._pause.bind(this));
-    this.player.on('ended', this._ended.bind(this));
-    this.player.on('fullscreenchanged', this._fullscreenChanged.bind(this));
+    this.player.on('play', this._play.bind(this))
+    this.player.on('pause', this._pause.bind(this))
+    this.player.on('ended', this._ended.bind(this))
+    this.player.on('fullscreenchanged', this._fullscreenChanged.bind(this))
   }
-
 
   _addBarrage(content, type = 'normal') {
     if (this._isOpen === false) {
-      this.info('info', '尚未启动弹幕');
-      return false;
+      this.info('info', '尚未启动弹幕')
+      return false
     }
     // this.info('info', content);
-    this._core.add(content, type);
-    return true;
+    this._core.add(content, type)
+    return true
   }
 
   _openBarrage() {
-    this.info('info', '启动弹幕');
-    this._isOpen = true;
-    this._core.start();
-    this.player.emit('openbarrage');
+    this.info('info', '启动弹幕')
+    this._isOpen = true
+    this._core.start()
+    this.player.emit('openbarrage')
   }
   _closeBarrage() {
-    this.info('info', '关闭弹幕');
-    this._isOpen = false;
-    let core = this._core;
-    core.stop();
-    core.clear();
-    this.player.emit('closebarrage');
+    this.info('info', '关闭弹幕')
+    this._isOpen = false
+    let core = this._core
+    core.stop()
+    core.clear()
+    this.player.emit('closebarrage')
   }
 
   _clearBarrage() {
-    this.info('info', '清空弹幕');
-    this._core.clear();
-    this.player.emit('clearbarrage');
+    this.info('info', '清空弹幕')
+    this._core.clear()
+    this.player.emit('clearbarrage')
   }
 
   _play() {
     if (!this._isOpen) {
-      return;
+      return
     }
-    let core = this._core;
+    let core = this._core
     if (core.isRunning) {
-      core.resume();
+      core.resume()
     } else {
-      core.start();
+      core.start()
     }
   }
   _pause() {
     if (!this._isOpen) {
-      return;
+      return
     }
-    this._core.pause();
+    this._core.pause()
   }
   _ended() {
-    let core = this._core;
-    core.stop();
-    core.clear();
+    let core = this._core
+    core.stop()
+    core.clear()
   }
   _fullscreenChanged(e) {
-    this._rearrangement();
+    this._rearrangement()
   }
 
   setSize(w, h) {
-    super.setSize(w, h);
-    this._rearrangement();
+    super.setSize(w, h)
+    this._rearrangement()
   }
 
   _rearrangement() {
-    let core = this._core;
-    core.pause();
-    core.clear();
+    let core = this._core
+    core.pause()
+    core.clear()
     // 加延迟是因为尺寸变化后直接获取宽高可能不准确
     setTimeout(() => {
-      const parent = this.player.root;
-      const mw = parent.clientWidth;
-      const mh = parent.clientHeight;
-      this.cvs.setAttribute('width', mw);
-      this.cvs.setAttribute('height', mh);
-      core.setSize(mw, mh);
-      core.resume();
-    }, 300);
+      const parent = this.player.root
+      const mw = parent.clientWidth
+      const mh = parent.clientHeight
+      this.cvs.setAttribute('width', mw)
+      this.cvs.setAttribute('height', mh)
+      core.setSize(mw, mh)
+      core.resume()
+    }, 300)
   }
-
 }
