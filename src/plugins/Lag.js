@@ -82,7 +82,7 @@ export default class Lag extends Plugin {
     clearInterval(this._readyStateInterval)
     // 每400ms检测一下 状态，如果为2的持续时间超过4秒，汇报一次卡顿
     this._readyStateInterval = setInterval(() => {
-      if (self.player.readyState !== 4 || self.player.readyState !== 3) {
+      if (self.player.readyState !== 4 && self.player.readyState !== 3) {
         // 如果是不可播放状态且未记录时间，记录卡顿的开始时间
         if (this._lastLagTime === 0) {
           this._lastLagTime = Date.now()
