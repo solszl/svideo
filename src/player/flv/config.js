@@ -34,7 +34,7 @@ export const defaultConfig = {
 
   statisticsInfoReportInterval: 600,
 
-  fixAudioTimestampGap: true,
+  fixAudioTimestampGap: false, // 是否进行静音帧的插入
 
   accurateSeek: false,
   seekType: 'range', // [range, param, custom]
