@@ -1,5 +1,6 @@
 import Hls from './hls';
 import Model from '../../core/Model';
+import HlsEvents from './events';
 
 /**
  *
@@ -30,6 +31,7 @@ export default class HlsPlayer extends Hls {
     this.networkControllers.forEach(component => {
       component.stopLoad();
     });
+    this.detachMedia();
     this.loadSource(val);
     this.attachMedia(this.video);
     this.on(Hls.Events.MEDIA_ATTACHED, () => {
