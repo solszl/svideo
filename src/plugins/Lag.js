@@ -90,6 +90,8 @@ export default class Lag extends Plugin {
           this._lastLagTime = Date.now()
         }
 
+        this.player.emit('bufferempty')
+
         // 如果大于4秒， 汇报卡顿， 重置卡顿开始时间
         let elapsed = Date.now() - this._lastLagTime
         const lagThreshold = +this._allConfig.lagThreshold * 1000 // 默认4秒
@@ -103,6 +105,7 @@ export default class Lag extends Plugin {
           let elapsed = Date.now() - this._lastLagTime
           this._lastLagTime = 0
           this.player.emit('lagrecover', elapsed)
+          this.player.emit('bufferfull', elapsed)
         }
       }
 

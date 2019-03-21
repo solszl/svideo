@@ -96,8 +96,8 @@ export default class Reporter extends Plugin {
     this._infoPackCount = 0
     this._lastDownloadSize = 0
     this._infoPackCount = 0
-    this._lastPlayTimeInfo = 0
-    this._lastPlayTimeHeartbeat = 0
+    this._lastPlayTimeInfo = Date.now()
+    this._lastPlayTimeHeartbeat = Date.now()
     this._lastInfoBt = 0
     this.el = null
     if (this._xhr) {
@@ -127,8 +127,9 @@ export default class Reporter extends Plugin {
     }
     this.info('info', '启动日志上报')
     this.running = true
-    this._lastPlayTimeInfo = Date.now()
-    this._lastPlayTimeHeartbeat = Date.now()
+    this._saveTimerPoint()
+    this._playHeartbeatDuration = 0
+    this._playInfoDuration = 0
     clearInterval(this._infoPackInterval)
     this._infoPackInterval = setInterval(
       this._infoPack.bind(this),
@@ -204,6 +205,8 @@ export default class Reporter extends Plugin {
     this.player.on('ended', this.__ended.bind(this))
     this.player.on('lagreport', this.__lag.bind(this))
     this.player.on('lagrecover', this.__lagRecover.bind(this))
+    this.player.on('bufferempty', this.__bufferEmpty.bind(this))
+    this.player.on('bufferfull', this.__bufferFull.bind(this))
     this.player.on('error', this.__error.bind(this))
     this.player.once('ready', this.__ready.bind(this))
   }
@@ -216,12 +219,12 @@ export default class Reporter extends Plugin {
       obj.bt = this._bt
       // 根据直播状态， 如果当前可播放， 那么上报2002 否则上报4001
       obj.errCode = this.player.readyState === 4 ? 2002 : 4001
-      obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
+      obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeInfo
       obj.bc = this._lagCount
       this.fire(LIVE_CODE.Info, obj)
       this._bt = 0
     } else {
-      obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
+      obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeInfo
       obj.bc = this._lagCount
       obj.bt = this._bt
       this.fire(VOD_CODE.Info, obj)
@@ -233,6 +236,7 @@ export default class Reporter extends Plugin {
     if (this._infoPackCount & 1) {
       obj.tt = this._playHeartbeatDuration + Date.now() - this._lastPlayTimeHeartbeat
       if (this.isLive) {
+        delete obj.bt // 心跳包没有bt
         this.delayCall(LIVE_CODE.HeartBeat, obj)
         this._lagCount = 0
       } else {
@@ -252,8 +256,9 @@ export default class Reporter extends Plugin {
     this._infoPackCount += 1
     this._playHeartbeatDuration = 0
     this._playInfoDuration = 0
-    this._lastPlayTimeHeartbeat = Date.now()
-    this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+    // this._lastPlayTimeInfo = Date.now()
+    this._saveTimerPoint()
   }
 
   __play(e) {
@@ -261,18 +266,23 @@ export default class Reporter extends Plugin {
       this.start()
     }
 
-    this._playInfoDuration += Date.now() - this._lastPlayTimeInfo
-    this._playHeartbeatDuration += Date.now() - this._lastPlayTimeHeartbeat
+    // this._playInfoDuration += (Date.now() - this._lastPlayTimeInfo)
+    // this._playHeartbeatDuration += (Date.now() - this._lastPlayTimeHeartbeat)
+    this._saveTimerPoint()
+
     if (!this.isLive) {
       this.fire(VOD_CODE.Resume, {})
     }
   }
 
   __pause(e) {
-    this._playInfoDuration += Date.now() - this._lastPlayTimeInfo
-    this._playHeartbeatDuration += Date.now() - this._lastPlayTimeHeartbeat
-    this._lastPlayTimeInfo = Date.now()
-    this._lastPlayTimeHeartbeat = Date.now()
+    // this._playInfoDuration += (Date.now() - this._lastPlayTimeInfo)
+    // this._playHeartbeatDuration += (Date.now() - this._lastPlayTimeHeartbeat)
+    // this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+
+    this._saveDuration()
+    this._saveTimerPoint()
 
     if (!this.isLive) {
       this.fire(VOD_CODE.Pause, {})
@@ -284,8 +294,10 @@ export default class Reporter extends Plugin {
   }
 
   __waiting(e) {
-    this._lastPlayTimeInfo = Date.now()
-    this._lastPlayTimeHeartbeat = Date.now()
+    // this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+    this._saveDuration()
+    this._saveTimerPoint()
   }
 
   __ended(e) {
@@ -295,16 +307,30 @@ export default class Reporter extends Plugin {
 
   __lag(e) {
     this._lagCount += 1
-    this._lastPlayTimeInfo = Date.now()
-    this._lastPlayTimeHeartbeat = Date.now()
     // this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
   }
 
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`)
     this._bt += t
-    this._lastPlayTimeInfo = Date.now()
-    this._lastPlayTimeHeartbeat = Date.now()
+    // this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+    this._saveTimerPoint()
+  }
+
+  __bufferEmpty() {
+    // this._playInfoDuration += (Date.now() - this._lastPlayTimeInfo)
+    // this._playHeartbeatDuration += (Date.now() - this._lastPlayTimeHeartbeat)
+    // this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+    this._saveDuration()
+    this._saveTimerPoint()
+  }
+
+  __bufferFull(t) {
+    // this._lastPlayTimeInfo = Date.now()
+    // this._lastPlayTimeHeartbeat = Date.now()
+    this._saveTimerPoint()
   }
 
   __ready() {
@@ -347,5 +373,15 @@ export default class Reporter extends Plugin {
     setTimeout(() => {
       this.fire(code, obj)
     }, 50)
+  }
+
+  _saveTimerPoint() {
+    this._lastPlayTimeInfo = Date.now()
+    this._lastPlayTimeHeartbeat = Date.now()
+  }
+
+  _saveDuration() {
+    this._playInfoDuration += (Date.now() - this._lastPlayTimeInfo)
+    this._playHeartbeatDuration += (Date.now() - this._lastPlayTimeHeartbeat)
   }
 }
