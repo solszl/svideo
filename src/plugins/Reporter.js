@@ -268,7 +268,6 @@ export default class Reporter extends Plugin {
 
     // this._playInfoDuration += (Date.now() - this._lastPlayTimeInfo)
     // this._playHeartbeatDuration += (Date.now() - this._lastPlayTimeHeartbeat)
-    this._saveDuration()
     this._saveTimerPoint()
 
     if (!this.isLive) {
@@ -308,7 +307,6 @@ export default class Reporter extends Plugin {
 
   __lag(e) {
     this._lagCount += 1
-    this._saveDuration()
     // this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
   }
 
