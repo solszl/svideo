@@ -48,6 +48,8 @@ export default class Reporter extends Plugin {
     this._lastPlayTimeHeartbeat = Date.now()
     this._playInfoDuration = 0
     this._playHeartbeatDuration = 0
+
+    this._lastInfoBt = 0
   }
 
   init(opts = {}) {
@@ -96,6 +98,7 @@ export default class Reporter extends Plugin {
     this._infoPackCount = 0
     this._lastPlayTimeInfo = 0
     this._lastPlayTimeHeartbeat = 0
+    this._lastInfoBt = 0
     this.el = null
     if (this._xhr) {
       this._xhr.ontimeout = null
@@ -180,9 +183,6 @@ export default class Reporter extends Plugin {
       )
       this.info('info', `${JSON.stringify(obj)}`)
     }
-
-    this.basicInfo.bt = 0
-    this._bt = 0
   }
 
   _buildRocket() {
@@ -219,11 +219,13 @@ export default class Reporter extends Plugin {
       obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
       obj.bc = this._lagCount
       this.fire(LIVE_CODE.Info, obj)
+      this._bt = 0
     } else {
       obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
       obj.bc = this._lagCount
       obj.bt = this._bt
       this.fire(VOD_CODE.Info, obj)
+      this._lastInfoBt = this._bt
     }
 
     // 心跳包每分钟派发一个
@@ -234,14 +236,16 @@ export default class Reporter extends Plugin {
         this.delayCall(LIVE_CODE.HeartBeat, obj)
         this._lagCount = 0
       } else {
-        obj.bc = this._lagCount
-        obj.bt = this._bt
         this.delayCall(VOD_CODE.HeartBeat, obj)
         // 如果有卡顿次数， 发送卡顿汇报
         if (this._lagCount > 0) {
+          obj.bc = this._lagCount
+          obj.bt = this._bt + this._lastInfoBt
           this.delayCall(VOD_CODE.Lag, obj)
         }
         this._lagCount = 0
+        this._lastInfoBt = 0
+        this._bt = 0
       }
     }
 
@@ -298,7 +302,7 @@ export default class Reporter extends Plugin {
 
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`)
-    this._bt = t
+    this._bt += t
     this._lastPlayTimeInfo = Date.now()
     this._lastPlayTimeHeartbeat = Date.now()
   }
