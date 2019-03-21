@@ -230,13 +230,12 @@ export default class Reporter extends Plugin {
     // xhr 如果同一时刻发送相同地址的请求，会主动cancel前一个，所以延迟发送消息
     if (this._infoPackCount & 1) {
       obj.tt = this._playHeartbeatDuration + Date.now() - this._lastPlayTimeHeartbeat
-      obj.bc = this._lagCount
-      obj.bt = this._bt
       if (this.isLive) {
         this.delayCall(LIVE_CODE.HeartBeat, obj)
         this._lagCount = 0
       } else {
-        // this.fire(VOD_CODE.HeartBeat, obj);
+        obj.bc = this._lagCount
+        obj.bt = this._bt
         this.delayCall(VOD_CODE.HeartBeat, obj)
         // 如果有卡顿次数， 发送卡顿汇报
         if (this._lagCount > 0) {
