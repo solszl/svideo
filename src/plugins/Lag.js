@@ -33,8 +33,10 @@ export default class Lag extends Plugin {
     this._readyStateChecking = false
     this._lastLagTime = 0
     clearInterval(this._readyStateInterval)
-    this._tlag.destroy()
-    this._tlag = null
+    if (this._tlag) {
+      this._tlag.destroy()
+      this._tlag = null
+    }
     // this.player.off('play', this.__play);
     // this.player.off('pause', this.__pause);
     // this.player.off('waiting', this.__waiting);
