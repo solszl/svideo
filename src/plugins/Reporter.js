@@ -209,41 +209,40 @@ export default class Reporter extends Plugin {
   }
 
   _infoPack() {
-    let obj = {
-      bc: this._lagCount,
-      bt: this._bt
-    }
-
+    let obj = {}
     // 信息报每隔30秒派发一个
-    // 心跳包每分钟派发一个
-    // xhr 如果同一时刻发送相同地址的请求，会主动cancel前一个，所以延迟发送消息
-    if (this._infoPackCount & 1) {
-      obj.tt =
-        this._playHeartbeatDuration + Date.now() - this._lastPlayTimeHeartbeat
-      if (this.isLive) {
-        // this.fire(LIVE_CODE.HeartBeat, obj);
-        this.delayCall(LIVE_CODE.HeartBeat, obj)
-      } else {
-        // this.fire(VOD_CODE.HeartBeat, obj);
-        this.delayCall(VOD_CODE.HeartBeat, obj)
-        // 如果有卡顿次数， 发送卡顿汇报
-        if (this._lagCount > 0) {
-          // this.fire(VOD_CODE.Lag, obj);
-          this.delayCall(VOD_CODE.Lag, obj)
-          this._lagCount = 0
-        }
-      }
-    }
-
     if (this.isLive) {
       obj.si = ''
+      obj.bt = this._bt
       // 根据直播状态， 如果当前可播放， 那么上报2002 否则上报4001
-      obj.errCode = this.player.readyState == 4 ? 2002 : 4001
+      obj.errCode = this.player.readyState === 4 ? 2002 : 4001
       obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
+      obj.bc = this._lagCount
       this.fire(LIVE_CODE.Info, obj)
     } else {
       obj.tt = this._playInfoDuration + Date.now() - this._lastPlayTimeHeartbeat
+      obj.bc = this._lagCount
+      obj.bt = this._bt
       this.fire(VOD_CODE.Info, obj)
+    }
+
+    // 心跳包每分钟派发一个
+    // xhr 如果同一时刻发送相同地址的请求，会主动cancel前一个，所以延迟发送消息
+    if (this._infoPackCount & 1) {
+      obj.tt = this._playHeartbeatDuration + Date.now() - this._lastPlayTimeHeartbeat
+      if (this.isLive) {
+        this.delayCall(LIVE_CODE.HeartBeat, obj)
+        this._lagCount = 0
+      } else {
+        obj.bc = this._lagCount
+        obj.bt = this._bt
+        this.delayCall(VOD_CODE.HeartBeat, obj)
+        // 如果有卡顿次数， 发送卡顿汇报
+        if (this._lagCount > 0) {
+          this.delayCall(VOD_CODE.Lag, obj)
+        }
+        this._lagCount = 0
+      }
     }
 
     this._infoPackCount += 1
@@ -294,7 +293,7 @@ export default class Reporter extends Plugin {
     this._lagCount += 1
     this._lastPlayTimeInfo = Date.now()
     this._lastPlayTimeHeartbeat = Date.now()
-    this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
+    // this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
   }
 
   __lagRecover(t) {
