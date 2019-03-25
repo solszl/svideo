@@ -96,6 +96,7 @@ export default class Reporter extends Plugin {
   destroy() {
     super.destroy()
     clearInterval(this._infoPackInterval)
+    clearInterval(this._playTimeInterval)
     this._lagCount = 0
     this._infoPackCount = 0
     this._lastDownloadSize = 0
