@@ -51,7 +51,7 @@ export default class Lag extends Plugin {
   _handleCareEvent() {
     this.player.on('play', this.__play.bind(this))
     this.player.on('pause', this.__pause.bind(this))
-    this.player.on('waiting', this.__waiting.bind(this))
+    // this.player.on('waiting', this.__waiting.bind(this))
     this.player.on('ended', this.__ended.bind(this))
     // 由各个播放模块内抛出来的lag事件
     this.player.on('lag', this.__lag.bind(this))
@@ -63,10 +63,10 @@ export default class Lag extends Plugin {
   __pause(e) {
     this.__stopCheckReadyState()
   }
-  __waiting(e) {
-    // waiting事件，据说在手机H5上不好使？！
-    this.__checkReadyState()
-  }
+  // __waiting(e) {
+  //   // waiting事件，据说在手机H5上不好使？！
+  //   this.__checkReadyState()
+  // }
   __ended(e) {
     this.__stopCheckReadyState()
   }
