@@ -44,7 +44,7 @@
       //   bu:0,
       //   enable:false
       // }
-      
+
       // let schedulerConfig = {
       //   url: '//gslb.e.vhall.com',
       //   webinar_id: '439466233',
@@ -73,20 +73,20 @@
       // }
 
       v = new VHVideoModule()
-      
+
       // setTimeout(function() {
       //   console.log('开始获取已下载大小 ', v.downloadSize);
       // }, 1000);
     }
 
     function playSrcHandler() {
-      if(!v) {
+      if (!v) {
         outputInfo('播放器尚未初始化');
         return;
       }
 
       let src = document.getElementById('tiVideoSrc').value;
-      if(src === '') {
+      if (src === '') {
         outputInfo('播放地址不能为空');
         return;
       }
@@ -134,19 +134,19 @@
     }
 
     function autoFireBarrage(b) {
-      if(b) {
-        var p1 = ['大浪','刚哥','C咪','小仙女','Q总'];
-        var act = ['吃了','爱上','踹了','亲了','摸了'];
-        var p2 = ['大蒜','榴莲','香蕉','草莓','菠萝蜜'];
-        var act2 = [',真香~~',',好软~',',好硬!',',好强!',',好骚气~']
-        autoBarrageInterval = setInterval(()=>{
+      if (b) {
+        var p1 = ['大浪', '刚哥', 'C咪', '小仙女', 'Q总'];
+        var act = ['吃了', '爱上', '踹了', '亲了', '摸了'];
+        var p2 = ['大蒜', '榴莲', '香蕉', '草莓', '菠萝蜜'];
+        var act2 = [',真香~~', ',好软~', ',好硬!', ',好强!', ',好骚气~']
+        autoBarrageInterval = setInterval(() => {
           const generateWord = arr => {
             let idx = Math.floor(Math.random() * 5);
             return arr[idx];
           }
           let s = `${generateWord(p1)}${generateWord(act)}${generateWord(p2)}${generateWord(act2)}`;
           let result = v.addBarrage(s);
-          if(result === false) {
+          if (result === false) {
             clearInterval(autoBarrageInterval);
           }
         }, Math.random() * 500 + 500);
@@ -170,7 +170,7 @@
     }
 
     function initPlayer() {
-      if(v) {
+      if (v) {
         v.destroy();
       }
 
@@ -205,7 +205,7 @@
         x5: true,
         poster: posterUrl,
         autoplay: false,
-        muted:true,
+        muted: true,
         plugin_lag: lagConfig,
         plugin_reporter: reportConfig,
         plugin_scheduler: schedulerConfig,
@@ -222,8 +222,12 @@
       })
 
       v.on('timeupdate', t => {
-        // console.log('timeudpate:',`state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.end(0)}`);
-        outputInfo(`state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.end(0)}, duration:${v.duration}`)
+        console.log('timeudpate:',
+          `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
+        );
+        // outputInfo(
+        //   `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
+        // )
       })
 
       v.on('ratechange', v => {
@@ -291,7 +295,7 @@
         outputInfo('卡了');
       });
 
-      v.on('lagrecover', t=>{
+      v.on('lagrecover', t => {
         outputInfo(`卡顿恢复了，耗时${t}`);
       });
 
@@ -299,18 +303,18 @@
       //   outputInfo(`腾讯信息，是否卡顿${e}`);
       // })
 
-      if(!v.player.hasOwnProperty('on')) {
+      if (!v.player.hasOwnProperty('on')) {
         return;
       }
       v.player.on('loopchange', b => {
         outputInfo(`循环发生变化, loop: ${b}`);
       });
 
-      v.player.on('srcchange', e =>{
+      v.player.on('srcchange', e => {
         outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
       });
 
-      v.player.on('setcurrenttime', t =>{
+      v.player.on('setcurrenttime', t => {
         outputInfo(`设置当前播放器时间为: ${t}`);
       });
 
@@ -331,19 +335,24 @@
     <span>初始化</span>
     <div>
       <span>上报配置</span>
-      <input id="tiReportConfig" class="initInput" type="text" value='{"url":"//la.e.vhall.com/login","webinar_id":"439466233","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+      <input id="tiReportConfig" class="initInput" type="text"
+        value='{"url":"//la.e.vhall.com/login","webinar_id":"439466233","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
       <br>
       <span>调度配置</span>
-      <input id="tiSchedulerConfig" class="initInput" type="text" value='{"url":"//gslb.e.vhall.com","webinar_id":"901918461","uid":"162647881","bu":0,"quality":["same","360p","480p"],"defaultDef":"same"}'>
+      <input id="tiSchedulerConfig" class="initInput" type="text"
+        value='{"url":"//gslb.e.vhall.com","webinar_id":"901918461","uid":"162647881","bu":0,"quality":["same","360p","480p"],"defaultDef":"same"}'>
       <br>
       <span>水印配置</span>
-      <input id="tiWatermarkConfig" class="initInput" type="text" value='{"url":"http://www.vhall.com/public/static/images/index/new/logo.png","align":"tr","position":["20px","20px"],"size":["80px","35px"],"enable":true}'>
+      <input id="tiWatermarkConfig" class="initInput" type="text"
+        value='{"url":"http://www.vhall.com/public/static/images/index/new/logo.png","align":"tr","position":["20px","20px"],"size":["80px","35px"],"enable":true}'>
       <br>
       <span>弹幕配置</span>
-      <input id="tiBarrageConfig" class="initInput" type="text" value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
+      <input id="tiBarrageConfig" class="initInput" type="text"
+        value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
       <br>
       <span>封面图</span>
-      <input id="tiPosterUrl" class="initInput" type="text" value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
+      <input id="tiPosterUrl" class="initInput" type="text"
+        value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
       <br>
       <button onclick="initPlayer();">确认</button>
     </div>
@@ -377,7 +386,8 @@
   <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
   <br />
   <span>声音相关</span>
-  <input id="inputVolume" type="range" min="0" max="100" value="0.5" onchange="v.volume = document.getElementById('inputVolume').value / 100" />
+  <input id="inputVolume" type="range" min="0" max="100" value="0.5"
+    onchange="v.volume = document.getElementById('inputVolume').value / 100" />
   <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
   <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
   <br />
@@ -430,7 +440,8 @@
     <button onclick="v.barragePosition = document.getElementById('tiBarragePosition').value">确定</button>
     <br>
     <span>透明度</span>
-    <input type="range" min="0" max="1" value="1" step="0.1" id="tiBarrageAlpha" class="initInput" onchange="v.barrageAlpha = document.getElementById('tiBarrageAlpha').value;">
+    <input type="range" min="0" max="1" value="1" step="0.1" id="tiBarrageAlpha" class="initInput"
+      onchange="v.barrageAlpha = document.getElementById('tiBarrageAlpha').value;">
   </div>
   <div>
     <textarea name="a" id="taInfo" cols="60" rows="10" placeholder="信息输出" style="margin-top:10px"></textarea>

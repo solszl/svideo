@@ -191,7 +191,9 @@ class PlayerProxy extends Component {
    */
   set currentTime(t) {
     this.video.currentTime = t
-    this.emit(PlayerEvent.CURRENT_TIME_CHANGED, t)
+    if (this.owner) {
+      this.owner.emit(PlayerEvent.CURRENT_TIME_CHANGED, t)
+    }
   }
 
   /**
@@ -235,7 +237,9 @@ class PlayerProxy extends Component {
   set loop(v) {
     if (this.video.loop !== v) {
       this.video.loop = v
-      this.emit(PlayerEvent.LOOP_CHANGED, v)
+      if (this.owner) {
+        this.owner.emit(PlayerEvent.LOOP_CHANGED, v)
+      }
     }
   }
 
@@ -260,7 +264,9 @@ class PlayerProxy extends Component {
   set muted(b) {
     if (this.video.muted !== b) {
       this.video.muted = b
-      this.emit(PlayerEvent.MUTED_CHANGED, b)
+      if (this.owner) {
+        this.owner.emit(PlayerEvent.MUTED_CHANGED, b)
+      }
     }
   }
 
@@ -339,10 +345,13 @@ class PlayerProxy extends Component {
     if (this._src !== url && this._src !== undefined) {
       let oldSrc = this._src
       this._src = url
-      this.emit(PlayerEvent.SRC_CHANGED, {
-        oldUrl: oldSrc,
-        newUrl: this._src
-      })
+      if (this.owner) {
+        this.owner.emit(PlayerEvent.SRC_CHANGED, {
+          oldUrl: oldSrc,
+          newUrl: this._src
+        })
+      }
+
       this.video.src = url // this.beforeSetSrcHook(url);
       Model.OBJ.url = url
     }
