@@ -1,16 +1,16 @@
-const chalk = require('chalk');
-const baseConfig = require('./webpack.base.config');
-const merge = require('webpack-merge');
-const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const chalk = require('chalk')
+const baseConfig = require('./webpack.base.config')
+const merge = require('webpack-merge')
+const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const plugins = [
   new BundleAnalyzerPlugin(),
   new ProgressBarWebpackPlugin({
     format: '  build [:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)'
   })
-];
+]
 
 const webpackConfig = merge(baseConfig, {
   optimization: {
@@ -33,13 +33,13 @@ const webpackConfig = merge(baseConfig, {
             beautify: false
           }
         }
-      }),
+      })
     ]
   },
   performance: {
     hints: false
   },
   plugins: plugins
-});
+})
 
-module.exports = webpackConfig;
+module.exports = webpackConfig
