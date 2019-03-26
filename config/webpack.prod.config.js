@@ -1,14 +1,14 @@
-const path = require('path');
-const chalk = require('chalk');
-const baseConfig = require('./webpack.base.config');
-const merge = require('webpack-merge');
+const path = require('path')
+const chalk = require('chalk')
+const baseConfig = require('./webpack.base.config')
+const merge = require('webpack-merge')
 // const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 // const TerserPlugin = require('terser-webpack-plugin');
 
 function resolve(dir) {
-  return path.join(__dirname, '..', dir);
+  return path.join(__dirname, '..', dir)
 }
 const plugins = [
   // new CleanWebpackPlugin(['dist'], {
@@ -19,7 +19,7 @@ const plugins = [
   new ProgressBarWebpackPlugin({
     format: '  build [:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)'
   })
-];
+]
 const webpackConfig = merge(baseConfig, {
   optimization: {
     minimize: true,
@@ -41,13 +41,13 @@ const webpackConfig = merge(baseConfig, {
             beautify: false
           }
         }
-      }),
+      })
     ]
   },
   performance: {
     hints: false
   },
   plugins: plugins
-});
+})
 
-module.exports = webpackConfig;
+module.exports = webpackConfig
