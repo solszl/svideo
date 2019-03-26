@@ -13,7 +13,7 @@
 倍速列表变化 playbackratelistchange
 
 卡顿 lagreport
-卡顿恢复 lagrecover
+卡顿恢复 lagrecover t number 填充满消耗的时间,同bufferfull
 
 开始播放 play
 暂停 pause
@@ -31,4 +31,7 @@ buffer中没有数据可以播放了 waiting
 
 播放器初始化完成 ready
 
-上报事件，发送请求后汇报 report u string 
+上报事件，发送请求后汇报 report u string
+
+缓存为空 bufferempty， 因循环检测，所以会多次调用，约200ms 调用一次
+缓存填充满 bufferfull t number 填充满消耗的时间， 同lagrecover
