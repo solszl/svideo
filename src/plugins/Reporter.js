@@ -20,7 +20,7 @@ const VOD_CODE = {
   Lag: 94001
 }
 
-const INFO_PACK_INTERVAL = 10 * 1000
+const INFO_PACK_INTERVAL = 30 * 1000
 
 const CALC_PLAY_TIME_INTERVAL = 200
 
