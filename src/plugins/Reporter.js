@@ -20,7 +20,7 @@ const VOD_CODE = {
   Lag: 94001
 }
 
-const INFO_PACK_INTERVAL = 30 * 1000
+const INFO_PACK_INTERVAL = 10 * 1000
 
 const CALC_PLAY_TIME_INTERVAL = 200
 
@@ -54,6 +54,7 @@ export default class Reporter extends Plugin {
     this._playHeartbeatDuration = 0
 
     this._lastInfoBt = 0
+    this._lastCalcPlayTime = Date.now()
   }
 
   init(opts = {}) {
@@ -102,6 +103,7 @@ export default class Reporter extends Plugin {
     this._lastDownloadSize = 0
     this._infoPackCount = 0
     this._lastPlayTimeHeartbeat = Date.now()
+    this._lastCalcPlayTime = Date.now()
     this._lastInfoBt = 0
     this.el = null
     if (this._xhr) {
@@ -132,6 +134,7 @@ export default class Reporter extends Plugin {
     )
 
     clearInterval(this._playTimeInterval)
+    this._lastCalcPlayTime = Date.now()
     this._playTimeInterval = setInterval(
       this._calcPlayTime.bind(this),
       CALC_PLAY_TIME_INTERVAL
@@ -226,7 +229,13 @@ export default class Reporter extends Plugin {
       obj.tt = this._playInfoDuration
       obj.bc = this._lagCount
 
-      console.warn('发送了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+      console.warn(
+        '发送了',
+        'duration:',
+        this._playInfoDuration,
+        ' ,now: ',
+        Date.now()
+      )
       this.fire(LIVE_CODE.Info, obj)
       this._bt = 0
     } else {
@@ -283,7 +292,13 @@ export default class Reporter extends Plugin {
       this.stop()
     }
 
-    console.warn('暂停了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+    console.warn(
+      '暂停了',
+      'duration:',
+      this._playInfoDuration,
+      ' ,now: ',
+      Date.now()
+    )
   }
 
   __ended(e) {
@@ -294,27 +309,62 @@ export default class Reporter extends Plugin {
   __lag(e) {
     this._lagCount += 1
     // this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
-    console.warn('4秒卡顿了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+    console.warn(
+      '4秒卡顿了',
+      'duration:',
+      this._playInfoDuration,
+      ' ,now: ',
+      Date.now()
+    )
+
+    // 一次卡顿 增加 4秒卡顿时长
+    this._bt += +this._allConfig.lagThreshold * 1000
     clearInterval(this._playTimeInterval)
   }
 
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`)
     this._bt += t
-    console.warn('卡顿恢复了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+    console.warn(
+      '卡顿恢复了',
+      'duration:',
+      this._playInfoDuration,
+      ' ,now: ',
+      Date.now()
+    )
     clearInterval(this._playTimeInterval)
-    this._playTimeInterval = setInterval(this._calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
+    this._lastCalcPlayTime = Date.now()
+    this._playTimeInterval = setInterval(
+      this._calcPlayTime.bind(this),
+      CALC_PLAY_TIME_INTERVAL
+    )
   }
 
   __bufferEmpty() {
     clearInterval(this._playTimeInterval)
-    console.warn('buffer 空了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+    console.warn(
+      'buffer 空了',
+      'duration:',
+      this._playInfoDuration,
+      ' ,now: ',
+      Date.now()
+    )
   }
 
   __bufferFull(t) {
-    console.warn('buffer 满了', 'duration:', this._playInfoDuration, ' ,now: ', Date.now())
+    console.warn(
+      'buffer 满了',
+      'duration:',
+      this._playInfoDuration,
+      ' ,now: ',
+      Date.now()
+    )
     clearInterval(this._playTimeInterval)
-    this._playTimeInterval = setInterval(this._calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
+    this._lastCalcPlayTime = Date.now()
+    this._playTimeInterval = setInterval(
+      this._calcPlayTime.bind(this),
+      CALC_PLAY_TIME_INTERVAL
+    )
   }
 
   __ready() {
@@ -377,7 +427,10 @@ export default class Reporter extends Plugin {
   }
 
   _calcPlayTime() {
-    this._playInfoDuration += 200
-    this._playHeartbeatDuration += 200
+    const elapsedTime = Date.now() - this._lastCalcPlayTime
+    this._playInfoDuration += elapsedTime
+    this._playHeartbeatDuration += elapsedTime
+    this._lastCalcPlayTime = Date.now()
+    console.error('执行了calcPlayTime' + this._playInfoDuration)
   }
 }
