@@ -1,9 +1,5 @@
 import Plugin from '../core/Plugin'
-import {
-  removeFromParent,
-  createElement,
-  appendChild
-} from '../utils/Dom'
+import { removeFromParent, createElement, appendChild } from '../utils/Dom'
 
 /**
  * 水印组件
@@ -53,12 +49,7 @@ export default class Watermark extends Plugin {
    * @memberof Watermark
    */
   _createWatermark(cfg = null) {
-    const {
-      url,
-      align,
-      position,
-      size
-    } = cfg
+    const { url, align, position, size } = cfg
 
     const p = this._analysisPosition(align, position)
     this.elImage = createElement('img', {

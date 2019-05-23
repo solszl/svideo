@@ -16,7 +16,7 @@ export default class Capture extends Plugin {
   init(opts = {}) {
     super.init(opts)
 
-    this.player.__proto__.capture = this.capture.bind(this)
+    this.player.capture = this.capture.bind(this)
     this._cvsCapture = document.createElement('canvas')
   }
 
