@@ -1,11 +1,6 @@
 import Component from './core/Component'
-import {
-  PlayerEvent
-} from './PlayerEvents'
-import {
-  createElement,
-  removeFromParent
-} from './utils/Dom'
+import { PlayerEvent } from './PlayerEvents'
+import { createElement, removeFromParent } from './utils/Dom'
 import Model from './core/Model'
 
 /**
@@ -38,20 +33,30 @@ class PlayerProxy extends Component {
       // x5cfg['x5-video-orientation'] = 'portraint';
     }
 
-    let poster = config['poster'] ? {
-      poster: config['poster']
-    } : {}
+    let poster = config['poster']
+      ? {
+        poster: config['poster']
+      }
+      : {}
 
-    this.video = createElement('video', {
-      id: 'vh-video',
-      controls: true
-      // muted: true,
-    }, Object.assign({
-      width: '100%',
-      height: '100%',
-      crossOrigin: 'anonymous',
-      'z-index': 0
-    }, x5cfg, poster))
+    this.video = createElement(
+      'video',
+      {
+        id: 'vh-video',
+        controls: true
+        // muted: true,
+      },
+      Object.assign(
+        {
+          width: '100%',
+          height: '100%',
+          crossOrigin: 'anonymous',
+          'z-index': 0
+        },
+        x5cfg,
+        poster
+      )
+    )
 
     this._root = document.getElementById(config['id'])
     const parent = this._root
@@ -370,7 +375,10 @@ class PlayerProxy extends Component {
     v = +v
 
     if (v > 1 || v < 0) {
-      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`)
+      this.info(
+        'warn',
+        `volume value range should be between 0 to 1, now you set ${v}`
+      )
       v = Math.min(Math.max(0, v), 1)
     }
 
@@ -474,17 +482,22 @@ class PlayerProxy extends Component {
     })
   }
 
+  _e(act, data) {
+    this.emit(act, data)
+    this.owner && this.owner.emit(act, data)
+  }
+
   __play() {
-    this.emit(PlayerEvent.PLAY)
+    this._e(PlayerEvent.PLAY)
   }
   __pause() {
-    this.emit(PlayerEvent.PAUSE)
+    this._e(PlayerEvent.PAUSE)
   }
   __progress(e) {
-    this.emit(PlayerEvent.PROGRESS, e)
+    this._e(PlayerEvent.PROGRESS, e)
   }
   __error(e) {
-    this.emit(PlayerEvent.ERROR, e)
+    this._e(PlayerEvent.ERROR, e)
   }
   __timeupdate(e) {
     // 每大于500ms 派发一次事件
@@ -495,40 +508,40 @@ class PlayerProxy extends Component {
 
     if (now - this._lastEmitTimeupdate > 500) {
       this._lastEmitTimeupdate = now
-      this.emit(PlayerEvent.TIMEUPDATE, e)
+      this._e(PlayerEvent.TIMEUPDATE, e)
     }
   }
   __ended() {
-    this.emit(PlayerEvent.PLAY_END)
+    this._e(PlayerEvent.PLAY_END)
   }
 
   __loadedmetadata(e) {
-    this.emit(PlayerEvent.LOADEDMETADATA, e)
+    this._e(PlayerEvent.LOADEDMETADATA, e)
   }
 
   __seeked(e) {
-    this.emit(PlayerEvent.SEEKED, e)
+    this._e(PlayerEvent.SEEKED, e)
   }
 
   __waiting(e) {
-    this.emit(PlayerEvent.WAITING, e)
+    this._e(PlayerEvent.WAITING, e)
   }
 
   __ratechange(e) {
     let rate = this.video.playbackRate
-    this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
+    this._e(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
   }
 
   __volumechange(e) {
-    this.emit(PlayerEvent.VOLUME_CHANGE, e)
+    this._e(PlayerEvent.VOLUME_CHANGE, e)
   }
 
   // __loadstart(e) {
-  //   this.emit(PlayerEvent.LOADSTART, e);
+  //   this._e(PlayerEvent.LOADSTART, e);
   // }
 
   // __canplaythrough(e) {
-  //   this.emit(PlayerEvent.CANPLAYTHROUGH, e);
+  //   this._e(PlayerEvent.CANPLAYTHROUGH, e);
   // }
 
   reset() {

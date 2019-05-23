@@ -74,7 +74,7 @@
       // }
 
       v = new VHVideoModule()
-      v2 = new VHVideoModule()
+      // v2 = new VHVideoModule()
 
       // setTimeout(function() {
       //   console.log('开始获取已下载大小 ', v.downloadSize);
@@ -215,27 +215,27 @@
         plugin_barrage: barrageConfig
       })
 
-      v2.init({
-        type: type,
-        isLive: isLive,
-        id: 'video-wrapper',
-        flvurl: url,
-        hlsurl: url,
-        nativeurl: url,
-        // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
-        // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
-        // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
-        cors: 'cors',
-        x5: true,
-        poster: posterUrl,
-        autoplay: false,
-        muted: true,
-        plugin_lag: lagConfig,
-        plugin_reporter: reportConfig,
-        plugin_scheduler: schedulerConfig,
-        plugin_watermark: watermarkConfig,
-        plugin_barrage: barrageConfig
-      })
+      // v2.init({
+      //   type: type,
+      //   isLive: isLive,
+      //   id: 'video-wrapper',
+      //   flvurl: url,
+      //   hlsurl: url,
+      //   nativeurl: url,
+      //   // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
+      //   // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
+      //   // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
+      //   cors: 'cors',
+      //   x5: true,
+      //   poster: posterUrl,
+      //   autoplay: false,
+      //   muted: true,
+      //   plugin_lag: lagConfig,
+      //   plugin_reporter: reportConfig,
+      //   plugin_scheduler: schedulerConfig,
+      //   plugin_watermark: watermarkConfig,
+      //   plugin_barrage: barrageConfig
+      // })
 
       initEvents();
     }

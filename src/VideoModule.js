@@ -3,8 +3,8 @@ import Component from './core/Component'
 import FlvPlayer from './player/flv/FlvPlayer'
 import HlsPlayer from './player/hls/HlsPlayer'
 import NativePlayer from './player/native/NativePlayer'
-import PluginMap from './plugins/PluginMap'
 import PlayerProxy from './PlayerProxy'
+import PluginMap from './plugins/PluginMap'
 
 /**
  * 播放器模块
