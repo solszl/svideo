@@ -43,7 +43,7 @@ class PlayerProxy extends Component {
       'video',
       {
         id: 'vh-video',
-        controls: true
+        controls: false
         // muted: true,
       },
       Object.assign(
