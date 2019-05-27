@@ -1,5 +1,5 @@
 import qs from 'qs'
-import Model from '../core/Model'
+import { KV } from '../core/Constant'
 import Plugin from '../core/Plugin'
 
 const LIVE_CODE = {
@@ -363,7 +363,8 @@ export default class Reporter extends Plugin {
    * @returns Location 对象
    */
   getURLInfo() {
-    let url = Model.OBJ.url
+    const { store } = this.player
+    let url = store.getKV(KV.URL)
     if (!this.el) {
       this.el = document.createElement('a')
     }

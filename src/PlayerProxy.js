@@ -1,7 +1,8 @@
 import Component from './core/Component'
+import { KV } from './core/Constant'
+import Store from './core/Store'
 import { PlayerEvent } from './PlayerEvents'
 import { createElement, removeFromParent } from './utils/Dom'
-import Model from './core/Model'
 
 /**
  * 播放器的基类
@@ -19,6 +20,7 @@ class PlayerProxy extends Component {
     this._isLive = false
     this._isPlaying = false
     this.video = null
+    this.store = new Store()
     this.reset()
   }
 
@@ -63,7 +65,7 @@ class PlayerProxy extends Component {
     parent.appendChild(this.video)
     parent.style.position = 'relative'
 
-    this.autoplay = config.autoplay || false
+    this.autoplay = config.autoplay || true
     this._isLive = config['isLive']
   }
 
@@ -130,7 +132,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   get downloadSize() {
-    return -1
+    return this.store.getKV(KV.DownloadSize) || -1
   }
 
   /**
@@ -358,7 +360,7 @@ class PlayerProxy extends Component {
       }
 
       this.video.src = url // this.beforeSetSrcHook(url);
-      Model.OBJ.url = url
+      this.store.setKV(KV.URL, url)
     }
   }
 
@@ -554,6 +556,7 @@ class PlayerProxy extends Component {
     this._src = ''
     this._isLive = false
     this._isPlaying = false
+    this.store.reset()
     this.reset()
 
     if (this.video) {
