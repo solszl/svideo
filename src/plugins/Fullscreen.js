@@ -52,7 +52,7 @@ export default class Fullscreen extends Plugin {
         this._fullscreenTarget = e.target
         self._displayState =
           this.isFullscreen === true ? 'fullscreen' : 'normal'
-        self.player.emit('fullscreenchanged', self._displayState)
+        self.player.emit2All('fullscreenchanged', self._displayState)
       })
     })
   }

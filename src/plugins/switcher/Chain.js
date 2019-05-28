@@ -60,7 +60,6 @@ class Chain {
       let def = this.findDefinitionByDefKey(key)
       if (def) {
         this.player.currentDefinition = def
-        this.player.emit('definitionchange', def) // 派发清晰度变化事件
         return def
       } else {
         return this.nextChain && this.nextChain.execute(this.polling)
@@ -108,7 +107,6 @@ export class Chain360p extends Chain {
       let def = this.findDefinitionByDefKey(defKey)
       if (def) {
         this.player.currentDefinition = def
-        this.player.emit('definitionchange', def) // 派发清晰度变化事件
         return def
       } else {
         this._cbk && this._cbk()

@@ -242,11 +242,12 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set loop(v) {
-    if (this.video.loop !== v) {
-      this.video.loop = v
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.LOOP_CHANGED, v)
-      }
+    let oldValue = this.video.loop
+    this.video.loop = v
+    let newValue = v
+    const e = { oldValue, newValue }
+    if (this.owner) {
+      this.owner.emit(PlayerEvent.LOOP_CHANGED, e)
     }
   }
 
@@ -269,11 +270,12 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set muted(b) {
-    if (this.video.muted !== b) {
-      this.video.muted = b
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.MUTED_CHANGED, b)
-      }
+    let oldValue = this.video.muted
+    this.video.muted = b
+    let newValue = b
+    const e = { oldValue, newValue }
+    if (this.owner) {
+      this.owner.emit(PlayerEvent.MUTED_CHANGED, e)
     }
   }
 
@@ -349,19 +351,14 @@ class PlayerProxy extends Component {
     return this._src
   }
   set src(url) {
-    if (this._src !== url && this._src !== undefined) {
-      let oldSrc = this._src
-      this._src = url
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.SRC_CHANGED, {
-          oldUrl: oldSrc,
-          newUrl: this._src
-        })
-      }
-
-      this.video.src = url // this.beforeSetSrcHook(url);
-      this.store.setKV(KV.URL, url)
+    const e = {
+      oldValue: this._src,
+      newValue: url
     }
+    this.emit2All(PlayerEvent.SRC_CHANGED, e)
+
+    this.video.src = url // this.beforeSetSrcHook(url);
+    this.store.setKV(KV.URL, url)
   }
 
   /**
@@ -484,22 +481,22 @@ class PlayerProxy extends Component {
     })
   }
 
-  _e(act, data) {
+  emit2All(act, data) {
     this.emit(act, data)
     this.owner && this.owner.emit(act, data)
   }
 
   __play() {
-    this._e(PlayerEvent.PLAY)
+    this.emit2All(PlayerEvent.PLAY)
   }
   __pause() {
-    this._e(PlayerEvent.PAUSE)
+    this.emit2All(PlayerEvent.PAUSE)
   }
   __progress(e) {
-    this._e(PlayerEvent.PROGRESS, e)
+    this.emit2All(PlayerEvent.PROGRESS, e)
   }
   __error(e) {
-    this._e(PlayerEvent.ERROR, e)
+    this.emit2All(PlayerEvent.ERROR, e)
   }
   __timeupdate(e) {
     // 每大于500ms 派发一次事件
@@ -510,32 +507,32 @@ class PlayerProxy extends Component {
 
     if (now - this._lastEmitTimeupdate > 500) {
       this._lastEmitTimeupdate = now
-      this._e(PlayerEvent.TIMEUPDATE, e)
+      this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
   }
   __ended() {
-    this._e(PlayerEvent.PLAY_END)
+    this.emit2All(PlayerEvent.PLAY_END)
   }
 
   __loadedmetadata(e) {
-    this._e(PlayerEvent.LOADEDMETADATA, e)
+    this.emit2All(PlayerEvent.LOADEDMETADATA, e)
   }
 
   __seeked(e) {
-    this._e(PlayerEvent.SEEKED, e)
+    this.emit2All(PlayerEvent.SEEKED, e)
   }
 
   __waiting(e) {
-    this._e(PlayerEvent.WAITING, e)
+    this.emit2All(PlayerEvent.WAITING, e)
   }
 
   __ratechange(e) {
     let rate = this.video.playbackRate
-    this._e(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
+    this.emit2All(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
   }
 
   __volumechange(e) {
-    this._e(PlayerEvent.VOLUME_CHANGE, e)
+    this.emit2All(PlayerEvent.VOLUME_CHANGE, e)
   }
 
   // __loadstart(e) {

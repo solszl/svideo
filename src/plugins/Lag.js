@@ -90,13 +90,13 @@ export default class Lag extends Plugin {
           this._lastLagTime = Date.now()
         }
 
-        this.player.emit('bufferempty')
+        this.player.emit2All('bufferempty')
 
         // 如果大于4秒， 汇报卡顿， 重置卡顿开始时间
         let elapsed = Date.now() - this._lastLagTime
         const lagThreshold = +this._allConfig.lagThreshold * 1000 // 默认4秒
         if (elapsed > lagThreshold) {
-          this.player.emit('lagreport')
+          this.player.emit2All('lagreport')
           this._lastLagTime = 0
         }
       } else {
@@ -104,8 +104,8 @@ export default class Lag extends Plugin {
         if (this._lastLagTime !== 0) {
           let elapsed = Date.now() - this._lastLagTime
           this._lastLagTime = 0
-          this.player.emit('lagrecover', elapsed)
-          this.player.emit('bufferfull', elapsed)
+          this.player.emit2All('lagrecover', elapsed)
+          this.player.emit2All('bufferfull', elapsed)
         }
       }
 
@@ -114,9 +114,8 @@ export default class Lag extends Plugin {
         let t = this.player.currentTime
         let isLag = this._tlag.isLag(t)
         if (isLag) {
-          this.player.emit('lagreport')
+          this.player.emit2All('lagreport')
         }
-        // this.player.emit('tencentInfo', isLag);
       }
     }, 400)
   }

@@ -283,8 +283,9 @@
         outputInfo(`seek 完成,时间为: ${v.currentTime}`)
       })
 
-      v.on('definitionchange', def => {
-        outputInfo(`当前清晰度变化，切换为 ${def.def} ${def.url}`);
+      v.on('definitionchange', e => {
+        // outputInfo(`当前清晰度变化，切换为 ${def.def} ${def.url}`);
+        outputInfo(`当前清晰度变化，从 ${e.oldValue.line} 的${e.oldValue.url} 切换为${e.newValue.line} 的${e.newValue.url}`)
       });
 
       v.on('definitionlistchange', e => {
@@ -335,7 +336,7 @@
       });
 
       v.player.on('srcchange', e => {
-        outputInfo(`播放源发生变化, oldUrl: ${e.oldUrl}, newUrl: ${e.newUrl}`);
+        outputInfo(`播放源发生变化, oldUrl: ${e.oldValue}, newUrl: ${e.newValue}`);
       });
 
       v.player.on('setcurrenttime', t => {

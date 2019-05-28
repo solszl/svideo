@@ -184,7 +184,7 @@ export default class Barrage extends Plugin {
     this.info('info', '启动弹幕')
     this._isOpen = true
     this._core.start()
-    this.player.emit('openbarrage')
+    this.player.emit2All('openbarrage')
   }
   _closeBarrage() {
     this.info('info', '关闭弹幕')
@@ -192,13 +192,13 @@ export default class Barrage extends Plugin {
     let core = this._core
     core.stop()
     core.clear()
-    this.player.emit('closebarrage')
+    this.player.emit2All('closebarrage')
   }
 
   _clearBarrage() {
     this.info('info', '清空弹幕')
     this._core.clear()
-    this.player.emit('clearbarrage')
+    this.player.emit2All('clearbarrage')
   }
 
   _play() {

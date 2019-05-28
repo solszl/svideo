@@ -28,12 +28,12 @@ export default class PlaybackRate extends Plugin {
     let p = this.player
     Object.defineProperty(this.player, 'playbackRateList', {
       configurable: true,
-      get: function () {
+      get: function() {
         return rateList
       },
-      set: function (newValue) {
+      set: function(newValue) {
         rateList = newValue
-        p.emit('playbackratelistchange')
+        p.emit2All('playbackratelistchange')
       }
     })
   }
