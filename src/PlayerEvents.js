@@ -13,6 +13,7 @@ export const PlayerEvent = {
   CURRENT_TIME_CHANGED: 'setcurrenttime',
   SCHEDULER_COMPLETE: 'schedulercompleted',
   PLAYBACKRATE_LIST_CHANGED: 'playbackratelistchange',
+  DEFINITION_CHANGED: 'definitionchange',
   // SEEK_START: 'seek_start',
   SEEKED: 'seeked',
   BUFFER_EMPTY: 'buffer_empty',
@@ -26,7 +27,8 @@ export const PlayerEvent = {
   WAITING: 'waiting',
   ERROR: 'error',
   LOADEDMETADATA: 'loadedmetadata',
-  PROGRESS: 'progress'
+  PROGRESS: 'progress',
+  CHANGE_LINE: 'changeline'
   // LOADSTART: 'loadstart',
   // CANPLAYTHROUGH: 'canplaythrough'
 }

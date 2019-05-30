@@ -2,6 +2,7 @@ import Log from '../../../utils/Log'
 import EventHandler from '../event-handler'
 import Event from '../events'
 import { KV } from './../../../core/Constant'
+import { PlayerEvent } from './../../../PlayerEvents'
 
 /**
  *
@@ -16,6 +17,7 @@ class VhallController extends EventHandler {
 
     this.CLASS_NAME = this.constructor.name
     this.store = null
+    this._timeout = 0
     this.info('info', '注册vhall controller')
   }
 
@@ -62,7 +64,14 @@ class VhallController extends EventHandler {
       })
     )
 
-    this.hls.owner.emit('error', e)
+    // m3u8文件加载失败的话，需要进行切线处理
+    if (e.details === 'manifestLoadError') {
+      clearTimeout(this._timeout)
+      this._timeout = setTimeout(() => {
+        this.hls.emit2All(PlayerEvent.CHANGE_LINE)
+      }, 2000)
+    }
+    this.hls.emit2All('error', e)
   }
 
   destroy() {

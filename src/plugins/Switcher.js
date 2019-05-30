@@ -63,6 +63,7 @@ export default class Switcher extends Plugin {
     this.player.on('lagrecover', this.__lagRecover.bind(this))
     // 连接失败
     this.player.on('connectError', this.__connectError.bind(this))
+    this.player.on(PlayerEvent.CHANGE_LINE, this.__changeLine.bind(this))
   }
 
   __lag(e) {
@@ -127,13 +128,14 @@ export default class Switcher extends Plugin {
       await this.player.fetchToken()
     }
 
-    const token = this.player.newToken
-    this.info('info', `当前播放${def.def},已经轮询了：${this._pollingDefs}`)
-    this.info('info', `URL: ${def.url}`)
-    this.info('info', `Token: ${token}`)
-    let url = `${def.url}?token=${token}`
-    this.player.src = url
-    this.player.play()
+    // const token = this.player.newToken
+    // this.info('info', `当前播放${def.def},已经轮询了：${this._pollingDefs}`)
+    // this.info('info', `URL: ${def.url}`)
+    // this.info('info', `Token: ${token}`)
+    // let url = `${def.url}?token=${token}`
+    // this.player.src = url
+    // this.player.play()
+    this.player.currentDefinition = def
   }
 
   _changeDef() {

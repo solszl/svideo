@@ -482,7 +482,7 @@ class PlayerProxy extends Component {
   }
 
   emit2All(act, data) {
-    this.emit(act, data)
+    // this.emit(act, data)
     this.owner && this.owner.emit(act, data)
   }
 
