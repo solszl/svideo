@@ -143,6 +143,7 @@ export default class VideoModule extends PlayerProxy {
     let player = this.player
     player.initVideo(this._config)
     player._owner = this
+    Object.assign(this, player)
     this.player.initEvents()
     // player.src = this._config.url;
     // this.play();
