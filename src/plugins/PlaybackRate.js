@@ -1,4 +1,5 @@
 import Plugin from '../core/Plugin'
+import { PlayerEvent } from './../PlayerEvents'
 
 /**
  * 倍速播放插件
@@ -33,7 +34,7 @@ export default class PlaybackRate extends Plugin {
       },
       set: function(newValue) {
         rateList = newValue
-        p.emit2All('playbackratelistchange')
+        p.emit2All(PlayerEvent.PLAYBACKRATE_LIST_CHANGED)
       }
     })
   }

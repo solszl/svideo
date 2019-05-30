@@ -11,6 +11,8 @@ export const PlayerEvent = {
   SRC_CHANGED: 'srcchange',
   VOLUME_CHANGE: 'volumechange',
   CURRENT_TIME_CHANGED: 'setcurrenttime',
+  SCHEDULER_COMPLETE: 'schedulercompleted',
+  PLAYBACKRATE_LIST_CHANGED: 'playbackratelistchange',
   // SEEK_START: 'seek_start',
   SEEKED: 'seeked',
   BUFFER_EMPTY: 'buffer_empty',

@@ -5,6 +5,7 @@ import HlsPlayer from './player/hls/HlsPlayer'
 import NativePlayer from './player/native/NativePlayer'
 import PlayerProxy from './PlayerProxy'
 import PluginMap from './plugins/PluginMap'
+import { PlayerEvent } from './PlayerEvents'
 
 /**
  * 播放器模块
@@ -188,7 +189,7 @@ export default class VideoModule extends PlayerProxy {
 
   initPluginListener() {
     const self = this
-    this.on('schedulerCompleted', () => {
+    this.on(PlayerEvent.SCHEDULER_COMPLETE, () => {
       const def = self.currentDefinition
       const token = self.newToken
       let url = `${def.url}?token=${token}`

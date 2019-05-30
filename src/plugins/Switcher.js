@@ -1,5 +1,6 @@
 import Plugin from '../core/Plugin'
 import { ChainSame, Chain720p, Chain480p, Chain360p } from './switcher/Chain'
+import { PlayerEvent } from './../PlayerEvents'
 
 /**
  * 切线业务逻辑
@@ -34,10 +35,6 @@ export default class Switcher extends Plugin {
   destroy() {
     super.destroy()
     clearTimeout(this._changeLineTimeout)
-    // this.player.off('lagreport', this.__lag);
-    // this.player.off('lagrecover', this.__lagRecover);
-    // this.player.off('connectError', this.__connectError);
-    // this.player.off('schedulerCompleted', this.__schedulerCompleted);
     this._allDefList = null
     this._currentDef = null
     this._currentDefList = null
@@ -56,7 +53,10 @@ export default class Switcher extends Plugin {
 
   _handleCareEvent() {
     // 调度完成
-    this.player.on('schedulerCompleted', this.__schedulerCompleted.bind(this))
+    this.player.on(
+      PlayerEvent.SCHEDULER_COMPLETE,
+      this.__schedulerCompleted.bind(this)
+    )
     // 卡顿
     this.player.on('lagreport', this.__lag.bind(this))
     // 卡顿恢复

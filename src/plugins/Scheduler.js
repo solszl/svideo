@@ -1,6 +1,7 @@
 import crc32 from 'crc-32'
 import qs from 'qs'
 import Plugin from '../core/Plugin'
+import { PlayerEvent } from './../PlayerEvents'
 
 const LIVE_API = 'api/dispatch_play'
 const VOD_API = 'api/dispatch_replay'
@@ -380,11 +381,11 @@ export default class Scheduler extends Plugin {
         let token = this.newToken
         let url = `${newValue.url}?token=${token}`
         this.player.src = url
-        this.player._e('definitionchange', e)
+        this.player.emit2All('definitionchange', e)
       }
     })
 
-    this.player.emit('schedulerCompleted')
+    this.player.emit2All(PlayerEvent.SCHEDULER_COMPLETE)
   }
 
   _defineFunctions() {

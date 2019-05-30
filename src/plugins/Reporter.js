@@ -183,7 +183,7 @@ export default class Reporter extends Plugin {
       this.info('info', '日志参数列表:' + JSON.stringify(param))
       this.info('info', '日志url:' + url)
       xhr.send()
-      this.player.emit('report', url)
+      this.player.emit2All('report', url)
     } else {
       this.info(
         'info',

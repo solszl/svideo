@@ -127,7 +127,7 @@ export class Chain360p extends Chain {
       this.player.currentDefinitionListIndex = idx
       this.player.currentDefinitionList = this.currentDefList
       this.player.currentDefinition = this.currentDefList[0]
-      this.player.emit('definitionlistchange') // 派发清晰度列表更新事件
+      this.player.emit2All('definitionlistchange') // 派发清晰度列表更新事件
     }
 
     this.polling = []
