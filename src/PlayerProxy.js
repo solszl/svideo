@@ -505,7 +505,7 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 500) {
+    if (now - this._lastEmitTimeupdate > 500 && !isNaN(this.duration)) {
       this._lastEmitTimeupdate = now
       this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
