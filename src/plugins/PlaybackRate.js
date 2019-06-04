@@ -1,40 +1,45 @@
-import Plugin from '../core/Plugin';
+import Plugin from '../core/Plugin'
+import { PlayerEvent } from './../PlayerEvents'
 
 /**
- * 播放倍速插件
+ * 倍速播放插件
  *
+ * @export
  * @class PlaybackRate
  * @extends {Plugin}
  * @author zhenliang.sun
  */
 export default class PlaybackRate extends Plugin {
   constructor() {
-    super();
-  }
-
-  init(opts = {}) {
-    super.init(opts);
-
-    let self = this;
-
-    // 给player 添加倍速播放属性
-    Object.defineProperty(this.player, 'playbackRate', {
-      configurable: true,
-      get() {
-        return self.player.video.playbackRate || 1;
-      },
-      set(v) {
-        self.player.video.playbackRate = v;
-      }
-    });
+    super()
+    this._allConfig = null
   }
 
   destroy() {
-    super.destroy();
-    delete this.player.playbackRate;
+    super.destroy()
+    if (this.player.playbackRateList) {
+      delete this.player.playbackRateList
+    }
+  }
+
+  init(opts = {}) {
+    super.init(opts)
+    this._allConfig = opts
+    let rateList = this._allConfig.rateList || [0.5, 1, 1.5, 2]
+    let p = this.player
+    Object.defineProperty(this.player, 'playbackRateList', {
+      configurable: true,
+      get: function() {
+        return rateList
+      },
+      set: function(newValue) {
+        rateList = newValue
+        p.emit2All(PlayerEvent.PLAYBACKRATE_LIST_CHANGED)
+      }
+    })
   }
 
   static get type() {
-    return 'plugin_playbackRate';
+    return 'plugin_playbackrate'
   }
 }

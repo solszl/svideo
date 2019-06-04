@@ -1,11 +1,11 @@
-const webpack = require('webpack');
+const webpack = require('webpack')
 // 引入路径
-const path = require('path');
+const path = require('path')
 
-const ver = require('../package.json').version;
+const ver = require('../package.json').version
 
 function resolve(dir) {
-  return path.join(__dirname, '..', dir);
+  return path.join(__dirname, '..', dir)
 }
 
 const webpackConfig = {
@@ -17,6 +17,7 @@ const webpackConfig = {
   output: {
     path: resolve('dist'),
     // filename: "[name].js",
+    filename: `index${ver}.js`,
     library: 'VHVideoModule',
     libraryTarget: 'umd'
   },
@@ -28,16 +29,18 @@ const webpackConfig = {
       exclude: '/node_modules'
     }, {
       test: /\.scss$/,
-      use: ['style-loader', 'css-loader', 'sass-loader'],
+      use: ['style-loader', 'css-loader', 'sass-loader']
     }]
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         LOG_LEVEL: JSON.stringify(process.env.LOG_LEVEL),
-        VERSION: JSON.stringify(ver)
-      }
+        VERSION: JSON.stringify(ver),
+        PF: JSON.stringify(process.env.PF)
+      },
+      __USE_ALT_AUDIO__: JSON.stringify(false)
     })
   ]
-};
-module.exports = webpackConfig;
+}
+module.exports = webpackConfig

@@ -1,7 +1,9 @@
-import IllegalStateException from '../error/IllegalStateException';
+import {
+  IllegalStateException
+} from '../player/flv/utils/exception'
 
-const private_log = Symbol('private_log');
-const private_instance = Symbol('private_instance');
+const privateLog = Symbol('privateLog')
+const privateInstance = Symbol('privateInstance')
 
 /**
  * 日志
@@ -12,11 +14,11 @@ const private_instance = Symbol('private_instance');
  */
 export default class Log {
   constructor() {
-    if (this[private_instance]) {
-      throw new IllegalStateException('Log should be a singlton Class');
+    if (this[privateInstance]) {
+      throw new IllegalStateException('Log should be a singleton Class')
     }
 
-    this[private_instance] = this;
+    this[privateInstance] = this
     this.logLevels = {
       all: 'debug|info|log|warn|error',
       off: '',
@@ -24,19 +26,18 @@ export default class Log {
       info: 'info|warn|error',
       warn: 'warn|error',
       error: 'error'
-    };
+    }
 
-    this.level = 'all'; // 默认是all
+    this.level = 'all' // 默认是all
   }
 
   static get OBJ() {
-    if (!this[private_instance]) {
-      this[private_instance] = new Log();
+    if (!this[privateInstance]) {
+      this[privateInstance] = new Log()
     }
 
-    return this[private_instance];
+    return this[privateInstance]
   }
-
 
   /**
    *
@@ -46,50 +47,50 @@ export default class Log {
    */
   set level(val) {
     if (typeof val !== 'string') {
-      return this.level;
+      return this.level
     }
 
     if (!this.logLevels.hasOwnProperty(val)) {
-      throw new IllegalStateException(`${val} is not a valid log level, should be in [all, off, debug, info, warn, error]`);
+      throw new IllegalStateException(`${val} is not a valid log level, should be in [all, off, debug, info, warn, error]`)
     }
 
-    this._level = this.logLevels[val];
+    this._level = this.logLevels[val]
   }
 
   get level() {
-    return this._level;
+    return this._level
   }
 
   info(...args) {
-    this[private_log]('info', args);
+    this[privateLog]('info', args)
   }
 
   debug(...args) {
-    this[private_log]('debug', args);
+    this[privateLog]('debug', args)
   }
 
   warn(...args) {
-    this[private_log]('warn', args);
+    this[privateLog]('warn', args)
   }
 
   error(...args) {
-    this[private_log]('error', args);
+    this[privateLog]('error', args)
   }
 
-  [private_log](type, args) {
+  [privateLog](type, args) {
     if (!window.console) {
-      return;
+      return
     }
 
-    let fn = window.console[type];
+    let fn = window.console[type]
     if (!fn && type === 'debug') {
-      fn = window.console.info || window.console.log;
+      fn = window.console.info || window.console.log
     }
 
     if (!fn || this.level.split('|').indexOf(type) < 0) {
-      return;
+      return
     }
 
-    fn[Array.isArray(args) ? 'apply' : 'call'](window.console, args);
+    fn[Array.isArray(args) ? 'apply' : 'call'](window.console, args)
   }
 }

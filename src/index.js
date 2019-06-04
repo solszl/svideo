@@ -1,6 +1,5 @@
-// import Player from './Player';
+// const SDK = require('./player').default;
+// module.exports = SDK;
 
-// export default Player;
-
-const SDK = require('./Player').default;
-module.exports = SDK;
+const SDK = require('./VideoModule').default
+module.exports = SDK

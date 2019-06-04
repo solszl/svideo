@@ -1,3 +1,5 @@
+import Log from './Log'
+
 /**
  * 创建一个为 tagName 标签 element
  *
@@ -8,16 +10,31 @@
  * @returns element
  */
 export function createElement(tagName = 'div', properties = {}, attributes = {}) {
-  const el = document.createElement(tagName);
+  const el = document.createElement(tagName)
   Object.getOwnPropertyNames(properties).forEach(prop => {
-    const val = properties[prop];
-    el[prop] = val;
-  });
+    const val = properties[prop]
+    el[prop] = val
+  })
   Object.getOwnPropertyNames(attributes).forEach(attr => {
-    el.setAttribute(attr, attributes[attr]);
-  });
+    el.setAttribute(attr, attributes[attr])
+  })
 
-  return el;
+  return el
+}
+
+export function appendChild(parentId, child) {
+  const parent = document.getElementById(parentId)
+  if (!parent) {
+    Log.OBJ.error(`doesn't exist parent element id: ${parentId}`)
+    return
+  }
+
+  if (!child) {
+    Log.OBJ.error('doesn\'t exist child')
+    return
+  }
+
+  parent.appendChild(child)
 }
 
 /**
@@ -30,10 +47,10 @@ export function createElement(tagName = 'div', properties = {}, attributes = {})
  */
 export function hasClass(el, clazzName) {
   if (el.classList) {
-    return el.classList.contains(clazzName);
+    return el.classList.contains(clazzName)
   }
-  const reg = new RegExp('(^|\\s)' + clazzName + '($|\\s)');
-  return reg.test(el.className);
+  const reg = new RegExp('(^|\\s)' + clazzName + '($|\\s)')
+  return reg.test(el.className)
 }
 
 /**
@@ -46,11 +63,11 @@ export function hasClass(el, clazzName) {
  */
 export function addClass(el, clazz) {
   if (el.classList) {
-    el.classList.add(clazz);
+    el.classList.add(clazz)
   } else if (!hasClass(el, clazz)) {
-    el.className = (el.className + ' ' + clazz).trim();
+    el.className = (el.className + ' ' + clazz).trim()
   }
-  return el;
+  return el
 }
 
 /**
@@ -63,14 +80,14 @@ export function addClass(el, clazz) {
  */
 export function removeClass(el, clazz) {
   if (el.classList) {
-    el.classList.remove(clazz);
+    el.classList.remove(clazz)
   } else {
     el.className = el.className.split(/\s+/).filter(c => {
-      return c !== clazz;
-    }).join(' ');
+      return c !== clazz
+    }).join(' ')
   }
 
-  return el;
+  return el
 }
 
 /**
@@ -83,28 +100,28 @@ export function removeClass(el, clazz) {
  * @returns toggle 元素的 某一个样式
  */
 export function toggleClass(el, clazzName, predicate) {
-  const has = hasClass(el, clazzName);
+  const has = hasClass(el, clazzName)
   // 回调
   if (typeof predicate === 'function') {
-    predicate = predicate(el, clazzName);
+    predicate = predicate(el, clazzName)
   }
 
   // 如果是布尔值
   if (typeof predicate === 'boolean') {
-    predicate = !has;
+    predicate = !has
   }
 
   if (predicate === has) {
-    return;
+    return
   }
 
   if (predicate) {
-    addClass(el, clazzName);
+    addClass(el, clazzName)
   } else {
-    removeClass(el, clazzName);
+    removeClass(el, clazzName)
   }
 
-  return el;
+  return el
 }
 
 /**
@@ -116,12 +133,12 @@ export function toggleClass(el, clazzName, predicate) {
  */
 export function removeFromParent(el, callBK = null) {
   if (!el) {
-    return;
+    return
   }
 
   if (el.parentNode) {
-    el.parentNode.removeChild(el);
+    el.parentNode.removeChild(el)
   }
 
-  callBK && callBK();
+  callBK && callBK()
 }
