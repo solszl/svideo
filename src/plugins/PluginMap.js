@@ -10,6 +10,7 @@ import Fullscreen from './Fullscreen'
 import I18N from './I18n'
 import Keyboard from './Keyboard'
 import Lag from './Lag'
+import Marquee from './Marquee'
 import PlaybackRate from './PlaybackRate'
 import Reporter from './Reporter'
 import Scheduler from './Scheduler'
@@ -31,12 +32,13 @@ if (process.env.PF === 'vhall') {
   Log.OBJ.info(
     `注册Vhall平台插件：${Lag.type},${Reporter.type},${Scheduler.type},${
       Switcher.type
-    }`
+    },${Marquee.type}`
   )
   PluginMap.set(Lag.type, Lag)
   PluginMap.set(Reporter.type, Reporter)
   PluginMap.set(Scheduler.type, Scheduler)
   PluginMap.set(Switcher.type, Switcher)
+  PluginMap.set(Marquee.type, Marquee)
 }
 
 export default PluginMap
