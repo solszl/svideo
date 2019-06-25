@@ -1,12 +1,8 @@
 import Component from './core/Component'
-import {
-  PlayerEvent
-} from './PlayerEvents'
-import {
-  createElement,
-  removeFromParent
-} from './utils/Dom'
-import Model from './core/Model'
+import { KV } from './core/Constant'
+import Store from './core/Store'
+import { PlayerEvent } from './PlayerEvents'
+import { createElement, removeFromParent } from './utils/Dom'
 
 /**
  * 播放器的基类
@@ -24,6 +20,7 @@ class PlayerProxy extends Component {
     this._isLive = false
     this._isPlaying = false
     this.video = null
+    this.store = new Store()
     this.reset()
   }
 
@@ -38,27 +35,37 @@ class PlayerProxy extends Component {
       // x5cfg['x5-video-orientation'] = 'portraint';
     }
 
-    let poster = config['poster'] ? {
-      poster: config['poster']
-    } : {}
+    let poster = config['poster']
+      ? {
+        poster: config['poster']
+      }
+      : {}
 
-    this.video = createElement('video', {
-      id: 'vh-video',
-      controls: true
-      // muted: true,
-    }, Object.assign({
-      width: '100%',
-      height: '100%',
-      crossOrigin: 'anonymous',
-      'z-index': 0
-    }, x5cfg, poster))
+    this.video = createElement(
+      'video',
+      {
+        id: 'vh-video',
+        controls: false
+        // muted: true,
+      },
+      Object.assign(
+        {
+          width: '100%',
+          height: '100%',
+          crossOrigin: 'anonymous',
+          'z-index': 0
+        },
+        x5cfg,
+        poster
+      )
+    )
 
     this._root = document.getElementById(config['id'])
     const parent = this._root
     parent.appendChild(this.video)
     parent.style.position = 'relative'
 
-    this.autoplay = config.autoplay || false
+    this.autoplay = config.autoplay || true
     this._isLive = config['isLive']
   }
 
@@ -125,7 +132,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   get downloadSize() {
-    return -1
+    return this.store.getKV(KV.DownloadSize) || -1
   }
 
   /**
@@ -235,11 +242,12 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set loop(v) {
-    if (this.video.loop !== v) {
-      this.video.loop = v
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.LOOP_CHANGED, v)
-      }
+    let oldValue = this.video.loop
+    this.video.loop = v
+    let newValue = v
+    const e = { oldValue, newValue }
+    if (this.owner) {
+      this.owner.emit(PlayerEvent.LOOP_CHANGED, e)
     }
   }
 
@@ -262,11 +270,12 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   set muted(b) {
-    if (this.video.muted !== b) {
-      this.video.muted = b
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.MUTED_CHANGED, b)
-      }
+    let oldValue = this.video.muted
+    this.video.muted = b
+    let newValue = b
+    const e = { oldValue, newValue }
+    if (this.owner) {
+      this.owner.emit(PlayerEvent.MUTED_CHANGED, e)
     }
   }
 
@@ -342,19 +351,14 @@ class PlayerProxy extends Component {
     return this._src
   }
   set src(url) {
-    if (this._src !== url && this._src !== undefined) {
-      let oldSrc = this._src
-      this._src = url
-      if (this.owner) {
-        this.owner.emit(PlayerEvent.SRC_CHANGED, {
-          oldUrl: oldSrc,
-          newUrl: this._src
-        })
-      }
-
-      this.video.src = url // this.beforeSetSrcHook(url);
-      Model.OBJ.url = url
+    const e = {
+      oldValue: this._src,
+      newValue: url
     }
+    this.emit2All(PlayerEvent.SRC_CHANGED, e)
+
+    this.video.src = url // this.beforeSetSrcHook(url);
+    this.store.setKV(KV.URL, url)
   }
 
   /**
@@ -370,7 +374,10 @@ class PlayerProxy extends Component {
     v = +v
 
     if (v > 1 || v < 0) {
-      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`)
+      this.info(
+        'warn',
+        `volume value range should be between 0 to 1, now you set ${v}`
+      )
       v = Math.min(Math.max(0, v), 1)
     }
 
@@ -474,17 +481,22 @@ class PlayerProxy extends Component {
     })
   }
 
+  emit2All(act, data) {
+    // this.emit(act, data)
+    this.owner && this.owner.emit(act, data)
+  }
+
   __play() {
-    this.emit(PlayerEvent.PLAY)
+    this.emit2All(PlayerEvent.PLAY)
   }
   __pause() {
-    this.emit(PlayerEvent.PAUSE)
+    this.emit2All(PlayerEvent.PAUSE)
   }
   __progress(e) {
-    this.emit(PlayerEvent.PROGRESS, e)
+    this.emit2All(PlayerEvent.PROGRESS, e)
   }
   __error(e) {
-    this.emit(PlayerEvent.ERROR, e)
+    this.emit2All(PlayerEvent.ERROR, e)
   }
   __timeupdate(e) {
     // 每大于500ms 派发一次事件
@@ -493,42 +505,42 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 500) {
+    if (now - this._lastEmitTimeupdate > 200 && !isNaN(this.duration)) {
       this._lastEmitTimeupdate = now
-      this.emit(PlayerEvent.TIMEUPDATE, e)
+      this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
   }
   __ended() {
-    this.emit(PlayerEvent.PLAY_END)
+    this.emit2All(PlayerEvent.PLAY_END)
   }
 
   __loadedmetadata(e) {
-    this.emit(PlayerEvent.LOADEDMETADATA, e)
+    this.emit2All(PlayerEvent.LOADEDMETADATA, e)
   }
 
   __seeked(e) {
-    this.emit(PlayerEvent.SEEKED, e)
+    this.emit2All(PlayerEvent.SEEKED, e)
   }
 
   __waiting(e) {
-    this.emit(PlayerEvent.WAITING, e)
+    this.emit2All(PlayerEvent.WAITING, e)
   }
 
   __ratechange(e) {
     let rate = this.video.playbackRate
-    this.emit(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
+    this.emit2All(PlayerEvent.PLAYBACKRATE_CHANGED, rate)
   }
 
   __volumechange(e) {
-    this.emit(PlayerEvent.VOLUME_CHANGE, e)
+    this.emit2All(PlayerEvent.VOLUME_CHANGE, e)
   }
 
   // __loadstart(e) {
-  //   this.emit(PlayerEvent.LOADSTART, e);
+  //   this._e(PlayerEvent.LOADSTART, e);
   // }
 
   // __canplaythrough(e) {
-  //   this.emit(PlayerEvent.CANPLAYTHROUGH, e);
+  //   this._e(PlayerEvent.CANPLAYTHROUGH, e);
   // }
 
   reset() {
@@ -541,6 +553,7 @@ class PlayerProxy extends Component {
     this._src = ''
     this._isLive = false
     this._isPlaying = false
+    this.store.reset()
     this.reset()
 
     if (this.video) {

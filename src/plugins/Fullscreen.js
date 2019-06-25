@@ -36,17 +36,23 @@ export default class Fullscreen extends Plugin {
     })
 
     // 注册进入全屏功能
-    this.player.__proto__.enterFullscreen = this.enterFullscreen.bind(this)
+    this.player.enterFullscreen = this.enterFullscreen.bind(this)
     // 注册离开全屏功能
-    this.player.__proto__.exitFullscreen = this.exitFullscreen.bind(this);
+    this.player.exitFullscreen = this.exitFullscreen.bind(this)
 
     // 监听全屏变化
-    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(item => {
+    ;[
+      'fullscreenchange',
+      'webkitfullscreenchange',
+      'mozfullscreenchange',
+      'MSFullscreenChange'
+    ].forEach(item => {
       document.addEventListener(item, e => {
         // console.log(document.webkitFullscreenElement, e.target);
         this._fullscreenTarget = e.target
-        self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal'
-        self.player.emit('fullscreenchanged', self._displayState)
+        self._displayState =
+          this.isFullscreen === true ? 'fullscreen' : 'normal'
+        self.player.emit2All('fullscreenchanged', self._displayState)
       })
     })
   }
@@ -109,10 +115,12 @@ export default class Fullscreen extends Plugin {
    * @returns 根据 document 的 fullscreen 属性判断当前是否处于全屏状态
    */
   get isFullscreen() {
-    return document.fullscreen ||
+    return (
+      document.fullscreen ||
       document.webkitIsFullScreen ||
       document.mozFullScreen ||
       false
+    )
   }
 
   /**
@@ -123,11 +131,13 @@ export default class Fullscreen extends Plugin {
    * @returns 返回全屏元素
    */
   get fullscreenElement() {
-    return document.fullscreenElement ||
+    return (
+      document.fullscreenElement ||
       document.webkitCurrentFullScreenElement ||
       document.mozFullScreenElement ||
       this._fullscreenTarget ||
       null
+    )
   }
 
   static get type() {

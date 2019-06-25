@@ -1,31 +1,19 @@
-import * as URLToolkit from 'url-toolkit';
-import Model from '../../core/Model';
-import PlayerProxy from '../../PlayerProxy';
-import {
-  hlsDefaultConfig
-} from './config';
-import {
-  FragmentTracker
-} from './controller/fragment-tracker';
-import ID3TrackController from './controller/id3-track-controller';
-import LevelController from './controller/level-controller';
-import StreamController from './controller/stream-controller';
-import VhallController from './controller/vhall-controller';
-import {
-  ErrorDetails,
-  ErrorTypes
-} from './errors';
-import HlsEvents from './events';
-import {
-  isSupported
-} from './is-supported';
-import FragmentLoader from './loader/fragment-loader';
-import KeyLoader from './loader/key-loader';
-import PlaylistLoader from './loader/playlist-loader';
-import {
-  enableLogs,
-  logger
-} from './utils/logger';
+import * as URLToolkit from 'url-toolkit'
+import PlayerProxy from '../../PlayerProxy'
+import { KV } from './../../core/Constant'
+import { hlsDefaultConfig } from './config'
+import { FragmentTracker } from './controller/fragment-tracker'
+import ID3TrackController from './controller/id3-track-controller'
+import LevelController from './controller/level-controller'
+import StreamController from './controller/stream-controller'
+import VhallController from './controller/vhall-controller'
+import { ErrorDetails, ErrorTypes } from './errors'
+import HlsEvents from './events'
+import { isSupported } from './is-supported'
+import FragmentLoader from './loader/fragment-loader'
+import KeyLoader from './loader/key-loader'
+import PlaylistLoader from './loader/playlist-loader'
+import { enableLogs, logger } from './utils/logger'
 
 /**
  * @module Hls
@@ -37,28 +25,28 @@ export default class Hls extends PlayerProxy {
    * @type {boolean}
    */
   static isSupported() {
-    return isSupported();
+    return isSupported()
   }
 
   /**
    * @type {HlsEvents}
    */
   static get Events() {
-    return HlsEvents;
+    return HlsEvents
   }
 
   /**
    * @type {HlsErrorTypes}
    */
   static get ErrorTypes() {
-    return ErrorTypes;
+    return ErrorTypes
   }
 
   /**
    * @type {HlsErrorDetails}
    */
   static get ErrorDetails() {
-    return ErrorDetails;
+    return ErrorDetails
   }
 
   /**
@@ -66,17 +54,17 @@ export default class Hls extends PlayerProxy {
    */
   static get DefaultConfig() {
     if (!Hls.defaultConfig) {
-      return hlsDefaultConfig;
+      return hlsDefaultConfig
     }
 
-    return Hls.defaultConfig;
+    return Hls.defaultConfig
   }
 
   /**
    * @type {HlsConfig}
    */
   static set DefaultConfig(defaultConfig) {
-    Hls.defaultConfig = defaultConfig;
+    Hls.defaultConfig = defaultConfig
   }
 
   /**
@@ -86,67 +74,86 @@ export default class Hls extends PlayerProxy {
    * @param {HlsConfig} config
    */
   constructor(config = {}) {
-    super(config);
+    super(config)
 
-    const defaultConfig = Hls.DefaultConfig;
+    const defaultConfig = Hls.DefaultConfig
 
-    if ((config.liveSyncDurationCount || config.liveMaxLatencyDurationCount) && (config.liveSyncDuration || config.liveMaxLatencyDuration)) {
-      throw new Error('Illegal hls.js config: don\'t mix up liveSyncDurationCount/liveMaxLatencyDurationCount and liveSyncDuration/liveMaxLatencyDuration');
+    if (
+      (config.liveSyncDurationCount || config.liveMaxLatencyDurationCount) &&
+      (config.liveSyncDuration || config.liveMaxLatencyDuration)
+    ) {
+      throw new Error(
+        'Illegal hls.js config: don\'t mix up liveSyncDurationCount/liveMaxLatencyDurationCount and liveSyncDuration/liveMaxLatencyDuration'
+      )
     }
 
     for (let prop in defaultConfig) {
-      if (prop in config) continue;
-      config[prop] = defaultConfig[prop];
+      if (prop in config) continue
+      config[prop] = defaultConfig[prop]
     }
 
-    if (config.liveMaxLatencyDurationCount !== undefined && config.liveMaxLatencyDurationCount <= config.liveSyncDurationCount) {
-      throw new Error('Illegal hls.js config: "liveMaxLatencyDurationCount" must be gt "liveSyncDurationCount"');
+    if (
+      config.liveMaxLatencyDurationCount !== undefined &&
+      config.liveMaxLatencyDurationCount <= config.liveSyncDurationCount
+    ) {
+      throw new Error(
+        'Illegal hls.js config: "liveMaxLatencyDurationCount" must be gt "liveSyncDurationCount"'
+      )
     }
 
-    if (config.liveMaxLatencyDuration !== undefined && (config.liveMaxLatencyDuration <= config.liveSyncDuration || config.liveSyncDuration === undefined)) {
-      throw new Error('Illegal hls.js config: "liveMaxLatencyDuration" must be gt "liveSyncDuration"');
+    if (
+      config.liveMaxLatencyDuration !== undefined &&
+      (config.liveMaxLatencyDuration <= config.liveSyncDuration ||
+        config.liveSyncDuration === undefined)
+    ) {
+      throw new Error(
+        'Illegal hls.js config: "liveMaxLatencyDuration" must be gt "liveSyncDuration"'
+      )
     }
 
-    enableLogs(config.debug);
-    this.config = config;
-    this._autoLevelCapping = -1;
+    enableLogs(config.debug)
+    this.config = config
+    this._autoLevelCapping = -1
 
     // core controllers and network loaders
 
     /**
      * @member {AbrController} abrController
      */
-    const abrController = this.abrController = new config.abrController(this);
+    const abrController = (this.abrController = new config.abrController(this))
 
-    const bufferController = new config.bufferController(this);
-    const capLevelController = new config.capLevelController(this);
-    const fpsController = new config.fpsController(this);
-    const playListLoader = new PlaylistLoader(this);
-    const fragmentLoader = new FragmentLoader(this);
-    const keyLoader = new KeyLoader(this);
-    const id3TrackController = new ID3TrackController(this);
+    const bufferController = new config.bufferController(this)
+    const capLevelController = new config.capLevelController(this)
+    const fpsController = new config.fpsController(this)
+    const playListLoader = new PlaylistLoader(this)
+    const fragmentLoader = new FragmentLoader(this)
+    const keyLoader = new KeyLoader(this)
+    const id3TrackController = new ID3TrackController(this)
 
     // network controllers
 
     /**
      * @member {LevelController} levelController
      */
-    const levelController = this.levelController = new LevelController(this);
+    const levelController = (this.levelController = new LevelController(this))
 
     // FIXME: FragmentTracker must be defined before StreamController because the order of event handling is important
-    const fragmentTracker = new FragmentTracker(this);
+    const fragmentTracker = new FragmentTracker(this)
 
     /**
      * @member {StreamController} streamController
      */
-    const streamController = this.streamController = new StreamController(this, fragmentTracker);
+    const streamController = (this.streamController = new StreamController(
+      this,
+      fragmentTracker
+    ))
 
-    let networkControllers = [levelController, streamController];
+    let networkControllers = [levelController, streamController]
 
     /**
      * @member {INetworkController[]} networkControllers
      */
-    this.networkControllers = networkControllers;
+    this.networkControllers = networkControllers
 
     /**
      * @var {ICoreComponent[]}
@@ -161,30 +168,31 @@ export default class Hls extends PlayerProxy {
       fpsController,
       id3TrackController,
       fragmentTracker
-    ];
+    ]
 
-    const vhallController = this.vhallController = new VhallController(this);
-    coreComponents.push(vhallController);
+    const vhallController = (this.vhallController = new VhallController(this))
+    vhallController.store = this.store
+    coreComponents.push(vhallController)
 
     /**
      * @member {ICoreComponent[]}
      */
-    this.coreComponents = coreComponents;
+    this.coreComponents = coreComponents
   }
 
   /**
    * Dispose of the instance
    */
   destroy() {
-    logger.log('destroy');
-    this.trigger(HlsEvents.DESTROYING);
-    this.detachMedia();
+    logger.log('destroy')
+    this.trigger(HlsEvents.DESTROYING)
+    this.detachMedia()
     this.coreComponents.concat(this.networkControllers).forEach(component => {
-      component.destroy();
-    });
-    this.url = null;
-    this._autoLevelCapping = -1;
-    super.destroy();
+      component.destroy()
+    })
+    this.url = null
+    this._autoLevelCapping = -1
+    super.destroy()
   }
 
   /**
@@ -192,20 +200,20 @@ export default class Hls extends PlayerProxy {
    * @param {HTMLMediaElement} media
    */
   attachMedia(media) {
-    logger.log('attachMedia');
-    this.media = media;
+    logger.log('attachMedia')
+    this.media = media
     this.trigger(HlsEvents.MEDIA_ATTACHING, {
       media: media
-    });
+    })
   }
 
   /**
    * Detach from the media
    */
   detachMedia() {
-    logger.log('detachMedia');
-    this.trigger(HlsEvents.MEDIA_DETACHING);
-    this.media = null;
+    logger.log('detachMedia')
+    this.trigger(HlsEvents.MEDIA_DETACHING)
+    this.media = null
   }
 
   /**
@@ -215,14 +223,14 @@ export default class Hls extends PlayerProxy {
   loadSource(url) {
     url = URLToolkit.buildAbsoluteURL(window.location.href, url, {
       alwaysNormalize: true
-    });
-    logger.log(`loadSource:${url}`);
-    this.url = url;
-    Model.OBJ.url = url;
+    })
+    logger.log(`loadSource:${url}`)
+    this.url = url
+    this.store.setKV(KV.URL, url)
     // when attaching to a source URL, trigger a playlist load
     this.trigger(HlsEvents.MANIFEST_LOADING, {
       url: url
-    });
+    })
   }
 
   /**
@@ -233,28 +241,28 @@ export default class Hls extends PlayerProxy {
    * @default -1 None (from earliest point)
    */
   startLoad(startPosition = -1) {
-    logger.log(`startLoad(${startPosition})`);
+    logger.log(`startLoad(${startPosition})`)
     this.networkControllers.forEach(controller => {
-      controller.startLoad(startPosition);
-    });
+      controller.startLoad(startPosition)
+    })
   }
 
   /**
    * Stop loading of any stream data.
    */
   stopLoad() {
-    logger.log('stopLoad');
+    logger.log('stopLoad')
     this.networkControllers.forEach(controller => {
-      controller.stopLoad();
-    });
+      controller.stopLoad()
+    })
   }
 
   /**
    * Swap through possible audio codecs in the stream (for example to switch from stereo to 5.1)
    */
   swapAudioCodec() {
-    logger.log('swapAudioCodec');
-    this.streamController.swapAudioCodec();
+    logger.log('swapAudioCodec')
+    this.streamController.swapAudioCodec()
   }
 
   /**
@@ -264,17 +272,17 @@ export default class Hls extends PlayerProxy {
    * Automatic recovery of media-errors by this process is configurable.
    */
   recoverMediaError() {
-    logger.log('recoverMediaError');
-    let media = this.media;
-    this.detachMedia();
-    this.attachMedia(media);
+    logger.log('recoverMediaError')
+    let media = this.media
+    this.detachMedia()
+    this.attachMedia(media)
   }
 
   /**
    * @type {QualityLevel[]}
    */
   get levels() {
-    return this.levelController.levels;
+    return this.levelController.levels
   }
 
   /**
@@ -282,7 +290,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get currentLevel() {
-    return this.streamController.currentLevel;
+    return this.streamController.currentLevel
   }
 
   /**
@@ -292,9 +300,9 @@ export default class Hls extends PlayerProxy {
    * @type {number} -1 for automatic level selection
    */
   set currentLevel(newLevel) {
-    logger.log(`set currentLevel:${newLevel}`);
-    this.loadLevel = newLevel;
-    this.streamController.immediateLevelSwitch();
+    logger.log(`set currentLevel:${newLevel}`)
+    this.loadLevel = newLevel
+    this.streamController.immediateLevelSwitch()
   }
 
   /**
@@ -302,7 +310,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get nextLevel() {
-    return this.streamController.nextLevel;
+    return this.streamController.nextLevel
   }
 
   /**
@@ -312,9 +320,9 @@ export default class Hls extends PlayerProxy {
    * @type {number} -1 for automatic level selection
    */
   set nextLevel(newLevel) {
-    logger.log(`set nextLevel:${newLevel}`);
-    this.levelController.manualLevel = newLevel;
-    this.streamController.nextLevelSwitch();
+    logger.log(`set nextLevel:${newLevel}`)
+    this.levelController.manualLevel = newLevel
+    this.streamController.nextLevelSwitch()
   }
 
   /**
@@ -322,7 +330,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get loadLevel() {
-    return this.levelController.level;
+    return this.levelController.level
   }
 
   /**
@@ -332,8 +340,8 @@ export default class Hls extends PlayerProxy {
    * @type {number} newLevel -1 for automatic level selection
    */
   set loadLevel(newLevel) {
-    logger.log(`set loadLevel:${newLevel}`);
-    this.levelController.manualLevel = newLevel;
+    logger.log(`set loadLevel:${newLevel}`)
+    this.levelController.manualLevel = newLevel
   }
 
   /**
@@ -341,7 +349,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get nextLoadLevel() {
-    return this.levelController.nextLoadLevel;
+    return this.levelController.nextLoadLevel
   }
 
   /**
@@ -350,7 +358,7 @@ export default class Hls extends PlayerProxy {
    * @type {number} level
    */
   set nextLoadLevel(level) {
-    this.levelController.nextLoadLevel = level;
+    this.levelController.nextLoadLevel = level
   }
 
   /**
@@ -359,7 +367,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get firstLevel() {
-    return Math.max(this.levelController.firstLevel, this.minAutoLevel);
+    return Math.max(this.levelController.firstLevel, this.minAutoLevel)
   }
 
   /**
@@ -367,8 +375,8 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   set firstLevel(newLevel) {
-    logger.log(`set firstLevel:${newLevel}`);
-    this.levelController.firstLevel = newLevel;
+    logger.log(`set firstLevel:${newLevel}`)
+    this.levelController.firstLevel = newLevel
   }
 
   /**
@@ -379,7 +387,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get startLevel() {
-    return this.levelController.startLevel;
+    return this.levelController.startLevel
   }
 
   /**
@@ -390,14 +398,14 @@ export default class Hls extends PlayerProxy {
    * @type {number} newLevel
    */
   set startLevel(newLevel) {
-    logger.log(`set startLevel:${newLevel}`);
-    const hls = this;
+    logger.log(`set startLevel:${newLevel}`)
+    const hls = this
     // if not in automatic start level detection, ensure startLevel is greater than minAutoLevel
     if (newLevel !== -1) {
-      newLevel = Math.max(newLevel, hls.minAutoLevel);
+      newLevel = Math.max(newLevel, hls.minAutoLevel)
     }
 
-    hls.levelController.startLevel = newLevel;
+    hls.levelController.startLevel = newLevel
   }
 
   /**
@@ -405,7 +413,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get autoLevelCapping() {
-    return this._autoLevelCapping;
+    return this._autoLevelCapping
   }
 
   /**
@@ -413,8 +421,8 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   set autoLevelCapping(newLevel) {
-    logger.log(`set autoLevelCapping:${newLevel}`);
-    this._autoLevelCapping = newLevel;
+    logger.log(`set autoLevelCapping:${newLevel}`)
+    this._autoLevelCapping = newLevel
   }
 
   /**
@@ -422,7 +430,7 @@ export default class Hls extends PlayerProxy {
    * @type {boolean}
    */
   get autoLevelEnabled() {
-    return (this.levelController.manualLevel === -1);
+    return this.levelController.manualLevel === -1
   }
 
   /**
@@ -430,7 +438,7 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get manualLevel() {
-    return this.levelController.manualLevel;
+    return this.levelController.manualLevel
   }
 
   /**
@@ -438,17 +446,19 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get minAutoLevel() {
-    let hls = this,
-      levels = hls.levels,
-      minAutoBitrate = hls.config.minAutoBitrate,
-      len = levels ? levels.length : 0;
+    let hls = this
+    let levels = hls.levels
+    let minAutoBitrate = hls.config.minAutoBitrate
+    let len = levels ? levels.length : 0
     for (let i = 0; i < len; i++) {
-      const levelNextBitrate = levels[i].realBitrate ? Math.max(levels[i].realBitrate, levels[i].bitrate) : levels[i].bitrate;
+      const levelNextBitrate = levels[i].realBitrate
+        ? Math.max(levels[i].realBitrate, levels[i].bitrate)
+        : levels[i].bitrate
       if (levelNextBitrate > minAutoBitrate) {
-        return i;
+        return i
       }
     }
-    return 0;
+    return 0
   }
 
   /**
@@ -456,17 +466,17 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get maxAutoLevel() {
-    const hls = this;
-    const levels = hls.levels;
-    const autoLevelCapping = hls.autoLevelCapping;
-    let maxAutoLevel;
+    const hls = this
+    const levels = hls.levels
+    const autoLevelCapping = hls.autoLevelCapping
+    let maxAutoLevel
     if (autoLevelCapping === -1 && levels && levels.length) {
-      maxAutoLevel = levels.length - 1;
+      maxAutoLevel = levels.length - 1
     } else {
-      maxAutoLevel = autoLevelCapping;
+      maxAutoLevel = autoLevelCapping
     }
 
-    return maxAutoLevel;
+    return maxAutoLevel
   }
 
   /**
@@ -474,9 +484,12 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get nextAutoLevel() {
-    const hls = this;
+    const hls = this
     // ensure next auto level is between  min and max auto level
-    return Math.min(Math.max(hls.abrController.nextAutoLevel, hls.minAutoLevel), hls.maxAutoLevel);
+    return Math.min(
+      Math.max(hls.abrController.nextAutoLevel, hls.minAutoLevel),
+      hls.maxAutoLevel
+    )
   }
 
   /**
@@ -488,16 +501,16 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   set nextAutoLevel(nextLevel) {
-    const hls = this;
-    hls.abrController.nextAutoLevel = Math.max(hls.minAutoLevel, nextLevel);
+    const hls = this
+    hls.abrController.nextAutoLevel = Math.max(hls.minAutoLevel, nextLevel)
   }
 
   /**
    * @type {AudioTrack[]}
    */
   get audioTracks() {
-    const audioTrackController = this.audioTrackController;
-    return audioTrackController ? audioTrackController.audioTracks : [];
+    const audioTrackController = this.audioTrackController
+    return audioTrackController ? audioTrackController.audioTracks : []
   }
 
   /**
@@ -505,8 +518,8 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   get audioTrack() {
-    const audioTrackController = this.audioTrackController;
-    return audioTrackController ? audioTrackController.audioTrack : -1;
+    const audioTrackController = this.audioTrackController
+    return audioTrackController ? audioTrackController.audioTrack : -1
   }
 
   /**
@@ -514,9 +527,9 @@ export default class Hls extends PlayerProxy {
    * @type {number}
    */
   set audioTrack(audioTrackId) {
-    const audioTrackController = this.audioTrackController;
+    const audioTrackController = this.audioTrackController
     if (audioTrackController) {
-      audioTrackController.audioTrack = audioTrackId;
+      audioTrackController.audioTrack = audioTrackId
     }
   }
 
@@ -524,10 +537,10 @@ export default class Hls extends PlayerProxy {
    * @type {Seconds}
    */
   get liveSyncPosition() {
-    return this.streamController.liveSyncPosition;
+    return this.streamController.liveSyncPosition
   }
 
   trigger(event, ...data) {
-    this.emit(event, event, ...data);
+    this.emit(event, event, ...data)
   }
 }

@@ -1,5 +1,5 @@
 import qs from 'qs'
-import Model from '../core/Model'
+import { KV } from '../core/Constant'
 import Plugin from '../core/Plugin'
 
 const LIVE_CODE = {
@@ -183,7 +183,7 @@ export default class Reporter extends Plugin {
       this.info('info', '日志参数列表:' + JSON.stringify(param))
       this.info('info', '日志url:' + url)
       xhr.send()
-      this.player.emit('report', url)
+      this.player.emit2All('report', url)
     } else {
       this.info(
         'info',
@@ -229,13 +229,6 @@ export default class Reporter extends Plugin {
       obj.tt = this._playInfoDuration
       obj.bc = this._lagCount
 
-      console.warn(
-        '发送了',
-        'duration:',
-        this._playInfoDuration,
-        ' ,now: ',
-        Date.now()
-      )
       this.fire(LIVE_CODE.Info, obj)
       this._bt = 0
     } else {
@@ -291,14 +284,6 @@ export default class Reporter extends Plugin {
     if (this.running) {
       this.stop()
     }
-
-    console.warn(
-      '暂停了',
-      'duration:',
-      this._playInfoDuration,
-      ' ,now: ',
-      Date.now()
-    )
   }
 
   __ended(e) {
@@ -308,14 +293,6 @@ export default class Reporter extends Plugin {
 
   __lag(e) {
     this._lagCount += 1
-    // this.info('info', `接收到卡顿时间，开始计数，当前卡顿数量${this._lagCount}`)
-    console.warn(
-      '4秒卡顿了',
-      'duration:',
-      this._playInfoDuration,
-      ' ,now: ',
-      Date.now()
-    )
 
     // 一次卡顿 增加 4秒卡顿时长
     this._bt += +this._allConfig.lagThreshold * 1000
@@ -325,13 +302,6 @@ export default class Reporter extends Plugin {
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`)
     this._bt += t
-    console.warn(
-      '卡顿恢复了',
-      'duration:',
-      this._playInfoDuration,
-      ' ,now: ',
-      Date.now()
-    )
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
     this._playTimeInterval = setInterval(
@@ -342,23 +312,9 @@ export default class Reporter extends Plugin {
 
   __bufferEmpty() {
     clearInterval(this._playTimeInterval)
-    console.warn(
-      'buffer 空了',
-      'duration:',
-      this._playInfoDuration,
-      ' ,now: ',
-      Date.now()
-    )
   }
 
   __bufferFull(t) {
-    console.warn(
-      'buffer 满了',
-      'duration:',
-      this._playInfoDuration,
-      ' ,now: ',
-      Date.now()
-    )
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
     this._playTimeInterval = setInterval(
@@ -407,7 +363,8 @@ export default class Reporter extends Plugin {
    * @returns Location 对象
    */
   getURLInfo() {
-    let url = Model.OBJ.url
+    const { store } = this.player
+    let url = store.getKV(KV.URL)
     if (!this.el) {
       this.el = document.createElement('a')
     }
@@ -431,6 +388,5 @@ export default class Reporter extends Plugin {
     this._playInfoDuration += elapsedTime
     this._playHeartbeatDuration += elapsedTime
     this._lastCalcPlayTime = Date.now()
-    console.error('执行了calcPlayTime' + this._playInfoDuration)
   }
 }

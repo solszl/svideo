@@ -1,6 +1,6 @@
 import PlayerProxy from '../../PlayerProxy'
+import { KV } from './../../core/Constant'
 import FetchSize from './utils/fetchSize'
-import Model from '../../core/Model'
 
 /**
  * 原生播放器封装
@@ -13,17 +13,17 @@ import Model from '../../core/Model'
 export default class NativePlayer extends PlayerProxy {
   constructor(opt = {}) {
     super(opt)
-    this.fileSize = null
+    this.fetchSize = null
     this.playedTime = 0
   }
 
   initVideo(option = {}) {
     super.initVideo(option)
-    this.fileSize = new FetchSize()
+    this.fetchSize = new FetchSize(this.store)
   }
 
   get downloadSize() {
-    if (Model.OBJ.fileSize === -1) {
+    if (!this.store.getKV(KV.FileSize)) {
       return -1
     }
 
@@ -35,18 +35,21 @@ export default class NativePlayer extends PlayerProxy {
     let duration = this.duration
     let ranges = this.buffered
     let totalRangeTime = 0
-    let fileSize = Model.OBJ.fileSize
+    let fileSize = this.store.getKV(KV.FileSize)
 
     for (let i = 0; i < ranges.length; i += 1) {
       totalRangeTime += ranges.end(i) - ranges.start(i)
     }
 
-    return fileSize / duration * totalRangeTime
+    return (fileSize / duration) * totalRangeTime
   }
 
   get estimateNetSpeed() {
     // TODO: 实现默认网速预估算法
-    this.info('warn', 'unrealized get native player estimate net speed, return default speed 500KBps')
+    this.info(
+      'warn',
+      'unrealized get native player estimate net speed, return default speed 500KBps'
+    )
     return 500
   }
 
@@ -55,7 +58,7 @@ export default class NativePlayer extends PlayerProxy {
     // 因为点播每次请求的mp4需要添加start参数， 故导致每次请求的文件大小均不同
     // let url = 'http://t-alioss01.e.vhall.com/vhallcoop/demand/e983faee411fcc98617cd0eeff0920b2/945218473/e983faee411fcc98617cd0eeff0920b2_360p.mp4?token=alibaba'
     this.playedTime = this.currentTime
-    this.fileSize.start(val)
+    this.fetchSize.start(val)
     super.src = val
 
     // 切线过后，设置当前播放时间

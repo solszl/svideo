@@ -1,9 +1,5 @@
 import Plugin from '../core/Plugin'
-import {
-  removeFromParent,
-  createElement,
-  appendChild
-} from '../utils/Dom'
+import { appendChild, createElement, removeFromParent } from '../utils/Dom'
 import BarrageCore from './barrage/BarrageCore'
 
 /**
@@ -73,7 +69,7 @@ export default class Barrage extends Plugin {
     })
 
     this.cvs.style.position = 'absolute'
-    const parent = this.player.root
+    const parent = this.player._root
     this.cvs.setAttribute('width', parent.clientWidth)
     this.cvs.setAttribute('height', parent.clientHeight)
     this.cvs.style.pointerEvents = 'none'
@@ -91,10 +87,10 @@ export default class Barrage extends Plugin {
    * @memberof Barrage
    */
   _defineMethods() {
-    this.player.__proto__.addBarrage = this._addBarrage.bind(this)
-    this.player.__proto__.clearBarrage = this._clearBarrage.bind(this)
-    this.player.__proto__.openBarrage = this._openBarrage.bind(this)
-    this.player.__proto__.closeBarrage = this._closeBarrage.bind(this)
+    this.player.addBarrage = this._addBarrage.bind(this)
+    this.player.clearBarrage = this._clearBarrage.bind(this)
+    this.player.openBarrage = this._openBarrage.bind(this)
+    this.player.closeBarrage = this._closeBarrage.bind(this)
     let core = this._core
     // Object.defineProperty(this.player, 'barrageFPS', {
     //   get() {
@@ -150,10 +146,10 @@ export default class Barrage extends Plugin {
     for (const key in properties) {
       Object.defineProperty(this.player, key, {
         configurable: true,
-        get: function () {
+        get: function() {
           return properties[key]
         },
-        set: function (newValue) {
+        set: function(newValue) {
           properties[key] = newValue
           const prop = key.toLocaleLowerCase().replace('barrage', '')
           core[prop] = newValue
@@ -188,7 +184,7 @@ export default class Barrage extends Plugin {
     this.info('info', '启动弹幕')
     this._isOpen = true
     this._core.start()
-    this.player.emit('openbarrage')
+    this.player.emit2All('openbarrage')
   }
   _closeBarrage() {
     this.info('info', '关闭弹幕')
@@ -196,13 +192,13 @@ export default class Barrage extends Plugin {
     let core = this._core
     core.stop()
     core.clear()
-    this.player.emit('closebarrage')
+    this.player.emit2All('closebarrage')
   }
 
   _clearBarrage() {
     this.info('info', '清空弹幕')
     this._core.clear()
-    this.player.emit('clearbarrage')
+    this.player.emit2All('clearbarrage')
   }
 
   _play() {
