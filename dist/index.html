@@ -191,6 +191,7 @@
       let schedulerConfig = document.getElementById('tiSchedulerConfig').value;
       let watermarkConfig = document.getElementById('tiWatermarkConfig').value;
       let barrageConfig = document.getElementById('tiBarrageConfig').value;
+      let marqueeConfig = document.getElementById('tiMarqueeConfig').value;
 
       let isLive = document.getElementById('tiIsLive').checked;
       v.init({
@@ -212,7 +213,8 @@
         plugin_reporter: reportConfig,
         plugin_scheduler: schedulerConfig,
         plugin_watermark: watermarkConfig,
-        plugin_barrage: barrageConfig
+        plugin_barrage: barrageConfig,
+        plugin_marquee: marqueeConfig
       })
 
       // v2.init({
@@ -374,6 +376,10 @@
       <span>弹幕配置</span>
       <input id="tiBarrageConfig" class="initInput" type="text"
         value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
+      <br>
+      <span>跑马灯配置</span>
+      <input id="tiMarqueeConfig" class="initInput" type="text"
+       value='{"enable":true,"text":"版权所有，盗版必究","alpha":100,"size":20,"color":"#ff8d41","interval":20,"speed":10000,"position":1}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text"

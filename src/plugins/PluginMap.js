@@ -25,7 +25,6 @@ PluginMap.set(Fullscreen.type, Fullscreen)
 PluginMap.set(Capture.type, Capture)
 PluginMap.set(PlaybackRate.type, PlaybackRate)
 // PluginMap.set(Keyboard.type, Keyboard);
-PluginMap.set(Watermark.type, Watermark)
 PluginMap.set(Barrage.type, Barrage)
 
 if (process.env.PF === 'vhall') {
@@ -39,6 +38,7 @@ if (process.env.PF === 'vhall') {
   PluginMap.set(Scheduler.type, Scheduler)
   PluginMap.set(Switcher.type, Switcher)
   PluginMap.set(Marquee.type, Marquee)
+  PluginMap.set(Watermark.type, Watermark)
 }
 
 export default PluginMap
