@@ -4,6 +4,8 @@
     "Kbps",
     "Vhall",
     "demux",
-    "overrided"
+    "overrided",
+    "vfid",
+    "vtype"
   ]
 }

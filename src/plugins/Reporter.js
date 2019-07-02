@@ -67,21 +67,22 @@ export default class Reporter extends Plugin {
     this.basicInfo = {}
     this.basicInfo.pf = 7
     this.basicInfo.ua = navigator.userAgent
-    this.basicInfo.p = reporterCfg.webinar_id
-    this.basicInfo.aid = reporterCfg.webinar_id
-    this.basicInfo.uid = reporterCfg.uid
-    this.basicInfo.s = reporterCfg.session_id
-    this.basicInfo.vid = reporterCfg.vid
-    this.basicInfo.vfid = reporterCfg.vfid
-    this.basicInfo.ndi = reporterCfg.ndi
-    this.basicInfo.guid = reporterCfg.guid
-    this.basicInfo.vtype = reporterCfg.vtype
-    this.basicInfo.topic = reporterCfg.topic
-    this.basicInfo.app_id = reporterCfg.app_id
-    this.basicInfo.biz_role = reporterCfg.biz_role
-    this.basicInfo.flow_type = reporterCfg.flow_type
-    this.basicInfo.biz_id = reporterCfg.biz_id
-    this.basicInfo.biz_des01 = reporterCfg.biz_des01
+    this.basicInfo.p = reporterCfg.webinar_id || ''
+    this.basicInfo.aid = reporterCfg.webinar_id || ''
+    this.basicInfo.uid = reporterCfg.uid || ''
+    this.basicInfo.s = reporterCfg.session_id || ''
+    this.basicInfo.vid = reporterCfg.vid || ''
+    this.basicInfo.vfid = reporterCfg.vfid || ''
+    this.basicInfo.ndi = reporterCfg.ndi || ''
+    this.basicInfo.guid = reporterCfg.guid || ''
+    this.basicInfo.vtype = reporterCfg.vtype || ''
+    this.basicInfo.topic = reporterCfg.topic || ''
+    this.basicInfo.app_id = reporterCfg.app_id || ''
+    this.basicInfo.biz_role = reporterCfg.biz_role || ''
+    this.basicInfo.flow_type = reporterCfg.flow_type || ''
+    this.basicInfo.biz_id = reporterCfg.biz_id || ''
+    this.basicInfo.biz_des01 = reporterCfg.biz_des01 || ''
+    this.basicInfo.biz_des02 = reporterCfg.biz_des02 || ''
     this.basicInfo.bu = reporterCfg.bu
     this.basicInfo.ver = this.player.version
     this.basicInfo.tf = 0
@@ -128,17 +129,11 @@ export default class Reporter extends Plugin {
     this._playHeartbeatDuration = 0
     this._playInfoDuration = 0
     clearInterval(this._infoPackInterval)
-    this._infoPackInterval = setInterval(
-      this._infoPack.bind(this),
-      INFO_PACK_INTERVAL
-    )
+    this._infoPackInterval = setInterval(this._infoPack.bind(this), INFO_PACK_INTERVAL)
 
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
-    this._playTimeInterval = setInterval(
-      this._calcPlayTime.bind(this),
-      CALC_PLAY_TIME_INTERVAL
-    )
+    this._playTimeInterval = setInterval(this._calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
   }
 
   stop() {
@@ -185,10 +180,7 @@ export default class Reporter extends Plugin {
       xhr.send()
       this.player.emit2All('report', url)
     } else {
-      this.info(
-        'info',
-        `日志上报配置文件[enable:false],不进行日志上报, code:${code}`
-      )
+      this.info('info', `日志上报配置文件[enable:false],不进行日志上报, code:${code}`)
       this.info('info', `${JSON.stringify(obj)}`)
     }
   }
@@ -200,8 +192,7 @@ export default class Reporter extends Plugin {
 
     let xhr = this._xhr
     xhr.timeout = 5000
-    xhr.onerror = e =>
-      this.info('error', `could not report, code:${e.code}, msg: ${e.message}`)
+    xhr.onerror = e => this.info('error', `could not report, code:${e.code}, msg: ${e.message}`)
     xhr.ontimeout = e => this.info('error', `report timeout, code:${e.code}`)
   }
 
@@ -304,10 +295,7 @@ export default class Reporter extends Plugin {
     this._bt += t
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
-    this._playTimeInterval = setInterval(
-      this._calcPlayTime.bind(this),
-      CALC_PLAY_TIME_INTERVAL
-    )
+    this._playTimeInterval = setInterval(this._calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
   }
 
   __bufferEmpty() {
@@ -317,10 +305,7 @@ export default class Reporter extends Plugin {
   __bufferFull(t) {
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
-    this._playTimeInterval = setInterval(
-      this._calcPlayTime.bind(this),
-      CALC_PLAY_TIME_INTERVAL
-    )
+    this._playTimeInterval = setInterval(this._calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
   }
 
   __ready() {
