@@ -1,0 +1,20 @@
+
+2.0.2
+  New Features:
+    1: 增加跑马灯功能
+    2：平台业务-流监控增加app_type，调度时用
+    3：平台业务-日志上报，增加字段
+  Bug fixes:
+  Docs:
+
+
+template:
+// ------------------------
+[Version]
+  New Features:
+  Bug fixes:
+  Docs:
+// ------------------------
+
+
+

@@ -5,7 +5,7 @@ import Token from './Token'
 /**
  *
  * Created Date: 2019-05-30, 13:58:54 (zhenliang.sun)
- * Last Modified: 2019-05-30, 16:30:58 (zhenliang.sun)
+ * Last Modified: 2019-07-02, 11:03:29 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -38,6 +38,7 @@ export default class LiveScheduler extends AbstractScheduler {
     obj.uid = this.option['uid']
     obj.bu = this.option['bu']
     obj.rand = this.getRandom()
+    obj.app_type = this.option['app_type'] || 0
     let queryString = qs.stringify(obj)
     let p = window.location.protocol
     let domain = this.option['url']
@@ -98,9 +99,7 @@ export default class LiveScheduler extends AbstractScheduler {
 
     this.info(
       'info',
-      `整理直播清晰度完成,共有${defs.length}条线路，每条线路有${
-        defs.length > 0 ? defs[0].length : 0
-      }个清晰度`
+      `整理直播清晰度完成,共有${defs.length}条线路，每条线路有${defs.length > 0 ? defs[0].length : 0}个清晰度`
     )
 
     this._defineProperty(defs)
