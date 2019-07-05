@@ -390,6 +390,14 @@ class PlayerProxy extends Component {
     this.muted = this._volume === 0
   }
 
+  get controls() {
+    return this.video.controls
+  }
+
+  set controls(val) {
+    this.video.controls = val
+  }
+
   /**
    * 获取当前seek状态，是否跳转中
    *
@@ -505,7 +513,7 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 500 && !isNaN(this.duration)) {
+    if (now - this._lastEmitTimeupdate > 200 && !isNaN(this.duration)) {
       this._lastEmitTimeupdate = now
       this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
