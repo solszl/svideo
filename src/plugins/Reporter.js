@@ -328,7 +328,7 @@ export default class Reporter extends Plugin {
     if (e.oldUrl === '') {
       return
     }
-    console.log('换线啦', e)
+    this.info('info', `换线了，${e}`)
     clearInterval(this._infoPackInterval)
     clearInterval(this._playTimeInterval)
     this.running = false

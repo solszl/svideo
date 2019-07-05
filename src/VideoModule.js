@@ -6,6 +6,7 @@ import NativePlayer from './player/native/NativePlayer'
 import PlayerProxy from './PlayerProxy'
 import PluginMap from './plugins/PluginMap'
 import { PlayerEvent } from './PlayerEvents'
+import Log from './utils/Log'
 
 /**
  * 播放器模块
@@ -20,6 +21,7 @@ export default class VideoModule extends PlayerProxy {
     this.player = null
     this._config = {}
     this.pluginInstance = []
+    Log.OBJ.level = process.env.LOG_LEVEL
     // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
     // return new Proxy(this, {
     //   get: function (target, prop, receiver) {

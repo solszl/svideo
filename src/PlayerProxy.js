@@ -390,6 +390,14 @@ class PlayerProxy extends Component {
     this.muted = this._volume === 0
   }
 
+  get controls() {
+    return this.video.controls
+  }
+
+  set controls(val) {
+    this.video.controls = val
+  }
+
   /**
    * 获取当前seek状态，是否跳转中
    *

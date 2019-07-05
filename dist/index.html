@@ -242,6 +242,10 @@
       initEvents();
     }
 
+    function controlsBar() {
+      v.controls = !v.controls
+    }
+
     function initEvents() {
       v.on('fullscreenchanged', state => {
         outputInfo(`全屏状态修改为 ${state}`)
@@ -367,7 +371,7 @@
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"616415736","uid":"162647881","bu":0,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
+        value='{"url":"//t-mss.e.vhall.com","webinar_id":"433529230","uid":"162647881","bu":0,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -386,6 +390,7 @@
         value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
       <br>
       <button onclick="initPlayer();">确认</button>
+      <button onclick="controlsBar();">控制条</button>
     </div>
   </div>
   <hr />
