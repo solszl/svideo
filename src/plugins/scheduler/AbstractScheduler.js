@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-05-30, 17:48:08 (zhenliang.sun)
+ * Last Modified: 2019-07-10, 21:51:04 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -88,17 +88,13 @@ export default class AbstractScheduler {
 
     let defaultDef = this.option['defaultDef']
     // 备选方案
-    let alternativeDef = currentDefinitionList.length
-      ? currentDefinitionList[0]
-      : null
+    let alternativeDef = currentDefinitionList.length ? currentDefinitionList[0] : null
     // 找到默认清晰度
     let defaultDefList = currentDefinitionList.filter(item => {
       return item.def === defaultDef
     })
 
-    let currentDefinition = defaultDefList.length
-      ? defaultDefList[0]
-      : alternativeDef
+    let currentDefinition = defaultDefList.length ? defaultDefList[0] : alternativeDef
 
     let properties = {
       currentDefinitionListIndex,
@@ -138,6 +134,7 @@ export default class AbstractScheduler {
     })
 
     this.player.emit2All(PlayerEvent.SCHEDULER_COMPLETE)
+    this.player.emit2All(PlayerEvent.READY)
   }
 
   __innerXHRDestroy() {
