@@ -57,7 +57,6 @@ export default class VideoModule extends PlayerProxy {
     this._createPlayer()
     this.initPluginListener()
     this._pluginCall()
-    this.emit('ready')
   }
 
   _configMapping(option = {}) {

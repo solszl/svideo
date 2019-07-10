@@ -65,7 +65,7 @@ class PlayerProxy extends Component {
     parent.appendChild(this.video)
     parent.style.position = 'relative'
 
-    this.autoplay = config.autoplay || true
+    this.autoplay = config.autoplay || false
     this._isLive = config['isLive']
   }
 

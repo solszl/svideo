@@ -330,6 +330,10 @@
         outputInfo(`卡顿恢复了，耗时${t}`);
       });
 
+      v.on('ready', e=> {
+        v.play()
+      })
+
       // v.on('tencentInfo', e => {
       //   outputInfo(`腾讯信息，是否卡顿${e}`);
       // })
@@ -371,7 +375,7 @@
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"433529230","uid":"162647881","bu":0,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
+        value='{"url":"//t-mss.e.vhall.com","webinar_id":"lss_e9623584","uid":"0e8cff07_77","bu":1,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -397,11 +401,11 @@
   <div>
     <span>播放</span>
     <select id="playerType">
-      <option value="flv">FLV</option>
       <option value="hls">HLS</option>
+      <option value="flv">FLV</option>
       <option value="native">MP4等</option>
     </select>
-    <span>直播</span><input id="tiIsLive" type="checkbox" >
+    <span>直播</span><input id="tiIsLive" type="checkbox" checked >
     <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com/vhallyun/vhallrecord/lss_7caae78d/20181029165815_ec824672/record.m3u8" placeholder="视频地址">
     <!-- <button onclick="playSrcHandler()">播放</button> -->
   </div>
