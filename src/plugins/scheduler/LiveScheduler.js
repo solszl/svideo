@@ -43,6 +43,9 @@ export default class LiveScheduler extends AbstractScheduler {
     let p = window.location.protocol
     let domain = this.option['url']
     let url = `${p}${domain}/${LIVE_API}?${queryString}`
+    if (domain.startsWith('http')) {
+      url = `${domain}/${LIVE_API}?${queryString}`
+    }
     this.info('info', `Live scheduler url:${url}`)
     return url
   }
