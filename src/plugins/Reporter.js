@@ -171,7 +171,7 @@ export default class Reporter extends Plugin {
     }
 
     let queryString = qs.stringify(param)
-    if (this._domain.startWith('http')) {
+    if (this._domain.startsWith('http')) {
       url = `${this._domain}?${queryString}`
     } else {
       url = `${p}${this._domain}?${queryString}`
