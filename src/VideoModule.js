@@ -181,8 +181,8 @@ export default class VideoModule extends PlayerProxy {
 
   setSize(w, h) {
     const parent = this.player.root
-    parent.style.width = w
-    parent.style.height = h
+    parent.style.width = w + 'px'
+    parent.style.height = h + 'px'
     this.pluginInstance.forEach(plugin => {
       plugin.setSize(w, h)
     })
