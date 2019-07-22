@@ -7,6 +7,7 @@ import PlayerProxy from './PlayerProxy'
 import PluginMap from './plugins/PluginMap'
 import { PlayerEvent } from './PlayerEvents'
 import Log from './utils/Log'
+import { mixin } from './utils/util'
 
 /**
  * 播放器模块

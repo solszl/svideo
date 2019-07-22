@@ -32,12 +32,7 @@ class VhallController extends EventHandler {
     if (!frag) {
       return
     }
-    this.info(
-      'info',
-      `编号：${frag.sn}加载完成,url:${frag.relurl},size:${
-        frag.loaded
-      }, duration:${frag.duration}`
-    )
+    this.info('info', `编号：${frag.sn}加载完成,url:${frag.relurl},size:${frag.loaded}, duration:${frag.duration}`)
     if (!this.store.getKV(KV.DownloadSize)) {
       this.store.setKV(KV.DownloadSize, 0)
     }
@@ -64,8 +59,9 @@ class VhallController extends EventHandler {
       })
     )
 
+    let isOver = this.hls.isOver
     // m3u8文件加载失败的话，需要进行切线处理
-    if (e.details === 'manifestLoadError') {
+    if (e.details === 'manifestLoadError' && !isOver) {
       clearTimeout(this._timeout)
       this._timeout = setTimeout(() => {
         this.hls.emit2All(PlayerEvent.CHANGE_LINE)

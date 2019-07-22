@@ -207,6 +207,7 @@ export default class Reporter extends Plugin {
     this.player.on('error', this.__error.bind(this))
     this.player.on('srcchange', this.__srcChange.bind(this))
     this.player.once('ready', this.__ready.bind(this))
+    this.player.on('over', this.__over.bind(this))
   }
 
   _infoPack() {
@@ -280,6 +281,12 @@ export default class Reporter extends Plugin {
   __ended(e) {
     // 播放完毕的时候，就不在进行心跳了
     this.stop()
+  }
+
+  __over(b) {
+    if (b) {
+      this.stop()
+    }
   }
 
   __lag(e) {

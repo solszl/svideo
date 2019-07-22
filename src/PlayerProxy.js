@@ -19,6 +19,7 @@ class PlayerProxy extends Component {
     this._src = ''
     this._isLive = false
     this._isPlaying = false
+    this._isOver = false
     this.video = null
     this.store = new Store()
     this.reset()
@@ -374,10 +375,7 @@ class PlayerProxy extends Component {
     v = +v
 
     if (v > 1 || v < 0) {
-      this.info(
-        'warn',
-        `volume value range should be between 0 to 1, now you set ${v}`
-      )
+      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`)
       v = Math.min(Math.max(0, v), 1)
     }
 
@@ -396,6 +394,15 @@ class PlayerProxy extends Component {
 
   set controls(val) {
     this.video.controls = val
+  }
+
+  set isOver(val) {
+    this._isOver = val
+    this.emit2All('over', val)
+  }
+
+  get isOver() {
+    return this._isOver
   }
 
   /**
@@ -513,7 +520,7 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 200 && !isNaN(this.duration)) {
+    if (now - this._lastEmitTimeupdate > 100 && !isNaN(this.duration)) {
       this._lastEmitTimeupdate = now
       this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
