@@ -8,6 +8,9 @@ import PluginMap from './plugins/PluginMap'
 import { PlayerEvent } from './PlayerEvents'
 import Log from './utils/Log'
 import { mixin } from './utils/util'
+import PlayerAPI from './api/PlayerAPI'
+import CommonAPI from './api/CommonAPI'
+import Store from './core/Store'
 
 /**
  * 播放器模块
@@ -16,11 +19,12 @@ import { mixin } from './utils/util'
  * @class VideoModule
  * @extends {Component}
  */
-export default class VideoModule extends PlayerProxy {
+export default class VideoModule extends Component {
   constructor() {
     super()
     this.player = null
     this._config = {}
+    this.store = new Store()
     this.pluginInstance = []
     Log.OBJ.level = process.env.LOG_LEVEL
     // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
@@ -131,7 +135,10 @@ export default class VideoModule extends PlayerProxy {
     let player = this.player
     player.initVideo(this._config)
     player._owner = this
-    Object.assign(this, player)
+    this.player.setStore(this.store)
+    mixin(this, PlayerAPI, this.player)
+    mixin(this, CommonAPI, this.store)
+    // Object.assign(this, player)
     this.player.initEvents()
     // player.loadSource(this._config.url);
     // player.attachMedia(player.video);
@@ -197,7 +204,7 @@ export default class VideoModule extends PlayerProxy {
       let url = `${def.url}?token=${token}`
       // let url = `${def.url}?token=alibaba`;
       self._config.url = url
-      this.player.src = url
+      this.player.setSrc(url)
     })
   }
 

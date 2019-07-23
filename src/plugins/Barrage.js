@@ -69,7 +69,7 @@ export default class Barrage extends Plugin {
     })
 
     this.cvs.style.position = 'absolute'
-    const parent = this.player._root
+    const parent = this.player.getRoot()
     this.cvs.setAttribute('width', parent.clientWidth)
     this.cvs.setAttribute('height', parent.clientHeight)
     this.cvs.style.pointerEvents = 'none'

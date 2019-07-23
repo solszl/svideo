@@ -15,17 +15,17 @@ export default class HlsPlayer extends Hls {
     this.playedTime = 0
   }
 
-  get downloadSize() {
+  getDownloadSize() {
     return this.store.getKV(KV.DownloadSize)
   }
 
-  get estimateNetSpeed() {
+  getEstimateNetSpeed() {
     return this.abrController.estimateNetSpeed
   }
 
-  set src(val) {
+  setSrc(val) {
     this.playedTime = this.currentTime
-    super.src = val
+    super.setSrc(val)
     // 停止当前的加载工作。准备切换线路
     this.networkControllers.forEach(component => {
       component.stopLoad()
@@ -41,9 +41,5 @@ export default class HlsPlayer extends Hls {
         this.currentTime = this.playedTime
       }
     })
-  }
-
-  get src() {
-    return super.src
   }
 }
