@@ -1,3 +1,8 @@
+2.1.0
+  New Features:
+    1: 修改播放器架构
+  Bug fixes:
+  Docs:
 
 2.0.2
   New Features:
