@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-23, 15:08:25 (zhenliang.sun)
- * Last Modified: 2019-07-23, 19:53:17 (zhenliang.sun)
+ * Last Modified: 2019-07-23, 20:45:04 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -18,5 +18,14 @@
 export default class CommonAPI {
   constructor(store) {
     this.store = store
+    this._isOver = false
+  }
+
+  setIsOver(val) {
+    this._isOver = val
+  }
+
+  getIsOver() {
+    return this._isOver
   }
 }

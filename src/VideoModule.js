@@ -119,11 +119,15 @@ export default class VideoModule extends Component {
   }
 
   _createFLVPlayer() {
+    this._config.store = this.store
     this.player = new FlvPlayer(this._config, this._config)
     let player = this.player
     player.initVideo(this._config)
     player._owner = this
-    Object.assign(this, player)
+    // Object.assign(this, player)
+    this.player.setStore(this.store)
+    mixin(this, PlayerAPI, this.player)
+    mixin(this, CommonAPI, this.store)
     this.player.initEvents()
     player.attachMediaElement(player.video)
     // player.load();
@@ -151,9 +155,13 @@ export default class VideoModule extends Component {
   _createNativePlayer() {
     this.player = new NativePlayer()
     let player = this.player
+    this._config.store = this.store
     player.initVideo(this._config)
     player._owner = this
-    Object.assign(this, player)
+    this.player.setStore(this.store)
+    mixin(this, PlayerAPI, this.player)
+    mixin(this, CommonAPI, this.store)
+    // Object.assign(this, player)
     this.player.initEvents()
     // player.src = this._config.url;
     // this.play();
