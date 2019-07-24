@@ -5,6 +5,8 @@
     1: 修复移动端全屏不生效问题
     2: 修复可能重复加载流问题
     3: 修复闪现后停止播放的问题
+  Improves:
+    1: 修改默认卡顿切线的时间阈值 8 -> 12
   Docs:
 
 2.0.2
@@ -22,6 +24,7 @@ template:
 [Version]
   New Features:
   Bug fixes:
+  Improves:
   Docs:
 // ------------------------
 

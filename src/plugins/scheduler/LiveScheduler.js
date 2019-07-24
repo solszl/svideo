@@ -5,7 +5,7 @@ import Token from './Token'
 /**
  *
  * Created Date: 2019-05-30, 13:58:54 (zhenliang.sun)
- * Last Modified: 2019-07-02, 11:03:29 (zhenliang.sun)
+ * Last Modified: 2019-07-24, 16:15:13 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -74,17 +74,20 @@ export default class LiveScheduler extends AbstractScheduler {
       this.info('warn', `暂时不支持${this.type}类型的直播`)
       return
     }
+
     let allSupportDef = Object.keys(obj)
     if (allSupportDef.length < 1) {
       this.info('error', '无清晰度可用')
       return
     }
+
     let lineCount = obj[allSupportDef[0]].length
     let defs = []
     while (lineCount) {
       defs.push([])
       lineCount -= 1
     }
+
     Object.keys(obj).forEach(item => {
       Object.values(obj[item]).forEach((subItem, index) => {
         let subDef = {

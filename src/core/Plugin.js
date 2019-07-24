@@ -1,4 +1,4 @@
-import Component from './Component';
+import Component from './Component'
 
 /**
  * 插件基类，所有的功能插件均继承自Plugin
@@ -10,12 +10,12 @@ import Component from './Component';
  */
 export default class Plugin extends Component {
   constructor() {
-    super();
-    this._player = null;
+    super()
+    this._player = null
   }
 
   /**
-   * 根据配置进行初始化 
+   * 根据配置进行初始化
    *
    * @param {*} [opts={}]
    * @memberof Plugin
@@ -25,16 +25,16 @@ export default class Plugin extends Component {
   setSize(w, h) {}
 
   get player() {
-    return this._player;
+    return this._player
   }
 
   set player(p) {
-    this._player = p;
+    this._player = p
   }
 
   async initComplete() {}
 
   static get type() {
-    return 'BASE_PLUGIN';
+    return 'BASE_PLUGIN'
   }
 }

@@ -40,8 +40,7 @@ export default class VodScheduler extends AbstractScheduler {
     obj.uri = this.uri
     obj.bu = this.option['bu']
     let qualities = this.option['quality'] || ['same']
-    let str =
-      qualities.length === 0 ? '["same"]' : `["${qualities.join('","')}"]`
+    let str = qualities.length === 0 ? '["same"]' : `["${qualities.join('","')}"]`
     obj.quality = str // 拼接的数据为 &quality=["same",360p",480p"]
     let queryString = qs.stringify(obj)
     let p = window.location.protocol
@@ -109,12 +108,7 @@ export default class VodScheduler extends AbstractScheduler {
       })
     })
 
-    this.info(
-      'info',
-      `整理点播清晰度完成,有${defs.length}条线路, ${
-        defs.length > 0 ? defs[0].length : 0
-      }个清晰度`
-    )
+    this.info('info', `整理点播清晰度完成,有${defs.length}条线路, ${defs.length > 0 ? defs[0].length : 0}个清晰度`)
 
     this._defineProperty(defs)
   }

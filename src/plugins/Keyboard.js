@@ -32,26 +32,33 @@ export default class Keyboard extends Plugin {
           return
         }
         self.emit('focus')
+        let volume = p.getVolume()
+        let currentTime = p.getCurrentTime()
+
         switch (e.keyCode) {
         case 32:
           // 播放、暂停
-          p.isPaused ? p.play() : p.pause()
+          p.getIsPaused() ? p.play() : p.pause()
           break
         case 37:
           // 按左 减10秒
-          p.currentTime -= 10
+          currentTime -= 10
+          p.setCurrentTime(currentTime)
           break
         case 39:
           // 按右 增加10秒
-          p.currentTime += 10
+          currentTime += 10
+          p.setCurrentTime(currentTime)
           break
         case 38:
           // 按上 声音增加5%
-          p.volume += 0.05
+          volume += 0.05
+          p.setVolume(volume)
           break
         case 40:
           // 按下 声音减少5%
-          p.volume -= 0.05
+          volume -= 0.05
+          p.setVolume(volume)
           break
         default:
           this.info('error', `unrecognized keyCode: ${e.keyCode}`)

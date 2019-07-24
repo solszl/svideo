@@ -29,9 +29,9 @@ PluginMap.set(Barrage.type, Barrage)
 
 if (process.env.PF === 'vhall') {
   Log.OBJ.info(
-    `注册Vhall平台插件：${Lag.type},${Reporter.type},${Scheduler.type},${
-      Switcher.type
-    },${Marquee.type}`
+    `注册Vhall平台插件：${Lag.type},${Reporter.type},${Scheduler.type},${Switcher.type},${Marquee.type},${
+      Watermark.type
+    }`
   )
   PluginMap.set(Lag.type, Lag)
   PluginMap.set(Reporter.type, Reporter)

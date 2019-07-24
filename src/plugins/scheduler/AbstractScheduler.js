@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-07-10, 21:51:04 (zhenliang.sun)
+ * Last Modified: 2019-07-24, 16:10:54 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -125,10 +125,19 @@ export default class AbstractScheduler {
           oldValue: currentDefinition,
           newValue
         }
+        let { url: oldURL } = currentDefinition
+        let { url: newURL } = newValue
+        if (oldURL === newURL) {
+          console.error('新旧清晰度相同，返回')
+          return
+        }
+        console.error('切换清晰度')
+        console.error(`old: ${currentDefinition.url}`)
+        console.error(`new: ${newValue.url}`)
         currentDefinition = newValue
         let token = this.newToken
         let url = `${newValue.url}?token=${token}`
-        this.player.src = url
+        this.player.setSrc(url)
         this.player.emit2All(PlayerEvent.DEFINITION_CHANGED, e)
       }
     })
