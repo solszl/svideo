@@ -41,17 +41,11 @@ export default class Fullscreen extends Plugin {
     this.player.exitFullscreen = this.exitFullscreen.bind(this)
 
     // 监听全屏变化
-    ;[
-      'fullscreenchange',
-      'webkitfullscreenchange',
-      'mozfullscreenchange',
-      'MSFullscreenChange'
-    ].forEach(item => {
+    ;['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(item => {
       document.addEventListener(item, e => {
         // console.log(document.webkitFullscreenElement, e.target);
         this._fullscreenTarget = e.target
-        self._displayState =
-          this.isFullscreen === true ? 'fullscreen' : 'normal'
+        self._displayState = this.isFullscreen === true ? 'fullscreen' : 'normal'
         self.player.emit2All('fullscreenchanged', self._displayState)
       })
     })
@@ -64,7 +58,7 @@ export default class Fullscreen extends Plugin {
    */
   enterFullscreen() {
     // H5下 全屏 el 需要为video？
-    let el = this.player.root
+    let el = this.player.getRoot()
     if (el.webkitEnterFullScreen) {
       el.webkitEnterFullScreen()
     } else if (el.mozRequestFullScreen) {
@@ -78,6 +72,7 @@ export default class Fullscreen extends Plugin {
     } else {
       console.log('enter fullscreen???')
     }
+
     this.player.displayState = 'fullscreen'
   }
 
@@ -115,12 +110,7 @@ export default class Fullscreen extends Plugin {
    * @returns 根据 document 的 fullscreen 属性判断当前是否处于全屏状态
    */
   get isFullscreen() {
-    return (
-      document.fullscreen ||
-      document.webkitIsFullScreen ||
-      document.mozFullScreen ||
-      false
-    )
+    return document.fullscreen || document.webkitIsFullScreen || document.mozFullScreen || false
   }
 
   /**

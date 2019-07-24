@@ -36,7 +36,7 @@ export default class FlvPlayer extends Flv {
   }
 
   setSrc(val) {
-    super.src = val
+    super.setSrc(val)
     // 清理segment 的url，使其使用新的url
     delete this.mediaDataSource.segments
     this.mediaDataSource.url = val

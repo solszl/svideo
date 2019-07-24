@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-23, 15:07:09 (zhenliang.sun)
- * Last Modified: 2019-07-23, 19:59:04 (zhenliang.sun)
+ * Last Modified: 2019-07-24, 15:17:36 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -117,7 +117,7 @@ export default class PlayerAPI {
   }
 
   getReadyState() {
-    return this.video.getReadyState()
+    return this.player.getReadyState()
   }
 
   getSrc() {
@@ -186,5 +186,13 @@ export default class PlayerAPI {
 
   emit2All(act, data) {
     this.getOwner() && this.getOwner().emit(act, data)
+  }
+
+  getDownloadSize() {
+    return this.player.getDownloadSize()
+  }
+
+  getVideo() {
+    return this.player.video
   }
 }

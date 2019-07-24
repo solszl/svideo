@@ -120,12 +120,12 @@
     }
 
     function fetchDownloadSize() {
-      let size = v.downloadSize;
+      let size = v.getDownloadSize();
       outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
     }
 
     function getEstimateNetSpeed() {
-      let speed = v.estimateNetSpeed;
+      let speed = v.getEstimateNetSpeed();
       outputInfo(`预估网速为:${(speed / 1024).toFixed(3)}M/s`);
     }
 
@@ -243,7 +243,7 @@
     }
 
     function controlsBar() {
-      v.controls = !v.controls
+      v.setControls(!v.getControls())
     }
 
     function initEvents() {
@@ -253,7 +253,7 @@
 
       v.on('timeupdate', t => {
         console.log('timeudpate:',
-          `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
+          `state：${v.getReadyState()}, time: ${v.getCurrentTime}, buffered: ${v.getBuffered().length > 0 ? v.getBuffered().end(0) : 0}, duration:${v.getDuration()}`
         );
         // outputInfo(
         //   `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
@@ -265,7 +265,7 @@
       })
 
       v.on('volumechange', t => {
-        outputInfo(`设置音量为: ${v.volume}`)
+        outputInfo(`设置音量为: ${v.getVolume()}`)
       })
 
       v.on('progress', e => {
@@ -418,18 +418,18 @@
   <br />
   <span>播放相关</span> <button onclick="v.play();">播放</button>
   <button onclick="v.pause();">暂停</button>
-  <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
+  <button onclick="outputInfo('当前是否暂停：'+v.getIsPaused());">是否暂停</button>
   <button onclick="outputInfo(JSON.stringify(v.allDefinitionList))">全清晰度</button>
   <br />
-  <span>循环相关</span> <button onclick="v.loop = true">设置循环</button>
-  <button onclick="v.loop = false">取消循环</button>
-  <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
+  <span>循环相关</span> <button onclick="v.setLoop(true)">设置循环</button>
+  <button onclick="v.setLoop(false)">取消循环</button>
+  <button onclick="outputInfo('当前是否循环：'+v.getLoop());">是否循环</button>
   <br />
   <span>声音相关</span>
   <input id="inputVolume" type="range" min="0" max="100" value="0.5"
-    onchange="v.volume = document.getElementById('inputVolume').value / 100" />
-  <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
-  <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
+    onchange="v.setVolume(document.getElementById('inputVolume').value / 100)" />
+  <button onclick="outputInfo('当前音量为：'+v.getVolume())">当前音量</button>
+  <button onclick="outputInfo('当前是否静音：'+v.getMuted());">是否静音</button>
   <br />
   <span>倍速播放</span>
   <select id="playbackRate" onchange="onPlaybackRateChanged()">

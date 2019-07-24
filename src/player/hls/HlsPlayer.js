@@ -16,7 +16,7 @@ export default class HlsPlayer extends Hls {
   }
 
   getDownloadSize() {
-    return this.store.getKV(KV.DownloadSize)
+    return this.getStore().getKV(KV.DownloadSize)
   }
 
   getEstimateNetSpeed() {
@@ -24,7 +24,7 @@ export default class HlsPlayer extends Hls {
   }
 
   setSrc(val) {
-    this.playedTime = this.currentTime
+    this.playedTime = this.getCurrentTime()
     super.setSrc(val)
     // 停止当前的加载工作。准备切换线路
     this.networkControllers.forEach(component => {
@@ -37,8 +37,8 @@ export default class HlsPlayer extends Hls {
       // this.play();
 
       // 如果是点播的活动，卡顿切线，需要记录刚才播放到哪了。 然后再从刚才播放的时间继续播放
-      if (!this.isLive) {
-        this.currentTime = this.playedTime
+      if (!this.getIsLive()) {
+        this.setCurrentTime(this.playedTime)
       }
     })
   }

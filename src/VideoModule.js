@@ -196,7 +196,7 @@ export default class VideoModule extends Component {
   }
 
   setSize(w, h) {
-    const parent = this.player.root
+    const parent = this.player.getRoot()
     parent.style.width = w
     parent.style.height = h
     this.pluginInstance.forEach(plugin => {

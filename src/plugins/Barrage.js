@@ -92,44 +92,6 @@ export default class Barrage extends Plugin {
     this.player.openBarrage = this._openBarrage.bind(this)
     this.player.closeBarrage = this._closeBarrage.bind(this)
     let core = this._core
-    // Object.defineProperty(this.player, 'barrageFPS', {
-    //   get() {
-    //     return core.fps;
-    //   },
-    //   configurable: true
-    // });
-
-    // Object.defineProperty(this.player, 'barragePosition', {
-    //   writable: true,
-    //   configurable: true,
-    //   enumerable: true,
-    //   value: core.position
-    // });
-    // Object.defineProperty(this.player, 'barrageAlpha', {
-
-    // });
-    // Object.defineProperty(this.player, 'barrageFontSize', {
-
-    // });
-    // Object.defineProperty(this.player, 'barrageColor', {
-
-    // });
-
-    // let self = this;
-    // const defProperty = (propertyName, value, readOnly = false) => {
-    //   Object.defineProperty(self.player, propertyName, {
-    //     configurable: true,
-    //     enumerable: true,
-    //     writable: !readOnly,
-    //     value: value
-    //   });
-    // };
-
-    // defProperty('barrageFPS', core.fps, true);
-    // defProperty('barragePosition', core.position);
-    // defProperty('barrageAlpha', core.alpha);
-    // defProperty('barrageFontSize', core.fontsize);
-    // defProperty('barrageColor', core.color);
 
     let barrageFPS = core.fps
     let barragePosition = core.position
@@ -143,6 +105,7 @@ export default class Barrage extends Plugin {
       barrageFontsize,
       barrageColor
     }
+
     for (const key in properties) {
       Object.defineProperty(this.player, key, {
         configurable: true,
@@ -238,7 +201,7 @@ export default class Barrage extends Plugin {
     core.clear()
     // 加延迟是因为尺寸变化后直接获取宽高可能不准确
     setTimeout(() => {
-      const parent = this.player.root
+      const parent = this.player.getRoot()
       const mw = parent.clientWidth
       const mh = parent.clientHeight
       this.cvs.setAttribute('width', mw)

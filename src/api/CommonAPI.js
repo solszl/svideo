@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-23, 15:08:25 (zhenliang.sun)
- * Last Modified: 2019-07-23, 20:45:04 (zhenliang.sun)
+ * Last Modified: 2019-07-24, 11:12:43 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -23,6 +23,7 @@ export default class CommonAPI {
 
   setIsOver(val) {
     this._isOver = val
+    this.emit2All('over', val)
   }
 
   getIsOver() {
