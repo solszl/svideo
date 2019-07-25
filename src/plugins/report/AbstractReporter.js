@@ -284,7 +284,7 @@ export default class AbstractReporter extends Component {
 
     if (this.enable) {
       let http = new Http()
-      http.onError = e => this.info('error', 'could not report')
+      // http.onError = e => this.info('error', 'could not report')
       http.onTimeout = e => this.info('error', 'report timeout')
       http.fire(this.url, param)
       this.info('info', '日志参数列表')
