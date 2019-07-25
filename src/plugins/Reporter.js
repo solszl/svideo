@@ -160,7 +160,7 @@ export default class Reporter extends Plugin {
     this.basicInfo.fd = this.getURLInfo().pathname
     // 卡顿时长
     this.basicInfo.bt = this._bt
-    Object.assign(obj, this.basicInfo)
+    obj = Object.assign(this.basicInfo, obj)
     let token = btoa(JSON.stringify(obj))
     let param = {
       k: code,

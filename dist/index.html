@@ -208,7 +208,6 @@
         x5: true,
         poster: posterUrl,
         autoplay: false,
-        muted: true,
         plugin_lag: lagConfig,
         plugin_reporter: reportConfig,
         plugin_scheduler: schedulerConfig,
@@ -274,6 +273,7 @@
 
       v.on('play', () => {
         outputInfo('开始播放')
+        v.setVolume(0)
       })
 
       v.on('pause', () => {
@@ -371,11 +371,11 @@
     <div>
       <span>上报配置</span>
       <input id="tiReportConfig" class="initInput" type="text"
-        value='{"url":"//la.e.vhall.com/login","webinar_id":"433529230","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+        value='{"url":"//la.e.vhall.com/login","webinar_id":"312564196","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"433529230","uid":"0e8cff07_77","bu":0,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
+        value='{"url":"//gslb.e.vhall.com","webinar_id":"lss_fa7f55fd","uid":"0e8cff07_77","bu":1,"quality":["same","720p","360p","480p"],"defaultDef":"480p", "app_type": 0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
