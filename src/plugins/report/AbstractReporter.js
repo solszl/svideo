@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-07-25, 14:12:32 (zhenliang.sun)
+ * Last Modified: 2019-07-25, 18:44:14 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -148,7 +148,22 @@ export default class AbstractReporter extends Component {
   }
   __ready() {}
   __error(e) {}
-  __srcChange(e) {}
+  __srcChange(e) {
+    if (e.oldValue === '') {
+      return
+    }
+    this.info('info', `换线了，${e}`)
+    clearInterval(this._infoPackInterval)
+    clearInterval(this._playTimeInterval)
+    this.running = false
+    // 发送信息报、重置一些状态、记录时间点
+    this._infoPackCount = 0
+    this.infoPack()
+    this._lagCount = 0
+    this._infoPackCount = 0
+    this._playHeartbeatDuration = 0
+    this._playInfoDuration = 0
+  }
 
   start() {
     if (this.running) {

@@ -98,7 +98,7 @@
     function onPlaybackRateChanged() {
       let opts = document.getElementById('playbackRate').options
       var val = opts[opts.selectedIndex].value
-      v.playbackRate = val
+      v.setPlaybackRate(val)
     }
 
     function onSizeChanged() {
@@ -401,9 +401,9 @@
   <div>
     <span>播放</span>
     <select id="playerType">
+      <option value="flv">FLV</option>
       <option value="hls">HLS</option>
       <option value="native">MP4等</option>
-      <option value="flv">FLV</option>
     </select>
     <span>直播</span><input id="tiIsLive" type="checkbox" checked >
     <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com/vhallyun/vhallcoop/demand/53fe264f99105067d8673308c8eb740e/d4e295a5/53fe264f99105067d8673308c8eb740e.mp4" placeholder="视频地址">

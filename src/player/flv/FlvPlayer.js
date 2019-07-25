@@ -23,6 +23,7 @@ export default class FlvPlayer extends Flv {
     this.detachMediaElement(video)
     this.unload()
     this.attachMediaElement(video)
+    this.initEvents()
     this.load()
   }
 

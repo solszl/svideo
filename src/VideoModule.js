@@ -123,13 +123,13 @@ export default class VideoModule extends Component {
     this.player = new FlvPlayer(this._config, this._config)
     let player = this.player
     player.initVideo(this._config)
+    player.attachMediaElement(player.video)
     player._owner = this
     // Object.assign(this, player)
     this.player.setStore(this.store)
     mixin(this, PlayerAPI, this.player)
     mixin(this, CommonAPI, this.store)
     this.player.initEvents()
-    player.attachMediaElement(player.video)
     // player.load();
     // this.play();
   }

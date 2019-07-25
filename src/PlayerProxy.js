@@ -22,7 +22,7 @@ class PlayerProxy extends Component {
     // this._isOver = false
     this.video = null
     this._store = null
-    this.e = {
+    this.ee = {
       /** 开始播放 */
       play: this.__play.bind(this),
       /** 暂停 */
@@ -491,15 +491,15 @@ class PlayerProxy extends Component {
 
   _initOriginalEvents() {
     if (!this.isLive) {
-      Object.assign(this.e, {
+      Object.assign(this.ee, {
         /** 播放完毕执行的事件 */
         ended: this.__ended.bind(this)
       })
     }
 
     // 添加监听
-    Object.keys(this.e).forEach(key => {
-      this.video.addEventListener(key, this.e[key])
+    Object.keys(this.ee).forEach(key => {
+      this.video.addEventListener(key, this.ee[key])
     })
   }
 
@@ -579,8 +579,8 @@ class PlayerProxy extends Component {
     this.reset()
 
     if (this.video) {
-      Object.keys(this.e).forEach(key => {
-        this.video.removeEventListener(key, this.e[key])
+      Object.keys(this.ee).forEach(key => {
+        this.video.removeEventListener(key, this.ee[key])
       })
 
       removeFromParent(this.video)
