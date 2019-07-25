@@ -13,8 +13,6 @@ import FetchSize from './utils/fetchSize'
 export default class NativePlayer extends PlayerProxy {
   constructor(opt = {}) {
     super(opt)
-    this.fetchSize = null
-    this.playedTime = 0
   }
 
   initVideo(option = {}) {
@@ -23,6 +21,7 @@ export default class NativePlayer extends PlayerProxy {
     if (option.store) {
       const { store } = option
       this.fetchSize = new FetchSize(store)
+      this.playedTime = 0
     }
   }
 

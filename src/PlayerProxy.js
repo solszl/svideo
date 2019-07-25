@@ -12,7 +12,7 @@ import { createElement, removeFromParent } from './utils/Dom'
  * @author zhenliang.sun
  */
 class PlayerProxy extends Component {
-  constructor() {
+  constructor(cfg = {}) {
     super()
 
     this._volume = 0.5
@@ -47,6 +47,7 @@ class PlayerProxy extends Component {
       // canplaythrough: this.__canplaythrough.bind(this)
     }
     this.reset()
+    this.initVideo(cfg)
   }
 
   initVideo(config = {}) {
@@ -85,6 +86,7 @@ class PlayerProxy extends Component {
       )
     )
 
+    this.video.style.objectFit = 'contain'
     this._root = document.getElementById(config['id'])
     const parent = this._root
     parent.appendChild(this.video)
