@@ -273,7 +273,7 @@
 
       v.on('play', () => {
         outputInfo('开始播放')
-        v.setVolume(0)
+        // v.setVolume(0)
       })
 
       v.on('pause', () => {
@@ -375,7 +375,7 @@
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"e1caa573","uid":"0e8cff07_77","bu":1,"quality":["same"],"defaultDef":"same", "app_type": 0}'>
+        value='{"url":"//t-mss.e.vhall.com","webinar_id":"e1caa573","uid":"0e8cff07_77","bu":1,"quality":["360p"],"defaultDef":"360p", "app_type": 0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -402,12 +402,12 @@
   <div>
     <span>播放</span>
     <select id="playerType">
+      <option value="native">MP4等</option>
       <option value="hls">HLS</option>
       <option value="flv">FLV</option>
-      <option value="native">MP4等</option>
     </select>
     <span>直播</span><input id="tiIsLive" type="checkbox" >
-    <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com//vhallyun/vhallrecord/lss_8057799d/20190725114108_e1caa573/record.m3u8" placeholder="视频地址">
+    <input id="tiVideoSrc" value="http://t-cyhlsvodhls02.vhallyun.com/vhallyun/vhallcoop/demand/53fe264f99105067d8673308c8eb740e/d4e295a5/53fe264f99105067d8673308c8eb740e.mp4" placeholder="视频地址">
     <!-- <button onclick="playSrcHandler()">播放</button> -->
   </div>
   <hr />
@@ -431,6 +431,7 @@
     onchange="v.setVolume(document.getElementById('inputVolume').value / 100)" />
   <button onclick="outputInfo('当前音量为：'+v.getVolume())">当前音量</button>
   <button onclick="outputInfo('当前是否静音：'+v.getMuted());">是否静音</button>
+  <button onclick="v.setMuted(true);">静音</button>
   <br />
   <span>倍速播放</span>
   <select id="playbackRate" onchange="onPlaybackRateChanged()">

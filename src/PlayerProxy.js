@@ -86,7 +86,6 @@ class PlayerProxy extends Component {
       )
     )
 
-    this.video.style.objectFit = 'contain'
     this._root = document.getElementById(config['id'])
     const parent = this._root
     parent.appendChild(this.video)

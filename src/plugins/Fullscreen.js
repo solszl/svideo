@@ -70,7 +70,12 @@ export default class Fullscreen extends Plugin {
     } else if (el.msRequestFullscreen) {
       el.msRequestFullscreen()
     } else {
-      console.log('enter fullscreen???')
+      let sdk = this.player
+      let videoEl = sdk.player.video
+      if (videoEl.webkitEnterFullscreen || videoEl.enterFullScreen) {
+        videoEl.webkitEnterFullscreen && videoEl.webkitEnterFullscreen()
+        videoEl.enterFullScreen && videoEl.enterFullScreen()
+      }
     }
 
     this.player.displayState = 'fullscreen'
