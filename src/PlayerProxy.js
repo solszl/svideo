@@ -224,9 +224,7 @@ class PlayerProxy extends Component {
    */
   setCurrentTime(t) {
     this.video.currentTime = t
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.CURRENT_TIME_CHANGED, t)
-    }
+    this.emit2All(PlayerEvent.CURRENT_TIME_CHANGED, t)
   }
 
   /**
@@ -272,9 +270,7 @@ class PlayerProxy extends Component {
     this.video.loop = v
     let newValue = v
     const e = { oldValue, newValue }
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.LOOP_CHANGED, e)
-    }
+    this.emit2All(PlayerEvent.LOOP_CHANGED, e)
   }
 
   getLoop() {
@@ -300,9 +296,7 @@ class PlayerProxy extends Component {
     this.video.muted = b
     let newValue = b
     const e = { oldValue, newValue }
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.MUTED_CHANGED, e)
-    }
+    this.emit2All(PlayerEvent.MUTED_CHANGED, e)
   }
 
   /**
@@ -528,7 +522,7 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 100 && !isNaN(this.duration)) {
+    if (now - this._lastEmitTimeupdate > 100 && !isNaN(this.getDuration())) {
       this._lastEmitTimeupdate = now
       this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }

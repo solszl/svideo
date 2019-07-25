@@ -251,12 +251,9 @@
       })
 
       v.on('timeupdate', t => {
-        console.log('timeudpate:',
-          `state：${v.getReadyState()}, time: ${v.getCurrentTime}, buffered: ${v.getBuffered().length > 0 ? v.getBuffered().end(0) : 0}, duration:${v.getDuration()}`
-        );
-        // outputInfo(
-        //   `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
-        // )
+        // console.log('timeudpate:',
+        //   `state：${v.getReadyState()}, time: ${v.getCurrentTime()}, buffered: ${v.getBuffered().length > 0 ? v.getBuffered().end(0) : 0}, duration:${v.getDuration()}`
+        // );
       })
 
       v.on('ratechange', v => {
@@ -337,6 +334,14 @@
       // v.on('tencentInfo', e => {
       //   outputInfo(`腾讯信息，是否卡顿${e}`);
       // })
+
+      v.on('loopchange', b => {
+        outputInfo(`循环发生变化, loop: ${b}`);
+      });
+
+      v.on('mutedchange', b => {
+        outputInfo(`静音发生变化, mutedchange: ${b}`);
+      });
 
       if (!v.player.hasOwnProperty('on')) {
         return;

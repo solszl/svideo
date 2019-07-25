@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-07-25, 18:55:47 (zhenliang.sun)
+ * Last Modified: 2019-07-26, 00:59:03 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -284,8 +284,8 @@ export default class AbstractReporter extends Component {
 
     if (this.enable) {
       let http = new Http()
-      http.onError = e => this.info('error', `could not report, code:${e.code}, msg: ${e.message}`)
-      http.onTimeout = e => this.info('error', `report timeout, code:${e.code}`)
+      http.onError = e => this.info('error', 'could not report')
+      http.onTimeout = e => this.info('error', 'report timeout')
       http.fire(this.url, param)
       this.info('info', '日志参数列表')
     } else {

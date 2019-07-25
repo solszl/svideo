@@ -60,6 +60,7 @@ export default class Watermark extends Plugin {
 
     this.elImage.onerror = this._imgOnError.bind(this)
     this.elImage.style.position = 'absolute'
+    this.elImage.style.userSelect = 'none'
     Object.assign(this.elImage.style, p)
     Object.assign(this.elImage.style, {
       width: size[0],
