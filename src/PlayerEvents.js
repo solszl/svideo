@@ -28,7 +28,8 @@ export const PlayerEvent = {
   ERROR: 'error',
   LOADEDMETADATA: 'loadedmetadata',
   PROGRESS: 'progress',
-  CHANGE_LINE: 'changeline'
+  CHANGE_LINE: 'changeline',
+  OVER: 'over'
   // LOADSTART: 'loadstart',
   // CANPLAYTHROUGH: 'canplaythrough'
 }

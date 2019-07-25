@@ -420,14 +420,14 @@ class PlayerProxy extends Component {
     this.video.controls = val
   }
 
-  // setIsOver(val) {
-  //   this._isOver = val
-  //   this.emit2All('over', val)
-  // }
+  setIsOver(val) {
+    this._isOver = val
+    this.emit2All(PlayerEvent.OVER, val)
+  }
 
-  // getIsOver() {
-  //   return this._isOver
-  // }
+  getIsOver() {
+    return this._isOver
+  }
 
   /**
    * 获取当前seek状态，是否跳转中

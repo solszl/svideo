@@ -1,18 +1,19 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-07-25, 18:44:14 (zhenliang.sun)
+ * Last Modified: 2019-07-25, 18:55:47 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
  * Copyright (c) 2019 vhall
  */
-import Http from './Http'
+import Log from '../../utils/Log'
 import Component from './../../core/Component'
 import { KV } from './../../core/Constant'
-import Log from '../../utils/Log'
+import Http from './Http'
+import { PlayerEvent } from './../../PlayerEvents'
 
-const INFO_PACK_INTERVAL = 10 * 1000
+const INFO_PACK_INTERVAL = 30 * 1000
 
 const CALC_PLAY_TIME_INTERVAL = 200
 /**
@@ -37,14 +38,16 @@ export default class AbstractReporter extends Component {
     this._infoPackInterval = 0
     // 播放时长计时器
     this._playTimeInterval = 0
-    // 信息包个数
+    /** 信息包个数 */
     this._infoPackCount = 0 // 24小时直播需要发 60*60*24/30
 
     this._playHeartbeatDuration = 0
     this._playInfoDuration = 0
 
+    /** 卡顿次数 */
     this._lagCount = 0
-    this._bt = 0 // 卡顿时长
+    /** 卡顿时长 */
+    this._bt = 0
     /** 上一个信息包下载量 */
     this._lastInfoDownloadSize = 0
     /** 上一个心跳包下载量 */
@@ -93,17 +96,17 @@ export default class AbstractReporter extends Component {
   }
 
   _handleCareEvent() {
-    this.player.on('play', this.__play.bind(this))
-    this.player.on('pause', this.__pause.bind(this))
-    this.player.on('ended', this.__ended.bind(this))
+    this.player.on(PlayerEvent.PLAY, this.__play.bind(this))
+    this.player.on(PlayerEvent.PAUSE, this.__pause.bind(this))
+    this.player.on(PlayerEvent.PLAY_END, this.__ended.bind(this))
     this.player.on('lagreport', this.__lag.bind(this))
     this.player.on('lagrecover', this.__lagRecover.bind(this))
     this.player.on('bufferempty', this.__bufferEmpty.bind(this))
     this.player.on('bufferfull', this.__bufferFull.bind(this))
     this.player.on('error', this.__error.bind(this))
-    this.player.on('srcchange', this.__srcChange.bind(this))
-    this.player.once('ready', this.__ready.bind(this))
-    this.player.on('over', this.__over.bind(this))
+    this.player.on(PlayerEvent.SRC_CHANGED, this.__srcChange.bind(this))
+    this.player.once(PlayerEvent.READY, this.__ready.bind(this))
+    this.player.on(PlayerEvent.OVER, this.__over.bind(this))
   }
 
   __play(e) {
@@ -111,26 +114,31 @@ export default class AbstractReporter extends Component {
       this.start()
     }
   }
+
   __pause(e) {
     if (this.running) {
       this.stop()
     }
   }
+
   __ended(e) {
     // 播放完毕的时候，就不在进行心跳了
     this.stop()
   }
+
   __over(b) {
     if (b) {
       this.stop()
     }
   }
+
   __lag(e) {
     this._lagCount += 1
     // 一次卡顿 增加 4秒卡顿时长
     this._bt += +this.allConfig.lagThreshold * 1000
     clearInterval(this._playTimeInterval)
   }
+
   __lagRecover(t) {
     this.info('info', `卡顿恢复了，消耗了${t}ms`)
     this._bt += t
@@ -138,16 +146,21 @@ export default class AbstractReporter extends Component {
     this._lastCalcPlayTime = Date.now()
     this._playTimeInterval = setInterval(this.calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
   }
+
   __bufferEmpty() {
     clearInterval(this._playTimeInterval)
   }
+
   __bufferFull(e) {
     clearInterval(this._playTimeInterval)
     this._lastCalcPlayTime = Date.now()
     this._playTimeInterval = setInterval(this.calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
   }
+
   __ready() {}
+
   __error(e) {}
+
   __srcChange(e) {
     if (e.oldValue === '') {
       return

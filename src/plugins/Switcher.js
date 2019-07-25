@@ -61,7 +61,7 @@ export default class Switcher extends Plugin {
     // 连接失败
     this.player.on('connectError', this.__connectError.bind(this))
     this.player.on(PlayerEvent.CHANGE_LINE, this.__changeLine.bind(this))
-    this.player.on('over', this.__over.bind(this))
+    this.player.on(PlayerEvent.OVER, this.__over.bind(this))
   }
 
   __lag(e) {

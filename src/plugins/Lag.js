@@ -56,7 +56,7 @@ export default class Lag extends Plugin {
     this.player.on('ended', this.__ended.bind(this))
     // 由各个播放模块内抛出来的lag事件
     this.player.on('lag', this.__lag.bind(this))
-    this.player.on('over', this.__over.bind(this))
+    this.player.on(PlayerEvent.OVER, this.__over.bind(this))
     this.player.on(PlayerEvent.DEFINITION_CHANGED, this.__definitionChanged.bind(this))
   }
 
