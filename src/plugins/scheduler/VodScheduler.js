@@ -5,7 +5,7 @@ import qs from 'qs'
 /**
  *
  * Created Date: 2019-05-30, 13:59:51 (zhenliang.sun)
- * Last Modified: 2019-05-31, 14:33:18 (zhenliang.sun)
+ * Last Modified: 2019-07-26, 00:34:17 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -46,6 +46,10 @@ export default class VodScheduler extends AbstractScheduler {
     let p = window.location.protocol
     let domain = this.option['url']
     let url = `${p}${domain}/${VOD_API}?${queryString}`
+    if (p.startsWith('http')) {
+      url = `${domain}/${VOD_API}?${queryString}`
+    }
+
     this.info('info', `Vod scheduler url:${url}`)
     return url
   }

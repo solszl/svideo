@@ -5,7 +5,7 @@ import Token from './Token'
 /**
  *
  * Created Date: 2019-05-30, 13:58:54 (zhenliang.sun)
- * Last Modified: 2019-07-24, 16:15:13 (zhenliang.sun)
+ * Last Modified: 2019-07-26, 00:34:54 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -43,6 +43,9 @@ export default class LiveScheduler extends AbstractScheduler {
     let p = window.location.protocol
     let domain = this.option['url']
     let url = `${p}${domain}/${LIVE_API}?${queryString}`
+    if (p.startsWith('http')) {
+      url = `${domain}/${LIVE_API}?${queryString}`
+    }
     this.info('info', `Live scheduler url:${url}`)
     return url
   }
