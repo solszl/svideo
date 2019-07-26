@@ -103,6 +103,7 @@ export default class VideoModule extends Component {
       return
     }
     PluginMap.forEach(clazz => {
+      // eslint-disable-next-line new-cap
       let cl = new clazz()
       cl.player = this
       cl.init(this._config)
