@@ -65,8 +65,8 @@ export default class Fullscreen extends Plugin {
       el.mozRequestFullScreen()
     } else if (el.requestFullscreen) {
       el.requestFullscreen()
-    } else if (el.webkitRequestFullscreen) {
-      el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+    // } else if (el.webkitRequestFullscreen) {
+    //   el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
     } else if (el.msRequestFullscreen) {
       el.msRequestFullscreen()
     } else {
