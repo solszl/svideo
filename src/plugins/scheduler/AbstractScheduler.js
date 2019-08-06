@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-07-24, 16:10:54 (zhenliang.sun)
+ * Last Modified: 2019-08-06, 16:37:38 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -87,8 +87,12 @@ export default class AbstractScheduler {
     }
 
     let defaultDef = this.option['defaultDef']
-    // 备选方案
-    let alternativeDef = currentDefinitionList.length ? currentDefinitionList[0] : null
+    // 备选方案, 设置的默认画质可能为480p， 但是清晰度列表中可能不存在480p， 找到一个备选清晰度。
+    let alternatives = currentDefinitionList.filter(item => {
+      return item.def !== 'a'
+    })
+    let alternativeDef = alternatives.length > 0 ? alternatives[0] : null
+
     // 找到默认清晰度
     let defaultDefList = currentDefinitionList.filter(item => {
       return item.def === defaultDef
