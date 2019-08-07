@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-08-06, 16:37:38 (zhenliang.sun)
+ * Last Modified: 2019-08-07, 17:07:25 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -92,6 +92,10 @@ export default class AbstractScheduler {
       return item.def !== 'a'
     })
     let alternativeDef = alternatives.length > 0 ? alternatives[0] : null
+
+    if (currentDefinitionList.length === 1) {
+      alternativeDef = currentDefinitionList[0]
+    }
 
     // 找到默认清晰度
     let defaultDefList = currentDefinitionList.filter(item => {

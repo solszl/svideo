@@ -1,13 +1,14 @@
 /**
  *
  * Created Date: 2019-06-03, 17:17:30 (zhenliang.sun)
- * Last Modified: 2019-07-24, 16:46:43 (zhenliang.sun)
+ * Last Modified: 2019-08-07, 20:35:12 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
  * Copyright (c) 2019 vhall
  */
 import qs from 'qs'
+import 'formdata-polyfill'
 
 /**
  * 简单封装
@@ -114,6 +115,7 @@ export default class Http {
     }
 
     // 构建formData数据
+    // FormData polyfill 的类
     let formData = new FormData()
 
     Object.keys(data).forEach(keys => {
@@ -128,6 +130,7 @@ export default class Http {
       formData.forEach((value, key) => {
         obj[key] = value
       })
+
       url += `?${qs.stringify(obj)}`
       this.xhr.open(method, url)
       this.xhr.send()
