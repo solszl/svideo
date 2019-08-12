@@ -38,7 +38,7 @@ export default class Marquee extends Plugin {
   init(opts = {}) {
     super.init(opts)
     this._allConfig = opts
-    this.marqueeConfig = JSON.parse(opts['marqueeConfig'] || VHVideoConfig.plugin_marquee)
+    this.marqueeConfig = JSON.parse(opts[Marquee.type] || VHVideoConfig.plugin_marquee)
     if (this.marqueeConfig.enable === false) {
       return
     }
