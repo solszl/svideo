@@ -56,6 +56,7 @@ class PlayerProxy extends Component {
       x5cfg['webkit-playsinline'] = true
       x5cfg['playsinline'] = true
       x5cfg['x5-playsinline'] = true
+      x5cfg['mtt-playsinline'] = true
       // x5cfg['x5-video-player-type'] = 'h5';
       // x5cfg['x5-video-player-fullscreen'] = true;
       // x5cfg['x5-video-orientation'] = 'portrait';

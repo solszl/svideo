@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-08-07, 17:07:25 (zhenliang.sun)
+ * Last Modified: 2019-08-19, 14:23:39 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -78,6 +78,14 @@ export default class AbstractScheduler {
 
   resolveData(data) {}
 
+  /**
+   * 直播的调度，请求过后，直接返回所有可用的清晰度列表， 与入参quality无关。
+   * 点播的调度，请求是根据入参quality进行拼接的。
+   * ヾ(。￣□￣)ﾂ゜゜゜
+   *
+   * @param {*} defs
+   * @memberof AbstractScheduler
+   */
   _defineProperty(defs) {
     let allDefinitionList = defs
     let currentDefinitionListIndex = 0 // 默认选中列表中第一个
@@ -136,12 +144,12 @@ export default class AbstractScheduler {
         let { url: oldURL } = currentDefinition
         let { url: newURL } = newValue
         if (oldURL === newURL) {
-          console.error('新旧清晰度相同，返回')
+          this.info('info', '新旧清晰度相同')
           return
         }
-        console.error('切换清晰度')
-        console.error(`old: ${currentDefinition.url}`)
-        console.error(`new: ${newValue.url}`)
+        this.info('info', '切换清晰度')
+        this.info('info', `old: ${currentDefinition.url}`)
+        this.info('info', `new: ${newValue.url}`)
         currentDefinition = newValue
         let token = this.newToken
         let url = `${newValue.url}?token=${token}`
