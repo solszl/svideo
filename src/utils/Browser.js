@@ -13,15 +13,15 @@ export default class Browser {
   /** *****************  FOR IOS START ************************/
 
   static get isIPad() {
-    return (/iPad/i).test(this.ua)
+    return /iPad/i.test(this.ua)
   }
 
   static get isIPhone() {
-    return (/iPhone/i).test(this.ua) && !this.isIPad
+    return /iPhone/i.test(this.ua) && !this.isIPad
   }
 
   static get isIPod() {
-    return (/iPod/i).test(this.ua)
+    return /iPod/i.test(this.ua)
   }
 
   static get isIOS() {
@@ -41,7 +41,7 @@ export default class Browser {
 
   /** *****************  FOR ANDROID START ************************/
   static get isAndroid() {
-    return (/Android/i).test(this.ua)
+    return /Android/i.test(this.ua)
   }
 
   static get androidVersion() {
@@ -78,18 +78,18 @@ export default class Browser {
   }
 
   static get isFirefox() {
-    return (/(?:Firefox)/).test(this.ua)
+    return /(?:Firefox)/.test(this.ua)
   }
 
   static get isEdge() {
-    return (/Edge/i).test(this.ua)
+    return /Edge/i.test(this.ua)
   }
   static get isChrome() {
-    return !this.isEdge && ((/Chrome/i).test(this.ua) || (/CriOS/i).test(this.ua))
+    return !this.isEdge && (/Chrome/i.test(this.ua) || /CriOS/i.test(this.ua))
   }
 
   static get isSafari() {
-    return (/Safari/i).test(this.ua) && !this.isChrome && !this.isAndroid && !this.isEdge
+    return /Safari/i.test(this.ua) && !this.isChrome && !this.isAndroid && !this.isEdge
   }
 
   static get chromeVersion() {
@@ -102,10 +102,10 @@ export default class Browser {
   }
 
   static get IEVersion() {
-    const result = (/MSIE\s(\d+)\.\d/).exec(this.ua)
+    const result = /MSIE\s(\d+)\.\d/.exec(this.ua)
     let version = result && parseFloat(result[1])
 
-    if (!version && (/Trident\/7.0/i).test(this.ua) && (/rv:11.0/).test(this.ua)) {
+    if (!version && /Trident\/7.0/i.test(this.ua) && /rv:11.0/.test(this.ua)) {
       // IE 11 has a different user agent string than other IE versions
       version = 11.0
     }

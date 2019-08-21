@@ -96,24 +96,20 @@ export default class Hls extends PlayerProxy {
       config.liveMaxLatencyDurationCount !== undefined &&
       config.liveMaxLatencyDurationCount <= config.liveSyncDurationCount
     ) {
-      throw new Error(
-        'Illegal hls.js config: "liveMaxLatencyDurationCount" must be gt "liveSyncDurationCount"'
-      )
+      throw new Error('Illegal hls.js config: "liveMaxLatencyDurationCount" must be gt "liveSyncDurationCount"')
     }
 
     if (
       config.liveMaxLatencyDuration !== undefined &&
-      (config.liveMaxLatencyDuration <= config.liveSyncDuration ||
-        config.liveSyncDuration === undefined)
+      (config.liveMaxLatencyDuration <= config.liveSyncDuration || config.liveSyncDuration === undefined)
     ) {
-      throw new Error(
-        'Illegal hls.js config: "liveMaxLatencyDuration" must be gt "liveSyncDuration"'
-      )
+      throw new Error('Illegal hls.js config: "liveMaxLatencyDuration" must be gt "liveSyncDuration"')
     }
 
     enableLogs(config.debug)
     this.config = config
     this._autoLevelCapping = -1
+    this.vhallController = null
 
     // core controllers and network loaders
 
@@ -143,10 +139,7 @@ export default class Hls extends PlayerProxy {
     /**
      * @member {StreamController} streamController
      */
-    const streamController = (this.streamController = new StreamController(
-      this,
-      fragmentTracker
-    ))
+    const streamController = (this.streamController = new StreamController(this, fragmentTracker))
 
     let networkControllers = [levelController, streamController]
 
@@ -170,14 +163,18 @@ export default class Hls extends PlayerProxy {
       fragmentTracker
     ]
 
-    const vhallController = (this.vhallController = new VhallController(this))
-    vhallController.store = this.store
-    coreComponents.push(vhallController)
+    this.vhallController = new VhallController(this)
+    coreComponents.push(this.vhallController)
 
     /**
      * @member {ICoreComponent[]}
      */
     this.coreComponents = coreComponents
+  }
+
+  setStore(store) {
+    super.setStore(store)
+    this.vhallController.store = store
   }
 
   /**
@@ -226,7 +223,7 @@ export default class Hls extends PlayerProxy {
     })
     logger.log(`loadSource:${url}`)
     this.url = url
-    this.store.setKV(KV.URL, url)
+    this.getStore().setKV(KV.URL, url)
     // when attaching to a source URL, trigger a playlist load
     this.trigger(HlsEvents.MANIFEST_LOADING, {
       url: url
@@ -486,10 +483,7 @@ export default class Hls extends PlayerProxy {
   get nextAutoLevel() {
     const hls = this
     // ensure next auto level is between  min and max auto level
-    return Math.min(
-      Math.max(hls.abrController.nextAutoLevel, hls.minAutoLevel),
-      hls.maxAutoLevel
-    )
+    return Math.min(Math.max(hls.abrController.nextAutoLevel, hls.minAutoLevel), hls.maxAutoLevel)
   }
 
   /**

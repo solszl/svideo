@@ -1,6 +1,6 @@
 {
   "name": "svideo",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "mix flv.js video.js muxing for vhall",
   "main": "index.js",
   "scripts": {
@@ -50,6 +50,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "event-emitter": "^0.3.5",
+    "formdata-polyfill": "^3.0.19",
     "node-sass": "^4.10.0",
     "ora": "^3.0.0",
     "pre-commit": "^1.2.2",

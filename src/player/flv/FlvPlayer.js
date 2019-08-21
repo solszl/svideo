@@ -23,28 +23,25 @@ export default class FlvPlayer extends Flv {
     this.detachMediaElement(video)
     this.unload()
     this.attachMediaElement(video)
+    this.initEvents()
     this.load()
   }
 
-  get estimateNetSpeed() {
+  getEstimateNetSpeed() {
     let speed = this.statisticsInfo ? this.statisticsInfo.speed : 500
     return speed
   }
 
-  get downloadSize() {
-    return this.store.getKV(KV.DownloadSize)
+  getDownloadSize() {
+    return this.getStore().getKV(KV.DownloadSize)
   }
 
-  set src(val) {
-    super.src = val
+  setSrc(val) {
+    super.setSrc(val)
     // 清理segment 的url，使其使用新的url
     delete this.mediaDataSource.segments
     this.mediaDataSource.url = val
     this.updateMediaDataSource()
-  }
-
-  get src() {
-    return super.src
   }
 
   destroy() {

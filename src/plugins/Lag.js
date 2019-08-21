@@ -1,5 +1,6 @@
 import Plugin from '../core/Plugin'
 import TencentLagInject from './lag/TencentLagInject'
+import { PlayerEvent } from './../PlayerEvents'
 
 /**
  * 卡顿插件
@@ -55,6 +56,8 @@ export default class Lag extends Plugin {
     this.player.on('ended', this.__ended.bind(this))
     // 由各个播放模块内抛出来的lag事件
     this.player.on('lag', this.__lag.bind(this))
+    this.player.on(PlayerEvent.OVER, this.__over.bind(this))
+    this.player.on(PlayerEvent.DEFINITION_CHANGED, this.__definitionChanged.bind(this))
   }
 
   __play(e) {
@@ -74,6 +77,18 @@ export default class Lag extends Plugin {
     this.__checkReadyState()
   }
 
+  __over(b) {
+    if (b) {
+      this.__stopCheckReadyState()
+    }
+  }
+
+  __definitionChanged(e) {
+    // 接收到且先后， 重新开始卡顿计时
+    this.__stopCheckReadyState()
+    this.__checkReadyState()
+  }
+
   __checkReadyState() {
     if (this._readyStateChecking) {
       return
@@ -84,7 +99,8 @@ export default class Lag extends Plugin {
     clearInterval(this._readyStateInterval)
     // 每400ms检测一下 状态，如果为2的持续时间超过4秒，汇报一次卡顿
     this._readyStateInterval = setInterval(() => {
-      if (self.player.readyState !== 4 && self.player.readyState !== 3) {
+      let readyState = self.player.getReadyState()
+      if (readyState !== 4 && readyState !== 3) {
         // 如果是不可播放状态且未记录时间，记录卡顿的开始时间
         if (this._lastLagTime === 0) {
           this._lastLagTime = Date.now()

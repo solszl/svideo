@@ -1,6 +1,4 @@
-import {
-  IllegalStateException
-} from '../player/flv/utils/exception'
+import { IllegalStateException } from '../player/flv/utils/exception'
 
 const privateLog = Symbol('privateLog')
 const privateInstance = Symbol('privateInstance')
@@ -20,10 +18,10 @@ export default class Log {
 
     this[privateInstance] = this
     this.logLevels = {
-      all: 'debug|info|log|warn|error',
+      all: 'debug|info|log|warn|error|table',
       off: '',
-      debug: 'debug|info|log|warn|error',
-      info: 'info|warn|error',
+      debug: 'debug|info|log|warn|error|table',
+      info: 'info|warn|error|table',
       warn: 'warn|error',
       error: 'error'
     }
@@ -51,7 +49,9 @@ export default class Log {
     }
 
     if (!this.logLevels.hasOwnProperty(val)) {
-      throw new IllegalStateException(`${val} is not a valid log level, should be in [all, off, debug, info, warn, error]`)
+      throw new IllegalStateException(
+        `${val} is not a valid log level, should be in [all, off, debug, info, warn, error]`
+      )
     }
 
     this._level = this.logLevels[val]
@@ -75,6 +75,10 @@ export default class Log {
 
   error(...args) {
     this[privateLog]('error', args)
+  }
+
+  table(...args) {
+    this[privateLog]('table', args)
   }
 
   [privateLog](type, args) {

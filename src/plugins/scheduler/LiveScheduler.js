@@ -5,7 +5,7 @@ import Token from './Token'
 /**
  *
  * Created Date: 2019-05-30, 13:58:54 (zhenliang.sun)
- * Last Modified: 2019-05-30, 16:30:58 (zhenliang.sun)
+ * Last Modified: 2019-07-26, 00:34:54 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -38,10 +38,14 @@ export default class LiveScheduler extends AbstractScheduler {
     obj.uid = this.option['uid']
     obj.bu = this.option['bu']
     obj.rand = this.getRandom()
+    obj.app_type = this.option['app_type'] || 0
     let queryString = qs.stringify(obj)
     let p = window.location.protocol
     let domain = this.option['url']
     let url = `${p}${domain}/${LIVE_API}?${queryString}`
+    if (p.startsWith('http')) {
+      url = `${domain}/${LIVE_API}?${queryString}`
+    }
     this.info('info', `Live scheduler url:${url}`)
     return url
   }
@@ -73,17 +77,20 @@ export default class LiveScheduler extends AbstractScheduler {
       this.info('warn', `暂时不支持${this.type}类型的直播`)
       return
     }
+
     let allSupportDef = Object.keys(obj)
     if (allSupportDef.length < 1) {
       this.info('error', '无清晰度可用')
       return
     }
+
     let lineCount = obj[allSupportDef[0]].length
     let defs = []
     while (lineCount) {
       defs.push([])
       lineCount -= 1
     }
+
     Object.keys(obj).forEach(item => {
       Object.values(obj[item]).forEach((subItem, index) => {
         let subDef = {
@@ -98,9 +105,7 @@ export default class LiveScheduler extends AbstractScheduler {
 
     this.info(
       'info',
-      `整理直播清晰度完成,共有${defs.length}条线路，每条线路有${
-        defs.length > 0 ? defs[0].length : 0
-      }个清晰度`
+      `整理直播清晰度完成,共有${defs.length}条线路，每条线路有${defs.length > 0 ? defs[0].length : 0}个清晰度`
     )
 
     this._defineProperty(defs)

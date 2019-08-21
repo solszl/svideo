@@ -53,10 +53,7 @@ export default class Switcher extends Plugin {
 
   _handleCareEvent() {
     // 调度完成
-    this.player.on(
-      PlayerEvent.SCHEDULER_COMPLETE,
-      this.__schedulerCompleted.bind(this)
-    )
+    this.player.on(PlayerEvent.SCHEDULER_COMPLETE, this.__schedulerCompleted.bind(this))
     // 卡顿
     this.player.on('lagreport', this.__lag.bind(this))
     // 卡顿恢复
@@ -64,6 +61,7 @@ export default class Switcher extends Plugin {
     // 连接失败
     this.player.on('connectError', this.__connectError.bind(this))
     this.player.on(PlayerEvent.CHANGE_LINE, this.__changeLine.bind(this))
+    this.player.on(PlayerEvent.OVER, this.__over.bind(this))
   }
 
   __lag(e) {
@@ -82,6 +80,12 @@ export default class Switcher extends Plugin {
     this._changeLineTimeout = clearTimeout(this._changeLineTimeout)
     const threshold = this._allConfig.switchLineThreshold * 1000
     setTimeout(this.__changeLine.bind(this), threshold)
+  }
+
+  __over(b) {
+    if (b) {
+      clearTimeout(this._changeLineTimeout)
+    }
   }
 
   __schedulerCompleted() {

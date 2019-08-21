@@ -1,11 +1,15 @@
+import CommonAPI from './api/CommonAPI'
+import PlayerAPI from './api/PlayerAPI'
 import { VHVideoConfig } from './config'
 import Component from './core/Component'
+import Store from './core/Store'
 import FlvPlayer from './player/flv/FlvPlayer'
 import HlsPlayer from './player/hls/HlsPlayer'
 import NativePlayer from './player/native/NativePlayer'
-import PlayerProxy from './PlayerProxy'
-import PluginMap from './plugins/PluginMap'
 import { PlayerEvent } from './PlayerEvents'
+import PluginMap from './plugins/PluginMap'
+import Log from './utils/Log'
+import { mixin } from './utils/util'
 
 /**
  * 播放器模块
@@ -13,40 +17,16 @@ import { PlayerEvent } from './PlayerEvents'
  * @export
  * @class VideoModule
  * @extends {Component}
+ * @author zhenliang.sun
  */
-export default class VideoModule extends PlayerProxy {
+export default class VideoModule extends Component {
   constructor() {
     super()
     this.player = null
     this._config = {}
+    this.store = new Store()
     this.pluginInstance = []
-    // 插件模型核心， 利用proxy， 将业务功能进行分拆， 自身执行一部分， 代理的player执行一部分
-    // return new Proxy(this, {
-    //   get: function (target, prop, receiver) {
-    //     const targetProp = target[prop]
-    //     const playerProp = target.player ? target.player[prop] : undefined
-    //     if (targetProp !== undefined) {
-    //       return targetProp
-    //     } else if (playerProp !== undefined) {
-    //       return playerProp
-    //     } else {
-    //       target.info('error', `undefined Method or Property: ${prop}`)
-    //       return undefined
-    //     }
-    //   },
-    //   set: function (target, prop, value) {
-    //     if (target[prop] !== undefined) {
-    //       target[prop] = value
-    //       return true
-    //     } else if (target.player[prop] !== undefined) {
-    //       target.player[prop] = value
-    //       return true
-    //     } else {
-    //       target.info('error', `undefined Method or Property: ${prop}, value:${value}`)
-    //       return false
-    //     }
-    //   }
-    // })
+    Log.OBJ.level = process.env.LOG_LEVEL
   }
 
   init(option = {}) {
@@ -55,13 +35,11 @@ export default class VideoModule extends PlayerProxy {
     this._createPlayer()
     this.initPluginListener()
     this._pluginCall()
-    this.emit('ready')
   }
 
   _configMapping(option = {}) {
     let config = {}
-    Object.assign(VHVideoConfig, option)
-    Object.assign(config, VHVideoConfig)
+    Object.assign(config, VHVideoConfig, option)
     switch (config.type) {
     case 'flv':
       config.url = option.flvurl
@@ -69,9 +47,6 @@ export default class VideoModule extends PlayerProxy {
       break
     case 'hls':
       config.url = option.hlsurl
-      if (!HlsPlayer.isSupported()) {
-        config.url = this._config.hlsurl
-      }
       break
     case 'native':
       config.url = option.nativeurl
@@ -84,6 +59,8 @@ export default class VideoModule extends PlayerProxy {
 
   _createPlayer() {
     let type = this._config.type
+    let player = null
+    this._config.store = this.store
     switch (type) {
     case 'flv':
       if (!FlvPlayer.isSupported()) {
@@ -94,60 +71,30 @@ export default class VideoModule extends PlayerProxy {
         this.info('warn', '不支持flv格式点播')
         break
       }
-      this._createFLVPlayer()
+      player = new FlvPlayer(this._config, this._config)
+      player.attachMediaElement(player.video)
       break
     case 'hls':
       if (!HlsPlayer.isSupported()) {
         this._config.url = this._config.hlsurl
-        this._createNativePlayer()
+        player = new NativePlayer(this._config)
         break
       }
-      this._createHLSPlayer()
+      player = new HlsPlayer(this._config)
       break
     case 'native':
-      this._createNativePlayer()
+      player = new NativePlayer(this._config)
       break
     default:
       break
     }
-  }
 
-  _createFLVPlayer() {
-    this.player = new FlvPlayer(this._config, this._config)
-    let player = this.player
-    player.initVideo(this._config)
     player._owner = this
-    Object.assign(this, player)
-    this.player.initEvents()
-    player.attachMediaElement(player.video)
-    // player.load();
-    // this.play();
-  }
-
-  _createHLSPlayer() {
-    this.player = new HlsPlayer(this._config)
-    let player = this.player
-    player.initVideo(this._config)
-    player._owner = this
-    Object.assign(this, player)
-    this.player.initEvents()
-    // player.loadSource(this._config.url);
-    // player.attachMedia(player.video);
-    // player.on(Hls.Events.MEDIA_ATTACHED, () => {
-    //   // this.play();
-    // });
-    // this.player.src = this._config.url;
-  }
-
-  _createNativePlayer() {
-    this.player = new NativePlayer()
-    let player = this.player
-    player.initVideo(this._config)
-    player._owner = this
-    Object.assign(this, player)
-    this.player.initEvents()
-    // player.src = this._config.url;
-    // this.play();
+    player.setStore(this.store)
+    mixin(this, PlayerAPI, player)
+    mixin(this, CommonAPI, this.store)
+    player.initEvents()
+    this.player = player
   }
 
   _pluginCall() {
@@ -155,8 +102,9 @@ export default class VideoModule extends PlayerProxy {
       this.info('warn', '播放器为空，无法初始化插件')
       return
     }
-    PluginMap.forEach(value => {
-      let cl = new value()
+    PluginMap.forEach(clazz => {
+      // eslint-disable-next-line new-cap
+      let cl = new clazz()
       cl.player = this
       cl.init(this._config)
       this.pluginInstance.push(cl)
@@ -171,6 +119,7 @@ export default class VideoModule extends PlayerProxy {
     this.pluginInstance.forEach(plugin => {
       plugin.destroy()
     })
+
     this.pluginInstance = []
     if (this.player) {
       this.player.destroy()
@@ -179,7 +128,12 @@ export default class VideoModule extends PlayerProxy {
   }
 
   setSize(w, h) {
-    const parent = this.player.root
+    const parent = this.player.getRoot()
+    if (!parent) {
+      Log.OBJ.warn('无法找到root元素')
+      return
+    }
+
     parent.style.width = w
     parent.style.height = h
     this.pluginInstance.forEach(plugin => {
@@ -194,8 +148,7 @@ export default class VideoModule extends PlayerProxy {
       const token = self.newToken
       let url = `${def.url}?token=${token}`
       // let url = `${def.url}?token=alibaba`;
-      self._config.url = url
-      this.player.src = url
+      this.player.setSrc(url)
     })
   }
 

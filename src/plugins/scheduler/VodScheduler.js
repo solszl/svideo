@@ -5,7 +5,7 @@ import qs from 'qs'
 /**
  *
  * Created Date: 2019-05-30, 13:59:51 (zhenliang.sun)
- * Last Modified: 2019-05-31, 14:33:18 (zhenliang.sun)
+ * Last Modified: 2019-07-26, 00:34:17 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -40,13 +40,16 @@ export default class VodScheduler extends AbstractScheduler {
     obj.uri = this.uri
     obj.bu = this.option['bu']
     let qualities = this.option['quality'] || ['same']
-    let str =
-      qualities.length === 0 ? '["same"]' : `["${qualities.join('","')}"]`
+    let str = qualities.length === 0 ? '["same"]' : `["${qualities.join('","')}"]`
     obj.quality = str // 拼接的数据为 &quality=["same",360p",480p"]
     let queryString = qs.stringify(obj)
     let p = window.location.protocol
     let domain = this.option['url']
     let url = `${p}${domain}/${VOD_API}?${queryString}`
+    if (p.startsWith('http')) {
+      url = `${domain}/${VOD_API}?${queryString}`
+    }
+
     this.info('info', `Vod scheduler url:${url}`)
     return url
   }
@@ -109,12 +112,7 @@ export default class VodScheduler extends AbstractScheduler {
       })
     })
 
-    this.info(
-      'info',
-      `整理点播清晰度完成,有${defs.length}条线路, ${
-        defs.length > 0 ? defs[0].length : 0
-      }个清晰度`
-    )
+    this.info('info', `整理点播清晰度完成,有${defs.length}条线路, ${defs.length > 0 ? defs[0].length : 0}个清晰度`)
 
     this._defineProperty(defs)
   }

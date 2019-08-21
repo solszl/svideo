@@ -25,16 +25,17 @@ export default class Capture extends Plugin {
   }
 
   capture(width, height) {
-    if (!this.player.video) {
+    let video = this.player.getVideo()
+    if (!video) {
       return
     }
 
     if (!width) {
-      width = this.player.video.videoWidth
+      width = video.videoWidth
     }
 
     if (!height) {
-      height = this.player.video.videoHeight
+      height = video.videoHeight
     }
 
     let cvs = this._cvsCapture
@@ -42,7 +43,7 @@ export default class Capture extends Plugin {
     cvs.height = height
     let ctx = cvs.getContext('2d')
 
-    ctx.drawImage(this.player.video, 0, 0)
+    ctx.drawImage(video, 0, 0)
     return cvs.toDataURL('images/png')
   }
 

@@ -4,7 +4,7 @@ import { PlayerEvent } from './../../PlayerEvents'
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-05-30, 17:48:08 (zhenliang.sun)
+ * Last Modified: 2019-08-19, 14:23:39 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -78,6 +78,14 @@ export default class AbstractScheduler {
 
   resolveData(data) {}
 
+  /**
+   * 直播的调度，请求过后，直接返回所有可用的清晰度列表， 与入参quality无关。
+   * 点播的调度，请求是根据入参quality进行拼接的。
+   * ヾ(。￣□￣)ﾂ゜゜゜
+   *
+   * @param {*} defs
+   * @memberof AbstractScheduler
+   */
   _defineProperty(defs) {
     let allDefinitionList = defs
     let currentDefinitionListIndex = 0 // 默认选中列表中第一个
@@ -87,18 +95,22 @@ export default class AbstractScheduler {
     }
 
     let defaultDef = this.option['defaultDef']
-    // 备选方案
-    let alternativeDef = currentDefinitionList.length
-      ? currentDefinitionList[0]
-      : null
+    // 备选方案, 设置的默认画质可能为480p， 但是清晰度列表中可能不存在480p， 找到一个备选清晰度。
+    let alternatives = currentDefinitionList.filter(item => {
+      return item.def !== 'a'
+    })
+    let alternativeDef = alternatives.length > 0 ? alternatives[0] : null
+
+    if (currentDefinitionList.length === 1) {
+      alternativeDef = currentDefinitionList[0]
+    }
+
     // 找到默认清晰度
     let defaultDefList = currentDefinitionList.filter(item => {
       return item.def === defaultDef
     })
 
-    let currentDefinition = defaultDefList.length
-      ? defaultDefList[0]
-      : alternativeDef
+    let currentDefinition = defaultDefList.length ? defaultDefList[0] : alternativeDef
 
     let properties = {
       currentDefinitionListIndex,
@@ -129,15 +141,25 @@ export default class AbstractScheduler {
           oldValue: currentDefinition,
           newValue
         }
+        let { url: oldURL } = currentDefinition
+        let { url: newURL } = newValue
+        if (oldURL === newURL) {
+          this.info('info', '新旧清晰度相同')
+          return
+        }
+        this.info('info', '切换清晰度')
+        this.info('info', `old: ${currentDefinition.url}`)
+        this.info('info', `new: ${newValue.url}`)
         currentDefinition = newValue
         let token = this.newToken
         let url = `${newValue.url}?token=${token}`
-        this.player.src = url
+        this.player.setSrc(url)
         this.player.emit2All(PlayerEvent.DEFINITION_CHANGED, e)
       }
     })
 
     this.player.emit2All(PlayerEvent.SCHEDULER_COMPLETE)
+    this.player.emit2All(PlayerEvent.READY)
   }
 
   __innerXHRDestroy() {

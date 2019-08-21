@@ -12,16 +12,42 @@ import { createElement, removeFromParent } from './utils/Dom'
  * @author zhenliang.sun
  */
 class PlayerProxy extends Component {
-  constructor() {
+  constructor(cfg = {}) {
     super()
 
     this._volume = 0.5
     this._src = ''
     this._isLive = false
     this._isPlaying = false
+    // this._isOver = false
     this.video = null
-    this.store = new Store()
+    this._store = null
+    this.ee = {
+      /** 开始播放 */
+      play: this.__play.bind(this),
+      /** 暂停 */
+      pause: this.__pause.bind(this),
+      /** 开始加载新的数据，每加载一次，执行一次 */
+      progress: this.__progress.bind(this),
+      /** 播放出错 */
+      error: this.__error.bind(this),
+      /** 视频时间戳更新触发事件 */
+      timeupdate: this.__timeupdate.bind(this),
+      /** 视频设置src后，加载元数据后，派发的事件 */
+      loadedmetadata: this.__loadedmetadata.bind(this),
+      /** seek完成后，触发的事件 */
+      seeked: this.__seeked.bind(this),
+      /** 当没有buffer开始播放的时候，派发waiting事件，也就是说，卡顿了 */
+      waiting: this.__waiting.bind(this),
+      /** 播放速率发生变更的时候，派发的事件 */
+      ratechange: this.__ratechange.bind(this),
+      /** 声音发生改变的时候，派发的事件 */
+      volumechange: this.__volumechange.bind(this)
+      // loadstart: this.__loadstart.bind(this),
+      // canplaythrough: this.__canplaythrough.bind(this)
+    }
     this.reset()
+    this.initVideo(cfg)
   }
 
   initVideo(config = {}) {
@@ -30,9 +56,10 @@ class PlayerProxy extends Component {
       x5cfg['webkit-playsinline'] = true
       x5cfg['playsinline'] = true
       x5cfg['x5-playsinline'] = true
+      x5cfg['mtt-playsinline'] = true
       // x5cfg['x5-video-player-type'] = 'h5';
       // x5cfg['x5-video-player-fullscreen'] = true;
-      // x5cfg['x5-video-orientation'] = 'portraint';
+      // x5cfg['x5-video-orientation'] = 'portrait';
     }
 
     let poster = config['poster']
@@ -65,7 +92,7 @@ class PlayerProxy extends Component {
     parent.appendChild(this.video)
     parent.style.position = 'relative'
 
-    this.autoplay = config.autoplay || true
+    this.setAutoplay(config.autoplay || false)
     this._isLive = config['isLive']
   }
 
@@ -132,7 +159,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    */
   get downloadSize() {
-    return this.store.getKV(KV.DownloadSize) || -1
+    return this.getStore().getKV(KV.DownloadSize) || -1
   }
 
   /**
@@ -141,7 +168,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get isPaused() {
+  getIsPaused() {
     return this.video.paused && this._isPlaying === false
   }
 
@@ -150,11 +177,11 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set autoplay(v) {
+  setAutoplay(v) {
     this.video.autoplay = v
   }
 
-  get autoplay() {
+  getAutoplay() {
     return this.video.autoplay
   }
 
@@ -165,7 +192,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get buffered() {
+  getBuffered() {
     return this.video.buffered
   }
 
@@ -174,11 +201,11 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  get crossOrigin() {
+  getCrossOrigin() {
     return this.video.crossOrigin
   }
 
-  set crossOrigin(v) {
+  setCrossOrigin(v) {
     this.video.crossOrigin = v
   }
 
@@ -187,7 +214,7 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  get currentTime() {
+  getCurrentTime() {
     return this.video.currentTime
   }
 
@@ -196,11 +223,9 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set currentTime(t) {
+  setCurrentTime(t) {
     this.video.currentTime = t
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.CURRENT_TIME_CHANGED, t)
-    }
+    this.emit2All(PlayerEvent.CURRENT_TIME_CHANGED, t)
   }
 
   /**
@@ -208,11 +233,11 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set defaultMuted(v) {
+  setDefaultMuted(v) {
     this.video.defaultMuted = v
   }
 
-  get defaultMuted() {
+  getDefaultMuted() {
     return this.video.defaultMuted
   }
 
@@ -222,7 +247,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get duration() {
+  getDuration() {
     return this.video.duration
   }
 
@@ -232,7 +257,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get ended() {
+  getEnded() {
     return this.video.ended
   }
 
@@ -241,17 +266,15 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set loop(v) {
+  setLoop(v) {
     let oldValue = this.video.loop
     this.video.loop = v
     let newValue = v
     const e = { oldValue, newValue }
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.LOOP_CHANGED, e)
-    }
+    this.emit2All(PlayerEvent.LOOP_CHANGED, e)
   }
 
-  get loop() {
+  getLoop() {
     return this.video.loop
   }
 
@@ -260,7 +283,7 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  get muted() {
+  getMuted() {
     return this.video.muted || this.volume === 0
   }
 
@@ -269,14 +292,12 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set muted(b) {
+  setMuted(b) {
     let oldValue = this.video.muted
     this.video.muted = b
     let newValue = b
     const e = { oldValue, newValue }
-    if (this.owner) {
-      this.owner.emit(PlayerEvent.MUTED_CHANGED, e)
-    }
+    this.emit2All(PlayerEvent.MUTED_CHANGED, e)
   }
 
   /**
@@ -286,7 +307,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get networkState() {
+  getNetworkState() {
     return this.video.networkState
   }
 
@@ -295,7 +316,7 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  set playbackRate(v) {
+  setPlaybackRate(v) {
     v = +v
     if (this.video.playbackRate !== v) {
       this.video.playbackRate = v
@@ -307,7 +328,7 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  get playbackRate() {
+  getPlaybackRate() {
     return this.video.playbackRate
   }
 
@@ -317,7 +338,7 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get played() {
+  getPlayed() {
     return this.video.played
   }
 
@@ -328,11 +349,11 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get preload() {
+  getPreload() {
     return this.video.preload
   }
 
-  set preload(t) {
+  setPreload(t) {
     this.video.preload = t
   }
 
@@ -343,14 +364,14 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    * @returns [0,1,2,3,4] // 0:没有任何信息，1：拥有元数据，2：当前位置播放数据可用，但是下一帧数据不够用，3：当前及下一帧数据可用，4，数据足够多，可以播放了
    */
-  get readyState() {
+  getReadyState() {
     return this.video.readyState
   }
 
-  get src() {
+  getSrc() {
     return this._src
   }
-  set src(url) {
+  setSrc(url) {
     const e = {
       oldValue: this._src,
       newValue: url
@@ -358,7 +379,7 @@ class PlayerProxy extends Component {
     this.emit2All(PlayerEvent.SRC_CHANGED, e)
 
     this.video.src = url // this.beforeSetSrcHook(url);
-    this.store.setKV(KV.URL, url)
+    this.getStore().setKV(KV.URL, url)
   }
 
   /**
@@ -366,18 +387,15 @@ class PlayerProxy extends Component {
    *
    * @memberof PlayerProxy
    */
-  get volume() {
+  getVolume() {
     return this._volume
   }
 
-  set volume(v) {
+  setVolume(v) {
     v = +v
 
     if (v > 1 || v < 0) {
-      this.info(
-        'warn',
-        `volume value range should be between 0 to 1, now you set ${v}`
-      )
+      this.info('warn', `volume value range should be between 0 to 1, now you set ${v}`)
       v = Math.min(Math.max(0, v), 1)
     }
 
@@ -387,7 +405,24 @@ class PlayerProxy extends Component {
       this.video.volume = this._volume
     }
 
-    this.muted = this._volume === 0
+    this.setMuted(this._volume === 0)
+  }
+
+  getControls() {
+    return this.video.controls
+  }
+
+  setControls(val) {
+    this.video.controls = val
+  }
+
+  setIsOver(val) {
+    this._isOver = val
+    this.emit2All(PlayerEvent.OVER, val)
+  }
+
+  getIsOver() {
+    return this._isOver
   }
 
   /**
@@ -397,7 +432,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    * @returns true跳转中， false 跳转完成
    */
-  get seeking() {
+  getSeeking() {
     return this.video.seeking
   }
 
@@ -409,7 +444,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    * @returns 返回一个TimeRanges
    */
-  get seekable() {
+  getSeekable() {
     return this.video.seekable
   }
 
@@ -420,7 +455,7 @@ class PlayerProxy extends Component {
    * @memberof PlayerProxy
    * @returns 直播 true, 其他：false
    */
-  get isLive() {
+  getIsLive() {
     return this._isLive
   }
 
@@ -430,60 +465,43 @@ class PlayerProxy extends Component {
    * @readonly
    * @memberof PlayerProxy
    */
-  get estimateNetSpeed() {
+  getEstimateNetSpeed() {
     return 0
   }
 
-  get root() {
+  getRoot() {
     return this._root
   }
 
-  get owner() {
+  getOwner() {
     return this._owner
   }
 
-  _initOriginalEvents() {
-    const e = {
-      /** 开始播放 */
-      play: this.__play.bind(this),
-      /** 暂停 */
-      pause: this.__pause.bind(this),
-      /** 开始加载新的数据，每加载一次，执行一次 */
-      progress: this.__progress.bind(this),
-      /** 播放出错 */
-      error: this.__error.bind(this),
-      /** 视频时间戳更新触发事件 */
-      timeupdate: this.__timeupdate.bind(this),
-      /** 视频设置src后，加载元数据后，派发的事件 */
-      loadedmetadata: this.__loadedmetadata.bind(this),
-      /** seek完成后，触发的事件 */
-      seeked: this.__seeked.bind(this),
-      /** 当没有buffer开始播放的时候，派发waiting事件，也就是说，卡顿了 */
-      waiting: this.__waiting.bind(this),
-      /** 播放速率发生变更的时候，派发的事件 */
-      ratechange: this.__ratechange.bind(this),
-      /** 声音发生改变的时候，派发的事件 */
-      volumechange: this.__volumechange.bind(this)
-      // loadstart: this.__loadstart.bind(this),
-      // canplaythrough: this.__canplaythrough.bind(this)
-    }
+  setStore(store) {
+    this._store = store
+  }
 
+  getStore() {
+    return this._store
+  }
+
+  _initOriginalEvents() {
     if (!this.isLive) {
-      Object.assign(e, {
+      Object.assign(this.ee, {
         /** 播放完毕执行的事件 */
         ended: this.__ended.bind(this)
       })
     }
 
     // 添加监听
-    Object.keys(e).forEach(item => {
-      this.video.addEventListener(item, e[item])
+    Object.keys(this.ee).forEach(key => {
+      this.video.addEventListener(key, this.ee[key])
     })
   }
 
   emit2All(act, data) {
     // this.emit(act, data)
-    this.owner && this.owner.emit(act, data)
+    this.getOwner() && this.getOwner().emit(act, data)
   }
 
   __play() {
@@ -505,7 +523,7 @@ class PlayerProxy extends Component {
       this._lastEmitTimeupdate = Date.now()
     }
 
-    if (now - this._lastEmitTimeupdate > 500 && !isNaN(this.duration)) {
+    if (now - this._lastEmitTimeupdate > 100 && !isNaN(this.getDuration())) {
       this._lastEmitTimeupdate = now
       this.emit2All(PlayerEvent.TIMEUPDATE, e)
     }
@@ -553,21 +571,14 @@ class PlayerProxy extends Component {
     this._src = ''
     this._isLive = false
     this._isPlaying = false
-    this.store.reset()
+    this.getStore().reset()
     this.reset()
 
     if (this.video) {
-      this.video.removeEventListener('play', this.__play)
-      this.video.removeEventListener('pause', this.__pause)
-      this.video.removeEventListener('progress', this.__progress)
-      this.video.removeEventListener('error', this.__error)
-      this.video.removeEventListener('timeupdate', this.__timeupdate)
-      this.video.removeEventListener('ended', this.__ended)
-      this.video.removeEventListener('loadedmetadata', this.__loadedmetadata)
-      this.video.removeEventListener('seeked', this.__seeked)
-      this.video.removeEventListener('waiting', this.__waiting)
-      this.video.removeEventListener('ratechange', this.__ratechange)
-      this.video.removeEventListener('volumechange', this.__volumechange)
+      Object.keys(this.ee).forEach(key => {
+        this.video.removeEventListener(key, this.ee[key])
+      })
+
       removeFromParent(this.video)
       this.video = null
     }
