@@ -15,7 +15,7 @@ import Reporter from './Reporter'
 import Scheduler from './Scheduler'
 import Switcher from './Switcher'
 import Watermark from './Watermark'
-import Pursue from './Pursure'
+import Pursue from './Pursue'
 
 let PluginMap = new Map()
 

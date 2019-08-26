@@ -1,11 +1,11 @@
 import Plugin from '../core/Plugin'
 import TencentInject from './lag/TencentInject'
-import { PlayerEvent } from './../PlayerEvents'
+import { PlayerEvent } from '../PlayerEvents'
 
 /**
  *
  * Created Date: 2019-08-22, 15:57:34 (zhenliang.sun)
- * Last Modified: 2019-08-26, 19:09:31 (zhenliang.sun)
+ * Last Modified: 2019-08-26, 19:35:48 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -95,7 +95,7 @@ export default class Pursue extends Plugin {
       this.walk()
     }
 
-    this.info('info', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
+    // this.info('info', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
   }
 
   __onBufferEmpty(e) {
@@ -145,6 +145,7 @@ export default class Pursue extends Plugin {
     }
 
     this.player.setCurrentTime(t)
+    this.player.setPlaybackRate(1)
   }
 
   destroy() {

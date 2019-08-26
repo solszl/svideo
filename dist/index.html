@@ -191,6 +191,7 @@
       let schedulerConfig = document.getElementById('tiSchedulerConfig').value;
       let watermarkConfig = document.getElementById('tiWatermarkConfig').value;
       let barrageConfig = document.getElementById('tiBarrageConfig').value;
+      let pursueConfig = document.getElementById('tiPursueConfig').value
 
       let isLive = document.getElementById('tiIsLive').checked;
       v.init({
@@ -213,7 +214,8 @@
         plugin_reporter: reportConfig,
         plugin_scheduler: schedulerConfig,
         plugin_watermark: watermarkConfig,
-        plugin_barrage: barrageConfig
+        plugin_barrage: barrageConfig,
+        plugin_pursue: pursueConfig
       })
 
       // v2.init({
@@ -282,7 +284,7 @@
       })
 
       v.on('seeked', e => {
-        outputInfo(`seek 完成,时间为: ${v.currentTime}`)
+        outputInfo(`seek 完成,时间为: ${v.getCurrentTime()}`)
       })
 
       v.on('definitionchange', e => {
@@ -376,6 +378,10 @@
       <span>弹幕配置</span>
       <input id="tiBarrageConfig" class="initInput" type="text"
         value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
+      <br>
+      <span>追播配置</span>
+      <input id="tiPursueConfig" class="initInput" type="text"
+        value='{"enable":true,"bufferMax":10,"remain":2,"pursueSpeed":1.2,"mode":"pursue"}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text"
