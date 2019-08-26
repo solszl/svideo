@@ -1,3 +1,11 @@
+2.1.1
+  New Features:
+    1: 追播功能
+    2: MSE自动化播放策略
+  Bug fixes:
+  Improves:
+    1: 移动端兼容性修复
+  Docs:
 2.1.0
   New Features:
     1: 修改播放器架构

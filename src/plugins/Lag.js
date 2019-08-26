@@ -1,5 +1,5 @@
 import Plugin from '../core/Plugin'
-import TencentLagInject from './lag/TencentLagInject'
+import TencentInject from './lag/TencentInject'
 import { PlayerEvent } from './../PlayerEvents'
 
 /**
@@ -23,8 +23,8 @@ export default class Lag extends Plugin {
     super.init(opts)
     this._allConfig = opts
     this._handleCareEvent()
-    if (TencentLagInject.isSupported()) {
-      this._tlag = new TencentLagInject(this._allConfig.lagThreshold)
+    if (TencentInject.isSupported()) {
+      this._tlag = new TencentInject(this._allConfig.lagThreshold)
     }
   }
 

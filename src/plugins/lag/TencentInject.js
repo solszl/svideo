@@ -1,12 +1,11 @@
 /**
-import { isSupported } from "./../../player/hls/is-supported";
  * 腾讯内核 卡顿注入器
  *  限定于安卓
  * @export
  * @class TencentLagInject
  * @author zhenliang.sun
  */
-export default class TencentLagInject {
+export default class TencentInject {
   constructor(lagThreshold) {
     this._lagThreshold = lagThreshold
     this._lastTime = 0

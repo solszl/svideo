@@ -33,9 +33,7 @@ export default class Flv extends PlayerProxy {
     }
 
     if (mediaDataSource.type.toLowerCase() !== 'flv') {
-      throw new InvalidArgumentException(
-        'FlvPlayer requires an flv MediaDataSource input!'
-      )
+      throw new InvalidArgumentException('FlvPlayer requires an flv MediaDataSource input!')
     }
 
     if (mediaDataSource.isLive === true) {
@@ -74,14 +72,8 @@ export default class Flv extends PlayerProxy {
     this._statisticsInfo = null
 
     let chromeNeedIDRFix =
-      Browser.chrome &&
-      (Browser.version.major < 50 ||
-        (Browser.version.major === 50 && Browser.version.build < 2661))
-    this._alwaysSeekKeyframe = !!(
-      chromeNeedIDRFix ||
-      Browser.msedge ||
-      Browser.msie
-    )
+      Browser.chrome && (Browser.version.major < 50 || (Browser.version.major === 50 && Browser.version.build < 2661))
+    this._alwaysSeekKeyframe = !!(chromeNeedIDRFix || Browser.msedge || Browser.msie)
 
     if (this._alwaysSeekKeyframe) {
       this._config.accurateSeek = false
@@ -149,13 +141,8 @@ export default class Flv extends PlayerProxy {
       }
     })
     this._msectl.on(MSEEvents.ERROR, info => {
-      this._emitter.emit(
-        PlayerEvents.ERROR,
-        ErrorTypes.MEDIA_ERROR,
-        ErrorDetails.MEDIA_MSE_ERROR,
-        info
-      )
-      self.owner.emit('error', {
+      this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.MEDIA_ERROR, ErrorDetails.MEDIA_MSE_ERROR, info)
+      self.getOwner().emit('error', {
         type: 'error',
         details: info.msg
       })
@@ -177,10 +164,7 @@ export default class Flv extends PlayerProxy {
   detachMediaElement() {
     if (this._mediaElement) {
       this._msectl.detachMediaElement()
-      this._mediaElement.removeEventListener(
-        'loadedmetadata',
-        this.e.onvLoadedMetadata
-      )
+      this._mediaElement.removeEventListener('loadedmetadata', this.e.onvLoadedMetadata)
       this._mediaElement.removeEventListener('seeking', this.e.onvSeeking)
       this._mediaElement.removeEventListener('canplay', this.e.onvCanPlay)
       this._mediaElement.removeEventListener('stalled', this.e.onvStalled)
@@ -195,23 +179,16 @@ export default class Flv extends PlayerProxy {
 
   load() {
     if (!this._mediaElement) {
-      throw new IllegalStateException(
-        'HTMLMediaElement must be attached before load()!'
-      )
+      throw new IllegalStateException('HTMLMediaElement must be attached before load()!')
     }
     if (this._transmuxer) {
-      throw new IllegalStateException(
-        'FlvPlayer.load() has been called, please call unload() first!'
-      )
+      throw new IllegalStateException('FlvPlayer.load() has been called, please call unload() first!')
     }
     if (this._hasPendingLoad) {
       return
     }
 
-    if (
-      this._config.deferLoadAfterSourceOpen &&
-      this._mseSourceOpened === false
-    ) {
+    if (this._config.deferLoadAfterSourceOpen && this._mseSourceOpened === false) {
       this._hasPendingLoad = true
       return
     }
@@ -234,15 +211,9 @@ export default class Flv extends PlayerProxy {
       // lazyLoad check
       if (this._config.lazyLoad && !this._config.isLive) {
         let currentTime = this._mediaElement.currentTime
-        if (
-          ms.info.endDts >=
-          (currentTime + this._config.lazyLoadMaxDuration) * 1000
-        ) {
+        if (ms.info.endDts >= (currentTime + this._config.lazyLoadMaxDuration) * 1000) {
           if (this._progressChecker == null) {
-            Log.v(
-              this.TAG,
-              'Maximum buffering duration exceeded, suspend transmuxing task'
-            )
+            Log.v(this.TAG, 'Maximum buffering duration exceeded, suspend transmuxing task')
             this._suspendTransmuxer()
           }
         }
@@ -256,19 +227,14 @@ export default class Flv extends PlayerProxy {
       this._emitter.emit(PlayerEvents.RECOVERED_EARLY_EOF)
     })
     this._transmuxer.on(TransmuxingEvents.IO_ERROR, (detail, info) => {
-      self.owner.emit('error', {
+      self.getOwner().emit('error', {
         type: 'error',
         details: info.msg
       })
-      this._emitter.emit(
-        PlayerEvents.ERROR,
-        ErrorTypes.NETWORK_ERROR,
-        detail,
-        info
-      )
+      this._emitter.emit(PlayerEvents.ERROR, ErrorTypes.NETWORK_ERROR, detail, info)
     })
     this._transmuxer.on(TransmuxingEvents.DEMUX_ERROR, (detail, info) => {
-      self.owner.emit('error', {
+      self.getOwner().emit('error', {
         type: 'error',
         details: info.msg
       })
@@ -289,10 +255,7 @@ export default class Flv extends PlayerProxy {
     })
     this._transmuxer.on(TransmuxingEvents.STATISTICS_INFO, statInfo => {
       this._statisticsInfo = this._fillStatisticsInfo(statInfo)
-      this._emitter.emit(
-        PlayerEvents.STATISTICS_INFO,
-        Object.assign({}, this._statisticsInfo)
-      )
+      this._emitter.emit(PlayerEvents.STATISTICS_INFO, Object.assign({}, this._statisticsInfo))
     })
     this._transmuxer.on(TransmuxingEvents.RECOMMEND_SEEKPOINT, milliseconds => {
       if (this._mediaElement && !this._config.accurateSeek) {
@@ -399,14 +362,8 @@ export default class Flv extends PlayerProxy {
       }
     }
 
-    if (
-      currentRangeEnd >= currentTime + this._config.lazyLoadMaxDuration &&
-      this._progressChecker == null
-    ) {
-      Log.v(
-        this.TAG,
-        'Maximum buffering duration exceeded, suspend transmuxing task'
-      )
+    if (currentRangeEnd >= currentTime + this._config.lazyLoadMaxDuration && this._progressChecker == null) {
+      Log.v(this.TAG, 'Maximum buffering duration exceeded, suspend transmuxing task')
       this._suspendTransmuxer()
     }
   }
@@ -423,10 +380,7 @@ export default class Flv extends PlayerProxy {
       this._transmuxer.pause()
 
       if (this._progressChecker == null) {
-        this._progressChecker = window.setInterval(
-          this._checkProgressAndResume.bind(this),
-          1000
-        )
+        this._progressChecker = window.setInterval(this._checkProgressAndResume.bind(this), 1000)
       }
     }
   }
@@ -479,10 +433,7 @@ export default class Flv extends PlayerProxy {
 
     if (seconds < 1.0 && this._mediaElement.buffered.length > 0) {
       let videoBeginTime = this._mediaElement.buffered.start(0)
-      if (
-        (videoBeginTime < 1.0 && seconds < videoBeginTime) ||
-        Browser.safari
-      ) {
+      if ((videoBeginTime < 1.0 && seconds < videoBeginTime) || Browser.safari) {
         directSeekBegin = true
         // also workaround for Safari: Seek to 0 may cause video stuck, use 0.1 to avoid
         directSeekBeginTime = Browser.safari ? 0.1 : videoBeginTime
@@ -558,12 +509,7 @@ export default class Flv extends PlayerProxy {
       // HAVE_CURRENT_DATA
       let buffered = media.buffered
       if (buffered.length > 0 && media.currentTime < buffered.start(0)) {
-        Log.w(
-          this.TAG,
-          `Playback seems stuck at ${
-            media.currentTime
-          }, seek to ${buffered.start(0)}`
-        )
+        Log.w(this.TAG, `Playback seems stuck at ${media.currentTime}, seek to ${buffered.start(0)}`)
         this._requestSetTime = true
         this._mediaElement.currentTime = buffered.start(0)
         this._mediaElement.removeEventListener('progress', this.e.onvProgress)

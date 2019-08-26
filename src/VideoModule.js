@@ -1,15 +1,11 @@
-import CommonAPI from './api/CommonAPI'
-import PlayerAPI from './api/PlayerAPI'
 import { VHVideoConfig } from './config'
 import Component from './core/Component'
 import Store from './core/Store'
-import FlvPlayer from './player/flv/FlvPlayer'
-import HlsPlayer from './player/hls/HlsPlayer'
-import NativePlayer from './player/native/NativePlayer'
+import { AutoDetectInitial, UserCustomInitial } from './player/createPlayer'
 import { PlayerEvent } from './PlayerEvents'
 import PluginMap from './plugins/PluginMap'
 import Log from './utils/Log'
-import { mixin } from './utils/util'
+import { systemProbe } from './utils/util'
 
 /**
  * 播放器模块
@@ -27,12 +23,21 @@ export default class VideoModule extends Component {
     this.store = new Store()
     this.pluginInstance = []
     Log.OBJ.level = process.env.LOG_LEVEL
+    // 探针判断系统环境
+    this.context = systemProbe()
   }
 
   init(option = {}) {
+    let initializer = null
+    if (option['autoDetect'] && option['isLive']) {
+      initializer = new AutoDetectInitial(this)
+    } else {
+      initializer = new UserCustomInitial(this)
+    }
+
     let config = this._configMapping(option)
     this._config = config
-    this._createPlayer()
+    this.player = initializer.init(this.context, config)
     this.initPluginListener()
     this._pluginCall()
   }
@@ -41,60 +46,20 @@ export default class VideoModule extends Component {
     let config = {}
     Object.assign(config, VHVideoConfig, option)
     switch (config.type) {
-    case 'flv':
-      config.url = option.flvurl
-      config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime
-      break
-    case 'hls':
-      config.url = option.hlsurl
-      break
-    case 'native':
-      config.url = option.nativeurl
-      break
-    default:
-      break
+      case 'flv':
+        config.url = option.flvurl
+        config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime
+        break
+      case 'hls':
+        config.url = option.hlsurl
+        break
+      case 'native':
+        config.url = option.nativeurl
+        break
+      default:
+        break
     }
     return config
-  }
-
-  _createPlayer() {
-    let type = this._config.type
-    let player = null
-    this._config.store = this.store
-    switch (type) {
-    case 'flv':
-      if (!FlvPlayer.isSupported()) {
-        this.info('error', '不支持mse')
-        break
-      }
-      if (!this._config.isLive) {
-        this.info('warn', '不支持flv格式点播')
-        break
-      }
-      player = new FlvPlayer(this._config, this._config)
-      player.attachMediaElement(player.video)
-      break
-    case 'hls':
-      if (!HlsPlayer.isSupported()) {
-        this._config.url = this._config.hlsurl
-        player = new NativePlayer(this._config)
-        break
-      }
-      player = new HlsPlayer(this._config)
-      break
-    case 'native':
-      player = new NativePlayer(this._config)
-      break
-    default:
-      break
-    }
-
-    player._owner = this
-    player.setStore(this.store)
-    mixin(this, PlayerAPI, player)
-    mixin(this, CommonAPI, this.store)
-    player.initEvents()
-    this.player = player
   }
 
   _pluginCall() {
