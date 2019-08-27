@@ -13,7 +13,10 @@ export const PlayerEvent = {
   CURRENT_TIME_CHANGED: 'setcurrenttime',
   SCHEDULER_COMPLETE: 'schedulercompleted',
   PLAYBACKRATE_LIST_CHANGED: 'playbackratelistchange',
+  /** 清晰度变化 */
   DEFINITION_CHANGED: 'definitionchange',
+  /** 清晰度列表变化 */
+  DEFINITION_LIST_CHANGED: 'definitionlistchange',
   // SEEK_START: 'seek_start',
   SEEKED: 'seeked',
   BUFFER_EMPTY: 'buffer_empty',

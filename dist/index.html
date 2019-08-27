@@ -92,13 +92,14 @@
         outputInfo('播放地址不能为空');
         return;
       }
-      v.src = src;
+      v.setSrc(src);
     }
 
     function onPlaybackRateChanged() {
       let opts = document.getElementById('playbackRate').options
       var val = opts[opts.selectedIndex].value
-      v.playbackRate = val
+
+      v.setPlaybackRate(val)
     }
 
     function onSizeChanged() {
@@ -120,12 +121,12 @@
     }
 
     function fetchDownloadSize() {
-      let size = v.downloadSize;
+      let size = v.getDownloadSize();
       outputInfo(`已经下载${size}字节， ${(size / 1024 / 1024).toFixed(3)}M`)
     }
 
     function getEstimateNetSpeed() {
-      let speed = v.estimateNetSpeed;
+      let speed = v.getEstimateNetSpeed();
       outputInfo(`预估网速为:${(speed / 1024).toFixed(3)}M/s`);
     }
 
@@ -157,9 +158,31 @@
       }
     }
 
+    function changeDefinition(defName) {
+      if(!v.currentDefinitionList || v.currentDefinitionList.length === 0) {
+        outputInfo('播放器尚未初始化，没有清晰度列表')
+        return
+      }
+
+      let list = v.currentDefinitionList
+      let defs = list.filter(item => item.def === defName)
+      let def = null
+      if(defs.length > 0 ) {
+        def = defs[0]
+      }
+
+      if(!def) {
+        outputInfo(`没找到对应${defName}的清晰度`)
+        return
+      }
+
+      outputInfo(`准备切换到${defName}`)
+      v.currentDefinition = def
+    }
+
     // 控制台、信息框 双输出
     function outputInfo(str) {
-      console.log(str);
+      // console.log(str);
       var ta = document.getElementById('taInfo')
       const now = () => {
         var str = ''
@@ -435,6 +458,14 @@
   <button onclick="outputInfo('倍速列表：' + v.playbackRateList)">倍速列表</button>
   <button onclick="fetchDownloadSize()">已下载数据量</button>
   <button onclick="getEstimateNetSpeed()">预估网速</button>
+  <div>
+    <span>切分辨率</span>
+    <button onclick="changeDefinition('same')">原画</button>
+    <button onclick="changeDefinition('720p')">720p</button>
+    <button onclick="changeDefinition('480p')">480p</button>
+    <button onclick="changeDefinition('360p')">360p</button>
+    <button onclick="changeDefinition('a')">a</button>
+  </div>
   <div>
     <span>Token</span>
     <button onclick="outputInfo('调度获取token: ' + v.originToken)">原始</button>

@@ -3,6 +3,7 @@
     1: 追播功能
     2: MSE自动化播放策略
   Bug fixes:
+    1: 修复底层flv快速切换清晰度存在继续加载数据的bug
   Improves:
     1: 移动端兼容性修复
   Docs:

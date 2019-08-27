@@ -46,18 +46,18 @@ export default class VideoModule extends Component {
     let config = {}
     Object.assign(config, VHVideoConfig, option)
     switch (config.type) {
-      case 'flv':
-        config.url = option.flvurl
-        config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime
-        break
-      case 'hls':
-        config.url = option.hlsurl
-        break
-      case 'native':
-        config.url = option.nativeurl
-        break
-      default:
-        break
+    case 'flv':
+      config.url = option.flvurl
+      config.lazyLoadMaxDuration = VHVideoConfig.maxBufferTime
+      break
+    case 'hls':
+      config.url = option.hlsurl
+      break
+    case 'native':
+      config.url = option.nativeurl
+      break
+    default:
+      break
     }
     return config
   }

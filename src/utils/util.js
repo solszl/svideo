@@ -70,7 +70,7 @@ export function mixin(target, Constructor, ...args) {
 }
 
 export const systemProbe = function() {
-  let result = {}
+  let result = Object.create(null)
   let uaResult = new UAParser().getResult()
   result.isTencent = (uaResult.ua.match(/mqqbrowser|qzone|qqbrowser|qq|micromessenger/i) || []).length > 0
   result.browser = uaResult.browser.name.toLowerCase()

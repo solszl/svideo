@@ -1,3 +1,4 @@
+import { PlayerEvent } from './../../PlayerEvents'
 /**
  * 卡顿切线责任链
  *
@@ -59,7 +60,6 @@ class Chain {
       this.polling.push(key)
       let def = this.findDefinitionByDefKey(key)
       if (def) {
-        this.player.currentDefinition = def
         return def
       } else {
         return this.nextChain && this.nextChain.execute(this.polling)
@@ -126,8 +126,8 @@ export class Chain360p extends Chain {
       this.currentDefList = this.allDefList[idx]
       this.player.currentDefinitionListIndex = idx
       this.player.currentDefinitionList = this.currentDefList
-      this.player.currentDefinition = this.currentDefList[0]
-      this.player.emit2All('definitionlistchange') // 派发清晰度列表更新事件
+      // 派发清晰度列表更新事件
+      this.player.emit2All(PlayerEvent.DEFINITION_LIST_CHANGED)
     }
 
     this.polling = []
