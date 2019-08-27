@@ -1,4 +1,5 @@
 import { PlayerEvent } from './../../PlayerEvents'
+import { PropertyPriority } from '../../core/Constant'
 /**
  * 卡顿切线责任链
  *
@@ -125,6 +126,8 @@ export class Chain360p extends Chain {
       this.currentDefListIndex = idx
       this.currentDefList = this.allDefList[idx]
       this.player.currentDefinitionListIndex = idx
+      // sort
+      this.currentDefList = this.currentDefList.sort((a, b) => PropertyPriority[a.def] - PropertyPriority[b.def])
       this.player.currentDefinitionList = this.currentDefList
       // 派发清晰度列表更新事件
       this.player.emit2All(PlayerEvent.DEFINITION_LIST_CHANGED)

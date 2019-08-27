@@ -1,10 +1,11 @@
 import Log from '../../utils/Log'
 import { PlayerEvent } from './../../PlayerEvents'
+import { PropertyPriority } from '../../core/Constant'
 
 /**
  *
  * Created Date: 2019-05-30, 13:58:05 (zhenliang.sun)
- * Last Modified: 2019-08-19, 14:23:39 (zhenliang.sun)
+ * Last Modified: 2019-08-27, 19:13:14 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -93,6 +94,8 @@ export default class AbstractScheduler {
     if (!this.option) {
       return
     }
+
+    currentDefinitionList = currentDefinitionList.sort((a, b) => PropertyPriority[a.def] - PropertyPriority[b.def])
 
     let defaultDef = this.option['defaultDef']
     // 备选方案, 设置的默认画质可能为480p， 但是清晰度列表中可能不存在480p， 找到一个备选清晰度。
