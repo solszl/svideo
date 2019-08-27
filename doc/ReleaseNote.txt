@@ -1,4 +1,4 @@
-2.1.1
+2.1.1 perlite 珍珠岩
   New Features:
     1: 追播功能
     2: MSE自动化播放策略
@@ -7,7 +7,8 @@
   Improves:
     1: 移动端兼容性修复
   Docs:
-2.1.0
+
+2.1.0 zircon 锆石
   New Features:
     1: 修改播放器架构
   Bug fixes:
@@ -21,7 +22,7 @@
     2: 重构日志发送
   Docs:
 
-2.0.2
+2.0.2 stalactite 钟乳石
   New Features:
     1: 增加跑马灯功能
     2：平台业务-流监控增加app_type，调度时用
@@ -33,7 +34,7 @@
 
 template:
 // ------------------------
-[Version]
+[Version] [name]
   New Features:
   Bug fixes:
   Improves:
