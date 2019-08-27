@@ -1,6 +1,5 @@
 import Component from './Component'
 import IllegalStateException from '../../error/IllegalStateException'
-import Browser from './../../utils/Browser'
 import { MSEEvents } from './../common/MSEConstants'
 
 /**
