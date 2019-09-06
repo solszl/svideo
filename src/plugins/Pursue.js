@@ -5,7 +5,7 @@ import { PlayerEvent } from '../PlayerEvents'
 /**
  *
  * Created Date: 2019-08-22, 15:57:34 (zhenliang.sun)
- * Last Modified: 2019-09-06, 15:40:26 (zhenliang.sun)
+ * Last Modified: 2019-09-06, 15:55:03 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -95,7 +95,7 @@ export default class Pursue extends Plugin {
       this.walk()
     }
 
-    this.info('info', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
+    this.info('error', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
   }
 
   __onBufferEmpty(e) {
