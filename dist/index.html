@@ -404,7 +404,7 @@
       <br>
       <span>追播配置</span>
       <input id="tiPursueConfig" class="initInput" type="text"
-        value='{"enable":true,"bufferMax":10,"remain":2,"pursueSpeed":1.2,"mode":"pursue"}'>
+        value='{"enable":false,"mode":"pursue","flv":{"bufferMax":10,"remain":2,"pursueSpeed":1.2},"hls":{"bufferMax":20,"remain":8,"pursueSpeed":1.2}}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text"
@@ -417,6 +417,7 @@
   <div>
     <span>播放</span>
     <select id="playerType">
+      <option value="auto">auto</option>
       <option value="hls">HLS</option>
       <option value="flv">FLV</option>
       <option value="native">MP4等</option>

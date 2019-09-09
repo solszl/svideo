@@ -29,7 +29,7 @@ export default class VideoModule extends Component {
 
   init(option = {}) {
     let initializer = null
-    if (option['autoDetect'] && option['isLive']) {
+    if (option['type'] === 'auto' && option['isLive']) {
       initializer = new AutoDetectInitial(this)
     } else {
       initializer = new UserCustomInitial(this)

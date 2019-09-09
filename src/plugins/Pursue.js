@@ -5,7 +5,7 @@ import { PlayerEvent } from '../PlayerEvents'
 /**
  *
  * Created Date: 2019-08-22, 15:57:34 (zhenliang.sun)
- * Last Modified: 2019-09-06, 15:55:03 (zhenliang.sun)
+ * Last Modified: 2019-09-09, 16:02:04 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -26,6 +26,7 @@ export default class Pursue extends Plugin {
     this.bufferMax = -1
     this.remain = 2
     this.speed = 1.2
+    this.mode = 'pursue'
 
     this._isPursuing = false
   }
@@ -49,16 +50,22 @@ export default class Pursue extends Plugin {
     }
 
     // 腾讯安卓系列, 追播模式为倍速播放。不进行追播
-    if (TencentInject.isSupported() && this.pursueConfig['mode'] === 'pursue') {
+    if (TencentInject.isSupported()) {
       this.info('info', '腾讯安卓系列不进行追播,x5内核不支持')
       return
     }
 
-    this.bufferMax = this.pursueConfig['bufferMax']
-    this.remain = this.pursueConfig['remain']
-    this.speed = this.pursueConfig['pursueSpeed']
+    const type = this._allConfig['type']
+    const cfg = this.pursueConfig[type] || { bufferMax: 10, remain: 2, pursueSpeed: 1.2 }
+    this.bufferMax = cfg['bufferMax']
+    this.remain = cfg['remain']
+    this.speed = cfg['pursueSpeed']
+    this.mode = this.pursueConfig['mode']
 
-    this.info('info', `Buffer最大缓冲时长:${this.bufferMax}s, 以${this.speed}倍速追到剩${this.remain}s结束.`)
+    this.info(
+      'info',
+      `播放类型:${type},Buffer最大缓冲时长:${this.bufferMax}s, 以${this.speed}倍速追到剩${this.remain}s结束.`
+    )
     this._handleEvents()
   }
 
@@ -79,10 +86,15 @@ export default class Pursue extends Plugin {
     // 如果超过最大值 或者 追播过程中但是还没追到
     if (elapsed > this.bufferMax || (this.isPursuing && elapsed > this.remain)) {
       // 根据追播模式，选择追播还是跳播
-      const mode = this.pursueConfig['mode']
+      const mode = this.mode
       switch (mode) {
       case 'pursue':
-        this.run()
+        // 如果差值大于三倍的bufferMax时间，就跳过去，如，设置bufferMax为10， 如果差值超过30秒，就直接跳到最新，不追了
+        if (elapsed > 6 * this.bufferMax) {
+          this.jumpTo(buffer - this.remain)
+        } else {
+          this.run()
+        }
         break
       case 'seek':
         this.jumpTo(buffer - this.remain)
@@ -95,7 +107,7 @@ export default class Pursue extends Plugin {
       this.walk()
     }
 
-    this.info('error', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
+    this.info('info', `当前${player.getCurrentTime()},剩余${buffer},差值${elapsed},是否正在追${this.isPursuing}`)
   }
 
   __onBufferEmpty(e) {
