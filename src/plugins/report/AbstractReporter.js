@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-07-26, 00:59:03 (zhenliang.sun)
+ * Last Modified: 2019-09-11, 14:48:25 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -176,6 +176,7 @@ export default class AbstractReporter extends Component {
     this._infoPackCount = 0
     this._playHeartbeatDuration = 0
     this._playInfoDuration = 0
+    this._lastInfoDownloadSize = 0
   }
 
   start() {

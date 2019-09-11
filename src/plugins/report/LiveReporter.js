@@ -71,6 +71,7 @@ export default class LiveReporter extends AbstractReporter {
     // 记录上一个心跳包的下载量
     this._lastHeartbeatDownloadSize = downloadSize
     this.fire(LIVE_CODE.HeartBeat, obj)
+    this._lagCount = 0
     super.heartBeatPack()
   }
 }
