@@ -221,10 +221,9 @@
         type: type,
         isLive: isLive,
         id: 'video-wrapper',
-        flvurl: url,
-        hlsurl: url,
-        nativeurl: url,
-        autoDetect: true,
+        flvurl: null,
+        hlsurl: null,
+        nativeurl: null,
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
         // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
@@ -388,11 +387,11 @@
     <div>
       <span>上报配置</span>
       <input id="tiReportConfig" class="initInput" type="text"
-        value='{"url":"//la.e.vhall.com/login","webinar_id":"439466233","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+        value='{"url":"https://dc.e.vhall.com/login","webinar_id":"lss_706f5237","uid":"d317f559_10000127","session_id":"d317f559_100001271568203032166","vid":"10000127","vfid":405,"ndi":"","guid":"","vtype":"","topic":"","app_id":"d317f559","biz_role":"","flow_type":2,"biz_id":"","biz_des01":"","bu":1,"enable":true,"biz_des02":""}'>
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"lss_c40d5aa0","uid":"162647881","bu":1,"quality":["same","720p","360p","480p"],"defaultDef":"480p"}'>
+        value='{"url":"https://gslb.e.vhall.com","webinar_id":"lss_706f5237","uid":"d317f559_10000127","bu":1,"quality":[],"defaultDef":"same","app_type":0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -404,7 +403,7 @@
       <br>
       <span>追播配置</span>
       <input id="tiPursueConfig" class="initInput" type="text"
-        value='{"enable":false,"mode":"pursue","flv":{"bufferMax":10,"remain":2,"pursueSpeed":1.2},"hls":{"bufferMax":20,"remain":8,"pursueSpeed":1.2}}'>
+        value='{"enable":true,"flv":{"bufferMax":10,"remain":2,"pursueSpeed":1.2},"hls":{"bufferMax":20,"remain":8,"pursueSpeed":1.2},"mode":"pursue"}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text"
