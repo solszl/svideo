@@ -20,8 +20,9 @@ export default class FlvPlayer extends Flv {
 
   updateMediaDataSource() {
     const video = this.video
-    this.detachMediaElement(video)
     this.unload()
+    this.detachMediaElement()
+
     this.attachMediaElement(video)
     this.initEvents()
     this.load()
@@ -42,11 +43,5 @@ export default class FlvPlayer extends Flv {
     delete this.mediaDataSource.segments
     this.mediaDataSource.url = val
     this.updateMediaDataSource()
-  }
-
-  destroy() {
-    super.destroy()
-    this.unload()
-    this.detachMediaElement()
   }
 }

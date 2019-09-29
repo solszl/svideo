@@ -7,8 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>H5 Player | Video Demo</title>
   <link rel="stylesheet" href="./index.css" />
-  <script src="./index2.1.0.js"></script>
-  <script src="./eruda.min.js"></script>
+  <script src="./index2.1.1.js"></script>
   <!-- <div id="player"></div>
   <script src="//player.polyv.net/script/player.js"></script>
   <script>
@@ -25,6 +24,7 @@
     var autoBarrageInterval = 0;
 
     window.onload = function() {
+      new VConsole()
       // let lagConfig = {}
       // let reportConfig = {
       //   url: '//la.e.vhall.com/login',
@@ -92,12 +92,13 @@
         outputInfo('播放地址不能为空');
         return;
       }
-      v.src = src;
+      v.setSrc(src);
     }
 
     function onPlaybackRateChanged() {
       let opts = document.getElementById('playbackRate').options
       var val = opts[opts.selectedIndex].value
+
       v.setPlaybackRate(val)
     }
 
@@ -157,9 +158,31 @@
       }
     }
 
+    function changeDefinition(defName) {
+      if(!v.currentDefinitionList || v.currentDefinitionList.length === 0) {
+        outputInfo('播放器尚未初始化，没有清晰度列表')
+        return
+      }
+
+      let list = v.currentDefinitionList
+      let defs = list.filter(item => item.def === defName)
+      let def = null
+      if(defs.length > 0 ) {
+        def = defs[0]
+      }
+
+      if(!def) {
+        outputInfo(`没找到对应${defName}的清晰度`)
+        return
+      }
+
+      outputInfo(`准备切换到${defName}`)
+      v.currentDefinition = def
+    }
+
     // 控制台、信息框 双输出
     function outputInfo(str) {
-      console.log(str);
+      // console.log(str);
       var ta = document.getElementById('taInfo')
       const now = () => {
         var str = ''
@@ -191,16 +214,16 @@
       let schedulerConfig = document.getElementById('tiSchedulerConfig').value;
       let watermarkConfig = document.getElementById('tiWatermarkConfig').value;
       let barrageConfig = document.getElementById('tiBarrageConfig').value;
-      let marqueeConfig = document.getElementById('tiMarqueeConfig').value;
+      let pursueConfig = document.getElementById('tiPursueConfig').value
 
       let isLive = document.getElementById('tiIsLive').checked;
       v.init({
         type: type,
         isLive: isLive,
         id: 'video-wrapper',
-        flvurl: url,
+        flvurl: null,
         hlsurl: url,
-        nativeurl: url,
+        nativeurl: null,
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
         // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
         // nativeurl: 'https://alhlsvodhls02.e.vhall.com//vhallcoop/demand/30ab05dbf7259db1c37b5c2d849112fb/942472185/30ab05dbf7259db1c37b5c2d849112fb.mp4?token=alibaba',
@@ -208,12 +231,13 @@
         x5: true,
         poster: posterUrl,
         autoplay: false,
+        muted: true,
         plugin_lag: lagConfig,
         plugin_reporter: reportConfig,
         plugin_scheduler: schedulerConfig,
         plugin_watermark: watermarkConfig,
         plugin_barrage: barrageConfig,
-        plugin_marquee: marqueeConfig
+        plugin_pursue: pursueConfig
       })
 
       // v2.init({
@@ -241,19 +265,19 @@
       initEvents();
     }
 
-    function controlsBar() {
-      v.setControls(!v.getControls())
-    }
-
     function initEvents() {
       v.on('fullscreenchanged', state => {
         outputInfo(`全屏状态修改为 ${state}`)
       })
 
       v.on('timeupdate', t => {
-        // console.log('timeudpate:',
-        //   `state：${v.getReadyState()}, time: ${v.getCurrentTime()}, buffered: ${v.getBuffered().length > 0 ? v.getBuffered().end(0) : 0}, duration:${v.getDuration()}`
-        // );
+        return
+        console.log('timeudpate:',
+          `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
+        );
+        // outputInfo(
+        //   `state：${v.readyState}, time: ${v.currentTime}, buffered: ${v.buffered.length > 0 ? v.buffered.end(0) : 0}, duration:${v.duration}`
+        // )
       })
 
       v.on('ratechange', v => {
@@ -261,7 +285,7 @@
       })
 
       v.on('volumechange', t => {
-        outputInfo(`设置音量为: ${v.getVolume()}`)
+        outputInfo(`设置音量为: ${v.volume}`)
       })
 
       v.on('progress', e => {
@@ -270,7 +294,6 @@
 
       v.on('play', () => {
         outputInfo('开始播放')
-        // v.setVolume(0)
       })
 
       v.on('pause', () => {
@@ -283,7 +306,7 @@
       })
 
       v.on('seeked', e => {
-        outputInfo(`seek 完成,时间为: ${v.currentTime}`)
+        outputInfo(`seek 完成,时间为: ${v.getCurrentTime()}`)
       })
 
       v.on('definitionchange', e => {
@@ -327,21 +350,9 @@
         outputInfo(`卡顿恢复了，耗时${t}`);
       });
 
-      v.on('ready', e=> {
-        v.play()
-      })
-
       // v.on('tencentInfo', e => {
       //   outputInfo(`腾讯信息，是否卡顿${e}`);
       // })
-
-      v.on('loopchange', b => {
-        outputInfo(`循环发生变化, loop: ${b}`);
-      });
-
-      v.on('mutedchange', b => {
-        outputInfo(`静音发生变化, mutedchange: ${b}`);
-      });
 
       if (!v.player.hasOwnProperty('on')) {
         return;
@@ -376,11 +387,11 @@
     <div>
       <span>上报配置</span>
       <input id="tiReportConfig" class="initInput" type="text"
-        value='{"url":"//la.e.vhall.com/login","webinar_id":"312564196","uid":"162647881","session_id":"","vid":"","vfid":"","ndi":"","guid":"","vtype":"","topic":"","app_id":"","biz_role":"","flow_type":2,"biz_id":"-","biz_des01":0,"bu":0,"enable":false}'>
+        value='{"url":"https://dc.e.vhall.com/login","webinar_id":"lss_706f5237","uid":"d317f559_10000127","session_id":"d317f559_100001271568203032166","vid":"10000127","vfid":405,"ndi":"","guid":"","vtype":"","topic":"","app_id":"d317f559","biz_role":"","flow_type":2,"biz_id":"","biz_des01":"","bu":1,"enable":true,"biz_des02":""}'>
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"//t-mss.e.vhall.com","webinar_id":"e1caa573","uid":"0e8cff07_77","bu":1,"quality":["360p"],"defaultDef":"360p", "app_type": 0}'>
+        value='{"url":"https://t-mss.e.vhall.com","webinar_id":"lss_e82c916c","uid":"d317f559_10000127","bu":1,"quality":["same"],"defaultDef":"same","app_type":0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -390,29 +401,28 @@
       <input id="tiBarrageConfig" class="initInput" type="text"
         value='{"enable":true,"duration":12,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}'>
       <br>
-      <span>跑马灯配置</span>
-      <input id="tiMarqueeConfig" class="initInput" type="text"
-       value='{"enable":true,"text":"版权所有，盗版必究","alpha":100,"size":20,"color":"#ff8d41","interval":20,"speed":10000,"position":1}'>
+      <span>追播配置</span>
+      <input id="tiPursueConfig" class="initInput" type="text"
+        value='{"enable":true,"flv":{"bufferMax":10,"remain":2,"pursueSpeed":1.2},"hls":{"bufferMax":20,"remain":8,"pursueSpeed":1.2},"mode":"pursue"}'>
       <br>
       <span>封面图</span>
       <input id="tiPosterUrl" class="initInput" type="text"
         value='https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1175648843,2178002342&fm=26&gp=0.jpg'>
       <br>
       <button onclick="initPlayer();">确认</button>
-      <button onclick="controlsBar();">控制条</button>
-      <button onclick="eruda.init();">移动调试</button>
     </div>
   </div>
   <hr />
   <div>
     <span>播放</span>
     <select id="playerType">
-      <option value="native">MP4等</option>
       <option value="hls">HLS</option>
+      <option value="auto">auto</option>
       <option value="flv">FLV</option>
+      <option value="native">MP4等</option>
     </select>
-    <span>直播</span><input id="tiIsLive" type="checkbox" >
-    <input id="tiVideoSrc" value="http://t-cyhlsvodhls02.vhallyun.com/vhallyun/vhallcoop/demand/53fe264f99105067d8673308c8eb740e/d4e295a5/53fe264f99105067d8673308c8eb740e.mp4" placeholder="视频地址">
+    <span>直播</span><input id="tiIsLive" type="checkbox">
+    <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com/vhallyun/vhallrecord/lss_e82c916c/20190731155033_e9b63fdc/record.m3u8" placeholder="视频地址">
     <!-- <button onclick="playSrcHandler()">播放</button> -->
   </div>
   <hr />
@@ -424,19 +434,18 @@
   <br />
   <span>播放相关</span> <button onclick="v.play();">播放</button>
   <button onclick="v.pause();">暂停</button>
-  <button onclick="outputInfo('当前是否暂停：'+v.getIsPaused());">是否暂停</button>
+  <button onclick="outputInfo('当前是否暂停：'+v.isPaused);">是否暂停</button>
   <button onclick="outputInfo(JSON.stringify(v.allDefinitionList))">全清晰度</button>
   <br />
-  <span>循环相关</span> <button onclick="v.setLoop(true)">设置循环</button>
-  <button onclick="v.setLoop(false)">取消循环</button>
-  <button onclick="outputInfo('当前是否循环：'+v.getLoop());">是否循环</button>
+  <span>循环相关</span> <button onclick="v.loop = true">设置循环</button>
+  <button onclick="v.loop = false">取消循环</button>
+  <button onclick="outputInfo('当前是否循环：'+v.loop);">是否循环</button>
   <br />
   <span>声音相关</span>
   <input id="inputVolume" type="range" min="0" max="100" value="0.5"
-    onchange="v.setVolume(document.getElementById('inputVolume').value / 100)" />
-  <button onclick="outputInfo('当前音量为：'+v.getVolume())">当前音量</button>
-  <button onclick="outputInfo('当前是否静音：'+v.getMuted());">是否静音</button>
-  <button onclick="v.setMuted(true);">静音</button>
+    onchange="v.volume = document.getElementById('inputVolume').value / 100" />
+  <button onclick="outputInfo('当前音量为：'+v.volume)">当前音量</button>
+  <button onclick="outputInfo('当前是否静音：'+v.muted);">是否静音</button>
   <br />
   <span>倍速播放</span>
   <select id="playbackRate" onchange="onPlaybackRateChanged()">
@@ -449,6 +458,14 @@
   <button onclick="outputInfo('倍速列表：' + v.playbackRateList)">倍速列表</button>
   <button onclick="fetchDownloadSize()">已下载数据量</button>
   <button onclick="getEstimateNetSpeed()">预估网速</button>
+  <div>
+    <span>切分辨率</span>
+    <button onclick="changeDefinition('same')">原画</button>
+    <button onclick="changeDefinition('720p')">720p</button>
+    <button onclick="changeDefinition('480p')">480p</button>
+    <button onclick="changeDefinition('360p')">360p</button>
+    <button onclick="changeDefinition('a')">a</button>
+  </div>
   <div>
     <span>Token</span>
     <button onclick="outputInfo('调度获取token: ' + v.originToken)">原始</button>
@@ -501,6 +518,7 @@
     <button onclick="captureVideo();outputInfo('截图完毕')">截图</button>
     <canvas id="cvsCapture"></canvas>
   </div>
+  <script src="https://cdn.bootcss.com/vConsole/3.3.3/vconsole.min.js"></script>
 </body>
 
 </html>

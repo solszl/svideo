@@ -38,7 +38,7 @@ export default class BarrageCore extends Component {
       let r = renderer.renderer
       r.update(w, h, elapsedTime)
     })
-    this._fps = 1000 / elapsedTime >> 0
+    this._fps = (1000 / elapsedTime) >> 0
     requestAnimationFrame(() => this[loop](now))
   }
 
@@ -67,7 +67,7 @@ export default class BarrageCore extends Component {
     }
 
     let renderer = {
-      id: type + Math.random() * 100 >> 0,
+      id: (type + Math.random() * 100) >> 0,
       type: type,
       renderer: r
     }
@@ -211,7 +211,7 @@ export default class BarrageCore extends Component {
   setSize(w, h) {
     this.width = w
     this.height = h
-    this.clear()
+    // this.clear()
     this.renderers.forEach(renderer => {
       let r = renderer.renderer
       r.resize(w, h)

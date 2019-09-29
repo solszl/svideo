@@ -1,12 +1,11 @@
 /**
-import { isSupported } from "./../../player/hls/is-supported";
  * 腾讯内核 卡顿注入器
  *  限定于安卓
  * @export
- * @class TencentLagInject
+ * @class TencentInject
  * @author zhenliang.sun
  */
-export default class TencentLagInject {
+export default class TencentInject {
   constructor(lagThreshold) {
     this._lagThreshold = lagThreshold
     this._lastTime = 0
@@ -22,7 +21,7 @@ export default class TencentLagInject {
   static isSupported() {
     let ua = navigator.userAgent.toLowerCase()
     let isAndroid = ua.match(/android|adr/i)
-    let isTencent = ua.match(/mqqbrowser|qzone|qqbrowser|qq/i)
+    let isTencent = ua.match(/mqqbrowser|qzone|qqbrowser|qq|micromessenger/i)
 
     return isAndroid && isTencent
   }

@@ -9,12 +9,14 @@
     "bufferfull",
     "clazz",
     "demux",
+    "devtool",
     "domainname",
     "domainnames",
     "flvurl",
     "hlsurl",
     "lagrecover",
     "lagreport",
+    "micromessenger",
     "mqqbrowser",
     "nativeurl",
     "overrided",
@@ -23,6 +25,7 @@
     "qzone",
     "tlag",
     "tyescript",
+    "typeof",
     "vfid",
     "vtype"
   ]

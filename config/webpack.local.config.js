@@ -8,13 +8,11 @@ function resolve(dir) {
 }
 
 const webpackConfig = merge(baseConfig, {
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
     inline: true,
     hot: true,
-    open: false,
+    open: true,
     host: '0.0.0.0',
     port: 9090,
     compress: false,

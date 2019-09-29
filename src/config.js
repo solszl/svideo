@@ -11,5 +11,7 @@ export const VHVideoConfig = {
   plugin_barrage:
     '{"enable":false,"duration":5,"position":3,"fontsize":18,"alpha":0.8,"font":"Microsoft YaHei","color":"#FFF"}', // position: 0:top,距离上10%~~50%, 1：middle,30%~70%， 2：bottom,50%~90% 3:all,距离上下各10%, duration: 完成基准，基于这个时间进行下浮动,取值范围为：(Math.random() * duration / 3)>>>0
   plugin_marquee:
-    '{"enable":false,"text":"版权所有，盗版必究","alpha":100,"size":20,"color":"#ff8d41","interval":20,"speed":6000,"position":1}' // enable: true 是否启用插件，text： 跑马灯文字， alpha： 透明度，100为完全显示， size: 字号， color: 字体颜色，仅支持rgb字符串，interval: 前一波完事后多久执行下一次弹幕， speed: 速度，分为，3000,6000,10000,对应的快，中，慢，  position:1,2,3,4 1:随机,2:上,3中,4:下
+    '{"enable":false,"text":"版权所有，盗版必究","alpha":100,"size":20,"color":"#ff8d41","interval":20,"speed":6000,"position":1}', // enable: true 是否启用插件，text： 跑马灯文字， alpha： 透明度，100为完全显示， size: 字号， color: 字体颜色，仅支持rgb字符串，interval: 前一波完事后多久执行下一次弹幕， speed: 速度，分为，3000,6000,10000,对应的快，中，慢，  position:1,2,3,4 1:随机,2:上,3中,4:下
+  plugin_pursue:
+    '{"enable":false,"mode":"pursue","flv":{"bufferMax":10,"remain":2,"pursueSpeed":1.2},"hls":{"bufferMax":20,"remain":8,"pursueSpeed":1.2}}' // bufferMax: buffer 累计到10秒开始追播， remain: 追到buffer剩到2秒停止追播， pursue:以1.2倍速进行追播, mode: 采用哪种模式进行追播，pursue 倍速追播，seek 直接追播到最新
 }

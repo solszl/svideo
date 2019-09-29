@@ -45,10 +45,12 @@ export default class Barrage extends Plugin {
     // this.player.off('ended', this._ended);
     // this.player.off('fullscreenchanged', this._fullscreenChanged);
 
-    this._core.destroy()
-    this._core = null
-    removeFromParent(this.cvs)
-    this.cvs = null
+    if (this._core) {
+      this._core.destroy()
+      this._core = null
+      removeFromParent(this.cvs)
+      this.cvs = null
+    }
 
     delete this.player.barrageFPS
     delete this.player.barragePosition
@@ -198,7 +200,7 @@ export default class Barrage extends Plugin {
   _rearrangement() {
     let core = this._core
     core.pause()
-    core.clear()
+    // core.clear()
     // 加延迟是因为尺寸变化后直接获取宽高可能不准确
     setTimeout(() => {
       const parent = this.player.getRoot()

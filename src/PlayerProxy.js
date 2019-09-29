@@ -47,7 +47,6 @@ class PlayerProxy extends Component {
       // canplaythrough: this.__canplaythrough.bind(this)
     }
     this.reset()
-    this.initVideo(cfg)
   }
 
   initVideo(config = {}) {
