@@ -45,10 +45,12 @@ export default class Barrage extends Plugin {
     // this.player.off('ended', this._ended);
     // this.player.off('fullscreenchanged', this._fullscreenChanged);
 
-    this._core.destroy()
-    this._core = null
-    removeFromParent(this.cvs)
-    this.cvs = null
+    if (this._core) {
+      this._core.destroy()
+      this._core = null
+      removeFromParent(this.cvs)
+      this.cvs = null
+    }
 
     delete this.player.barrageFPS
     delete this.player.barragePosition
