@@ -22,15 +22,18 @@ const webpackConfig = {
     libraryTarget: 'umd'
   },
   module: {
-    rules: [{
-      test: /\.js[x]?$/,
-      loader: 'babel-loader',
-      include: resolve('src'),
-      exclude: '/node_modules'
-    }, {
-      test: /\.scss$/,
-      use: ['style-loader', 'css-loader', 'sass-loader']
-    }]
+    rules: [
+      {
+        test: /\.js[x]?$/,
+        loader: 'babel-loader',
+        include: resolve('src'),
+        exclude: resolve('node_modules')
+      },
+      {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({

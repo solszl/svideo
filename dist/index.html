@@ -222,7 +222,7 @@
         isLive: isLive,
         id: 'video-wrapper',
         flvurl: null,
-        hlsurl: null,
+        hlsurl: url,
         nativeurl: null,
         // flvurl: 'https://sjflvlivepc02.e.vhall.com/vhall/904633281.flv?token=alibaba',
         // hlsurl: 'https://alhlslivepc02.e.vhall.com/vhall/904633281/livestream.m3u8?token=alibaba',
@@ -391,7 +391,7 @@
       <br>
       <span>调度配置</span>
       <input id="tiSchedulerConfig" class="initInput" type="text"
-        value='{"url":"https://gslb.e.vhall.com","webinar_id":"lss_706f5237","uid":"d317f559_10000127","bu":1,"quality":[],"defaultDef":"same","app_type":0}'>
+        value='{"url":"https://t-mss.e.vhall.com","webinar_id":"lss_e82c916c","uid":"d317f559_10000127","bu":1,"quality":["same"],"defaultDef":"same","app_type":0}'>
       <br>
       <span>水印配置</span>
       <input id="tiWatermarkConfig" class="initInput" type="text"
@@ -416,13 +416,13 @@
   <div>
     <span>播放</span>
     <select id="playerType">
-      <option value="auto">auto</option>
       <option value="hls">HLS</option>
+      <option value="auto">auto</option>
       <option value="flv">FLV</option>
       <option value="native">MP4等</option>
     </select>
-    <span>直播</span><input id="tiIsLive" type="checkbox" checked>
-    <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com/vhallyun/vhallrecord/lss_7caae78d/20181029165815_ec824672/record.m3u8" placeholder="视频地址">
+    <span>直播</span><input id="tiIsLive" type="checkbox">
+    <input id="tiVideoSrc" value="https://t-alioss01.e.vhall.com/vhallyun/vhallrecord/lss_e82c916c/20190731155033_e9b63fdc/record.m3u8" placeholder="视频地址">
     <!-- <button onclick="playSrcHandler()">播放</button> -->
   </div>
   <hr />

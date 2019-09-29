@@ -9,6 +9,7 @@
     "bufferfull",
     "clazz",
     "demux",
+    "devtool",
     "domainname",
     "domainnames",
     "flvurl",
@@ -24,6 +25,7 @@
     "qzone",
     "tlag",
     "tyescript",
+    "typeof",
     "vfid",
     "vtype"
   ]
