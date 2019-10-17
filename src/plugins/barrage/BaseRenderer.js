@@ -20,14 +20,17 @@ export default class BaseRenderer {
     this._data = []
     this._pause = false
 
-    this.tween = new Proxy(new Tween(), {
-      get: (target, key) => {
-        if (typeof target[key] === 'function') {
-          return target[key].bind(target)
-        }
-        return target[key]
-      }
-    })
+    // this.tween = new Proxy(new Tween(), {
+    //   get: (target, key) => {
+    //     if (typeof target[key] === 'function') {
+    //       return target[key].bind(target)
+    //     }
+    //     return target[key]
+    //   }
+    // })
+
+    // 解决IOS9 不支持Proxy的问题
+    this.tween = new Tween();
   }
 
   update(w, h, t) {}
