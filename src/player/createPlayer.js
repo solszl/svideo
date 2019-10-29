@@ -9,7 +9,7 @@ import CommonAPI from '../api/CommonAPI'
 /**
  *
  * Created Date: 2019-08-23, 17:37:36 (zhenliang.sun)
- * Last Modified: 2019-08-27, 17:49:03 (zhenliang.sun)
+ * Last Modified: 2019-10-29, 13:58:11 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -59,6 +59,7 @@ class AbstractInitial {
     player.setStore(this.app.store)
     mixin(this.app, PlayerAPI, player)
     mixin(this.app, CommonAPI, this.store)
+    player.initEvents()
     return player
   }
 

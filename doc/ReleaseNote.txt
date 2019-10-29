@@ -1,3 +1,10 @@
+2.1.2 garnet 石榴石
+  New Features:
+    1: 新增日志上报功能间隔自定义配置(最小间隔1s)
+  Bug fixes:
+  Improves:
+  Docs:
+
 2.1.1 perlite 珍珠岩
   New Features:
     1: 追播功能

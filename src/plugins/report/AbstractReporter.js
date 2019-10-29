@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-09-11, 14:48:25 (zhenliang.sun)
+ * Last Modified: 2019-10-29, 14:01:47 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -10,10 +10,8 @@
 import Log from '../../utils/Log'
 import Component from './../../core/Component'
 import { KV } from './../../core/Constant'
-import Http from './Http'
 import { PlayerEvent } from './../../PlayerEvents'
-
-const INFO_PACK_INTERVAL = 30 * 1000
+import Http from './Http'
 
 const CALC_PLAY_TIME_INTERVAL = 200
 /**
@@ -54,6 +52,8 @@ export default class AbstractReporter extends Component {
     this._lastHeartbeatDownloadSize = 0
 
     this._lastCalcPlayTime = Date.now()
+
+    this.reportInterval = 30 * 1000
   }
 
   set reportConfig(val) {
@@ -84,6 +84,9 @@ export default class AbstractReporter extends Component {
     this.body.biz_des01 = cfg.biz_des01 || ''
     this.body.biz_des02 = cfg.biz_des02 || ''
     this.body.bu = cfg.bu
+
+    let interval = parseInt(cfg.interval) <= 0 ? 1 : +cfg.interval
+    this.reportInterval = interval * 1000 || 30 * 1000
   }
 
   set player(p) {
@@ -191,7 +194,7 @@ export default class AbstractReporter extends Component {
     clearInterval(this._infoPackInterval)
     clearInterval(this._playTimeInterval)
 
-    this._infoPackInterval = setInterval(this.infoPack.bind(this), INFO_PACK_INTERVAL)
+    this._infoPackInterval = setInterval(this.infoPack.bind(this), this.reportInterval)
     this._playTimeInterval = setInterval(this.calcPlayTime.bind(this), CALC_PLAY_TIME_INTERVAL)
     this._lastCalcPlayTime = Date.now()
   }
