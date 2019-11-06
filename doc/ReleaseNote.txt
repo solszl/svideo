@@ -1,3 +1,10 @@
+2.1.3 malachite 孔雀石
+  New Features:
+  Bug fixes:
+  Improves:
+    1: 增加flv播放器动态缓冲区大小分片（增加16k, 32k 2个档位）
+  Docs:
+
 2.1.2 garnet 石榴石
   New Features:
     1: 新增日志上报功能间隔自定义配置(最小间隔1s)

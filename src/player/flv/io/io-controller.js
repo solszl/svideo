@@ -16,11 +16,7 @@
  * limitations under the License.
  */
 
-import {
-  IllegalStateException,
-  InvalidArgumentException,
-  RuntimeException
-} from '../utils/exception.js'
+import { IllegalStateException, InvalidArgumentException, RuntimeException } from '../utils/exception.js'
 import Log from '../utils/logger.js'
 import { KV } from './../../../core/Constant'
 import FetchStreamLoader from './fetch-stream-loader.js'
@@ -80,19 +76,7 @@ class IOController {
 
     this._speedNormalized = 0
     this._speedSampler = new SpeedSampler()
-    this._speedNormalizeList = [
-      64,
-      128,
-      256,
-      384,
-      512,
-      768,
-      1024,
-      1536,
-      2048,
-      3072,
-      4096
-    ]
+    this._speedNormalizeList = [16, 32, 64, 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096]
 
     this._isEarlyEofReconnecting = false
 
@@ -211,9 +195,7 @@ class IOController {
   }
 
   get hasRedirect() {
-    return (
-      this._redirectedURL != null || this._dataSource.redirectedURL != undefined
-    )
+    return this._redirectedURL != null || this._dataSource.redirectedURL != undefined
   }
 
   get currentRedirectedURL() {
@@ -245,15 +227,11 @@ class IOController {
       this._seekHandler = new ParamSeekHandler(paramStart, paramEnd)
     } else if (config.seekType === 'custom') {
       if (typeof config.customSeekHandler !== 'function') {
-        throw new InvalidArgumentException(
-          'Custom seekType specified in config but invalid customSeekHandler!'
-        )
+        throw new InvalidArgumentException('Custom seekType specified in config but invalid customSeekHandler!')
       }
       this._seekHandler = new config.customSeekHandler()
     } else {
-      throw new InvalidArgumentException(
-        `Invalid seekType in config: ${config.seekType}`
-      )
+      throw new InvalidArgumentException(`Invalid seekType in config: ${config.seekType}`)
     }
   }
 
@@ -269,9 +247,7 @@ class IOController {
     } else if (RangeLoader.isSupported()) {
       this._loaderClass = RangeLoader
     } else {
-      throw new RuntimeException(
-        'Your browser doesn\'t support xhr with arraybuffer responseType!'
-      )
+      throw new RuntimeException('Your browser doesn\'t support xhr with arraybuffer responseType!')
     }
   }
 
@@ -489,9 +465,7 @@ class IOController {
 
   _onLoaderChunkArrival(chunk, byteStart, receivedLength) {
     if (!this._onDataArrival) {
-      throw new IllegalStateException(
-        'IOController: No existing consumer (onDataArrival) callback!'
-      )
+      throw new IllegalStateException('IOController: No existing consumer (onDataArrival) callback!')
     }
     if (this._paused) {
       return
@@ -535,11 +509,7 @@ class IOController {
           if (remain > this._bufferSize) {
             this._expandBuffer(remain)
           }
-          let stashArray = new Uint8Array(
-            this._stashBuffer,
-            0,
-            this._bufferSize
-          )
+          let stashArray = new Uint8Array(this._stashBuffer, 0, this._bufferSize)
           stashArray.set(new Uint8Array(chunk, consumed), 0)
           this._stashUsed += remain
           this._stashByteStart = byteStart + consumed
@@ -552,10 +522,7 @@ class IOController {
         let stashArray = new Uint8Array(this._stashBuffer, 0, this._bufferSize)
         stashArray.set(new Uint8Array(chunk), this._stashUsed)
         this._stashUsed += chunk.byteLength
-        let consumed = this._dispatchChunks(
-          this._stashBuffer.slice(0, this._stashUsed),
-          this._stashByteStart
-        )
+        let consumed = this._dispatchChunks(this._stashBuffer.slice(0, this._stashUsed), this._stashByteStart)
         if (consumed < this._stashUsed && consumed > 0) {
           // unconsumed data remain
           let remainArray = new Uint8Array(this._stashBuffer, consumed)
@@ -610,11 +577,7 @@ class IOController {
             let remain = chunk.byteLength - consumed
             if (remain > this._bufferSize) {
               this._expandBuffer(remain)
-              stashArray = new Uint8Array(
-                this._stashBuffer,
-                0,
-                this._bufferSize
-              )
+              stashArray = new Uint8Array(this._stashBuffer, 0, this._bufferSize)
             }
             stashArray.set(new Uint8Array(chunk, consumed), 0)
             this._stashUsed += remain
@@ -633,17 +596,10 @@ class IOController {
 
       if (consumed < buffer.byteLength) {
         if (dropUnconsumed) {
-          Log.w(
-            this.TAG,
-            `${remain} bytes unconsumed data remain when flush buffer, dropped`
-          )
+          Log.w(this.TAG, `${remain} bytes unconsumed data remain when flush buffer, dropped`)
         } else {
           if (consumed > 0) {
-            let stashArray = new Uint8Array(
-              this._stashBuffer,
-              0,
-              this._bufferSize
-            )
+            let stashArray = new Uint8Array(this._stashBuffer, 0, this._bufferSize)
             let remainArray = new Uint8Array(buffer, consumed)
             stashArray.set(remainArray, 0)
             this._stashUsed = remainArray.byteLength
