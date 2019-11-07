@@ -25,8 +25,6 @@ class PlayerProxy extends Component {
     this.ee = {
       /** 开始播放 */
       play: this.__play.bind(this),
-      /** 暂停 */
-      pause: this.__pause.bind(this),
       /** 开始加载新的数据，每加载一次，执行一次 */
       progress: this.__progress.bind(this),
       /** 播放出错 */
@@ -485,10 +483,12 @@ class PlayerProxy extends Component {
   }
 
   _initOriginalEvents() {
-    if (!this.isLive) {
+    if (!this.getIsLive()) {
       Object.assign(this.ee, {
         /** 播放完毕执行的事件 */
-        ended: this.__ended.bind(this)
+        ended: this.__ended.bind(this),
+        /** 暂停 */
+        pause: this.__pause.bind(this)
       })
     }
 

@@ -11,6 +11,7 @@ import TransmuxingEvents from './core/transmuxing-events'
 import Browser from './utils/browser'
 import { InvalidArgumentException } from './utils/exception'
 import Log from './utils/logger'
+import { PlayerEvent } from '../../PlayerEvents'
 /**
  *
  *
@@ -146,6 +147,11 @@ export default class Flv extends PlayerProxy {
         type: 'error',
         details: info.msg
       })
+    })
+    this._msectl.on(MSEEvents.SOURCE_ENDED, () => {
+      // 如果直播情况下接收到流播放完毕，派发切线尝试
+      // this.emit2All(PlayerEvent.BUFFER_EMPTY)
+      this.emit2All(PlayerEvent.CHANGE_LINE)
     })
 
     this._msectl.attachMediaElement(mediaElement)

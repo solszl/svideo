@@ -23,6 +23,8 @@ export default class Switcher extends Plugin {
     this._changeLineTimeout = 0
     this._lagChain = null // 卡顿切换责任链
     this._pollingDefs = []
+
+    this.lagCount = 0
   }
 
   init(opts = {}) {
@@ -65,21 +67,29 @@ export default class Switcher extends Plugin {
   }
 
   __lag(e) {
+    this.lagCount++
+
+    if (this.lagCount !== 3) {
+      this.info('info', '卡顿次数+1')
+      return
+    }
     // 卡顿后开始计时，超过多久过后启动换线流程
-    this.info('info', '开始卡了, 开始计时，准备卡顿切线')
-    this._changeLineTimeout = clearTimeout(this._changeLineTimeout)
-    const threshold = this._allConfig.switchLineThreshold * 1000
-    setTimeout(this.__changeLine.bind(this), threshold)
+    this.info('info', '准备卡顿切线')
+    clearTimeout(this._changeLineTimeout)
+    this.lagCount = 0
+    // const threshold = this._allConfig.switchLineThreshold * 1000
+    // this._changeLineTimeout = setTimeout(this.__changeLine.bind(this), threshold)
+    this.__changeLine()
   }
 
   __lagRecover(e) {
-    this._changeLineTimeout = clearTimeout(this._changeLineTimeout)
+    clearTimeout(this._changeLineTimeout)
   }
 
   __connectError(e) {
-    this._changeLineTimeout = clearTimeout(this._changeLineTimeout)
+    clearTimeout(this._changeLineTimeout)
     const threshold = this._allConfig.switchLineThreshold * 1000
-    setTimeout(this.__changeLine.bind(this), threshold)
+    this._changeLineTimeout = setTimeout(this.__changeLine.bind(this), threshold)
   }
 
   __over(b) {
