@@ -52,20 +52,39 @@ export default class Watermark extends Plugin {
     const { url, align, position, size } = cfg
 
     const p = this._analysisPosition(align, position)
+
+    this.elContainer = createElement('div', {
+      id: 'vh-watermark-container'
+    })
+    this.elContainer.style.position = 'absolute'
+    this.elContainer.style.userSelect = 'none'
+    this.elContainer.style.display = 'flex'
+    this.elContainer.style.flexDirection = 'column'
+
+    appendChild(this._allConfig['id'], this.elContainer)
+    Object.assign(this.elContainer.style, p)
+    Object.assign(this.elContainer.style, {
+      width: size[0],
+      height: size[1]
+    })
+
     this.elImage = createElement('img', {
       id: 'vh-watermark',
       src: url
     })
-    appendChild(this._allConfig['id'], this.elImage)
+
+    this.elImage.style.objectFit = 'contain'
+
+    appendChild('vh-watermark-container', this.elImage)
 
     this.elImage.onerror = this._imgOnError.bind(this)
-    this.elImage.style.position = 'absolute'
-    this.elImage.style.userSelect = 'none'
-    Object.assign(this.elImage.style, p)
-    Object.assign(this.elImage.style, {
-      width: size[0],
-      height: size[1]
-    })
+    this.elImage.onload = e => {
+      if (this.elImage.width < this.elImage.height) {
+        this.elImage.style.height = '100%'
+      } else {
+        this.elImage.style.width = '100%'
+      }
+    }
   }
 
   _analysisPosition(a, p) {
@@ -88,15 +107,19 @@ export default class Watermark extends Plugin {
       switch (ab) {
       case 't':
         result.top = yPos
+        result.justifyContent = 'flex-start'
         break
       case 'b':
         result.bottom = yPos
+        result.justifyContent = 'flex-end'
         break
       case 'l':
         result.left = xPos
+        result.alignItems = 'flex-start'
         break
       case 'r':
         result.right = xPos
+        result.alignItems = 'flex-end'
         break
       default:
         result.left = xPos
