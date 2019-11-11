@@ -77,6 +77,7 @@ export default class Barrage extends Plugin {
     this.cvs.style.pointerEvents = 'none'
     this.cvs.style.left = 0
     this.cvs.style.top = 0
+    this.cvs.style.zIndex = 5
     appendChild(this._allConfig['id'], this.cvs)
 
     this._core = new BarrageCore()

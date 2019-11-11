@@ -85,6 +85,7 @@ export default class Marquee extends Plugin {
     let top = positionMap[position] === 1 ? Math.random() * 60 + 20 + '%' : positionMap[position]
     this.label.style.top = top
     this.label.style.right = 0
+    this.label.style.zIndex = 10
     this._currentRight = 0
 
     let step = STEP[speed]

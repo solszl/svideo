@@ -3,6 +3,7 @@
   Bug fixes:
   Improves:
     1: 增加flv播放器动态缓冲区大小分片（增加16k, 32k 2个档位）
+    2: 增加各个容器z-index， video->0, barrage->5, marquee->10, watermark->20
   Docs:
 
 2.1.2 garnet 石榴石

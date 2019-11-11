@@ -60,6 +60,7 @@ export default class Watermark extends Plugin {
     this.elContainer.style.userSelect = 'none'
     this.elContainer.style.display = 'flex'
     this.elContainer.style.flexDirection = 'column'
+    this.elContainer.style.zIndex = 20
 
     appendChild(this._allConfig['id'], this.elContainer)
     Object.assign(this.elContainer.style, p)
