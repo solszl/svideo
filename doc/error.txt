@@ -1,0 +1,1 @@
+The element has no supported sources.  ( 此报错为： IOS真机 支持m3u8解析 ，但是谷歌浏览器不支持m3u8解析  所以谷歌模拟器会报错 )
