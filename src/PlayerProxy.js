@@ -40,7 +40,9 @@ class PlayerProxy extends Component {
       /** 播放速率发生变更的时候，派发的事件 */
       ratechange: this.__ratechange.bind(this),
       /** 声音发生改变的时候，派发的事件 */
-      volumechange: this.__volumechange.bind(this)
+      volumechange: this.__volumechange.bind(this),
+      /** 暂停 */
+      pause: this.__pause.bind(this)
       // loadstart: this.__loadstart.bind(this),
       // canplaythrough: this.__canplaythrough.bind(this)
     }
@@ -486,9 +488,7 @@ class PlayerProxy extends Component {
     if (!this.getIsLive()) {
       Object.assign(this.ee, {
         /** 播放完毕执行的事件 */
-        ended: this.__ended.bind(this),
-        /** 暂停 */
-        pause: this.__pause.bind(this)
+        ended: this.__ended.bind(this)
       })
     }
 
