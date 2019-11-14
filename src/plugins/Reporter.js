@@ -5,7 +5,7 @@ import VodReporter from './report/VodReporter'
 /**
  *
  * Created Date: 2019-07-24, 16:58:38 (zhenliang.sun)
- * Last Modified: 2019-07-25, 14:12:51 (zhenliang.sun)
+ * Last Modified: 2019-11-14, 10:36:15 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -31,8 +31,8 @@ export default class Reporter extends Plugin {
     let isLive = this._allConfig.isLive
     this.r = isLive ? new LiveReporter() : new VodReporter()
     this.r.allConfig = opts
-    this.r.reportConfig = opts[Reporter.type]
     this.r.player = this.player
+    this.r.reportConfig = opts[Reporter.type]
   }
 
   destroy() {

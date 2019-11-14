@@ -1,7 +1,7 @@
 /**
  *
  * Created Date: 2019-07-24, 16:27:13 (zhenliang.sun)
- * Last Modified: 2019-10-29, 14:01:47 (zhenliang.sun)
+ * Last Modified: 2019-11-14, 10:36:22 (zhenliang.sun)
  * Email: zhenliang.sun@gmail.com
  *
  * Distributed under the MIT license. See LICENSE file for details.
@@ -65,7 +65,12 @@ export default class AbstractReporter extends Component {
     let cfg = this._config
     this.url = cfg.url
     this.enable = cfg.enable === undefined ? true : cfg.enable
-    this.body.pf = 7
+    let pf = 7
+    if (this.player) {
+      let context = this.player.context
+      pf = context.platform === 'pc' ? 7 : 10
+    }
+    this.body.pf = pf
     this.body.ua = navigator.userAgent
     this.body.p = cfg.webinar_id || ''
     this.body.aid = cfg.webinar_id || ''
