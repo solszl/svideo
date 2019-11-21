@@ -127,7 +127,7 @@ export default class Lag extends Plugin {
 
       // 安卓平台下腾讯系的软件，需要一个二级保护伞来判断是否卡顿
       if (this._tlag) {
-        let t = this.player.currentTime
+        let t = this.player.getCurrentTime()
         let isLag = this._tlag.isLag(t)
         if (isLag) {
           this.player.emit2All('lagreport')
